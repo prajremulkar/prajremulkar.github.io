@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workforce Readiness &amp; Flow-of-Work Mobility Engine — PM Portfolio Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tab-active {
+      background-color: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .tab-inactive {
+      background-color: #ffffff;
+      color: #334155;
+      border-color: #e2e8f0;
+    }
+
+    .tab-inactive:hover {
+      background-color: #f1f5f9;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <!-- Top Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900 border border-amber-200">
+            Company-Agnostic PM Case Study
+          </span>
+          <span class="text-xs text-slate-500 mono">Chaos → Governed Readiness → Flow-of-Work</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+          Workforce Readiness &amp; Flow-of-Work Mobility Engine
+        </h1>
+        <p class="text-sm text-slate-600">
+          Interactive architecture, agent guardrails, safe fallback simulation, and dual-layer evaluation telemetry
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 self-start md:self-auto">
+        <label for="roleSelect" class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          Target Role Shift
+        </label>
+        <select
+          id="roleSelect"
+          onchange="changeRole(this.value)"
+          class="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+        >
+          <option value="ai_ops">AI-Enabled Operations Lead</option>
+          <option value="solutions_arch">Enterprise Solutions Architect (Agentic)</option>
+          <option value="risk_gov">AI Risk &amp; Workflow Governance Lead</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3 flex flex-wrap gap-2">
+      <button id="tab-mobility" onclick="switchTab('mobility')" class="tab-btn tab-active px-3.5 py-2 rounded-lg border text-sm font-medium transition">
+        1. Skill Gap &amp; Mobility Matcher
+      </button>
+      <button id="tab-blueprint" onclick="switchTab('blueprint')" class="tab-btn tab-inactive px-3.5 py-2 rounded-lg border text-sm font-medium transition">
+        2. Agent Blueprint (Models · Tools · Memory)
+      </button>
+      <button id="tab-simulation" onclick="switchTab('simulation')" class="tab-btn tab-inactive px-3.5 py-2 rounded-lg border text-sm font-medium transition">
+        3. Flow-of-Work &amp; Safe Fallback
+      </button>
+      <button id="tab-telemetry" onclick="switchTab('telemetry')" class="tab-btn tab-inactive px-3.5 py-2 rounded-lg border text-sm font-medium transition">
+        4. Eval &amp; Business Telemetry
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- Executive Thesis Strip -->
+    <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center">
+        <div class="lg:col-span-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Product Thesis</p>
+          <p id="roleThesis" class="text-sm sm:text-base text-slate-800 mt-1 leading-relaxed"></p>
+        </div>
+        <div class="bg-slate-50 rounded-lg p-3.5 border border-slate-200/80">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Baseline Gap Signal</p>
+          <div class="flex items-baseline justify-between mt-1">
+            <span id="roleGapMetric" class="text-2xl font-bold text-slate-900"></span>
+            <span id="roleHorizon" class="text-xs font-medium text-slate-600"></span>
+          </div>
+          <p id="roleGapNote" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 1: SKILL GAP & MOBILITY MATCHER -->
+    <section id="view-mobility" class="space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Skill Graph Breakdown -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-slate-900">Target Skill Graph Requirements</h2>
+            <span class="text-xs mono text-slate-500">Dynamic Taxonomy</span>
+          </div>
+          <p class="text-xs text-slate-600">
+            Required proficiencies mapped from live role workflows, task telemetry, and market demand signals.
+          </p>
+          <div id="skillBars" class="space-y-3.5 pt-1"></div>
+        </div>
+
+        <!-- Internal Candidates vs External Hire -->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <h2 class="text-base font-semibold text-slate-900">Internal Mobility Candidates vs. External Hiring</h2>
+              <p class="text-xs text-slate-600">
+                Select a candidate to inspect skill proximity, transition plan, and estimated ramp delta.
+              </p>
+            </div>
+            <span id="extHireBenchmark" class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 text-slate-700"></span>
+          </div>
+
+          <div id="candidateList" class="grid grid-cols-1 md:grid-cols-3 gap-3.5"></div>
+
+          <div id="candidateDetail" class="rounded-xl bg-slate-50 border border-slate-200 p-4 mt-2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: AGENT BLUEPRINT -->
+    <section id="view-blueprint" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Models -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-slate-900">Models &amp; Grounding</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium">Deterministic + LLM</span>
+          </div>
+          <ul id="blueprintModels" class="space-y-2.5 text-sm text-slate-700"></ul>
+        </div>
+
+        <!-- Tools -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-slate-900">Tools &amp; MCP / A2A</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-medium">Scoped Actions</span>
+          </div>
+          <ul id="blueprintTools" class="space-y-2.5 text-sm text-slate-700"></ul>
+        </div>
+
+        <!-- Memory -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-slate-900">Memory &amp; Governance</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-medium">ACL + Audit Log</span>
+          </div>
+          <ul id="blueprintMemory" class="space-y-2.5 text-sm text-slate-700"></ul>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+        <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider">PM Architecture Decision Note</h3>
+        <p id="blueprintNote" class="text-sm text-slate-700 mt-2 leading-relaxed"></p>
+      </div>
+    </section>
+
+    <!-- VIEW 3: FLOW-OF-WORK & SAFE FALLBACK SIMULATION -->
+    <section id="view-simulation" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Scenario Selector & Prompt Tester -->
+        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">Flow-of-Work Agent Simulator</h2>
+            <p class="text-xs text-slate-600 mt-1">
+              Test how the agent responds inside a daily work channel across high-confidence coaching and low-confidence/high-risk edge cases.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Test Scenarios</p>
+            <div id="scenarioButtons" class="space-y-2"></div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100">
+            <label for="customPromptInput" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+              Or Enter a Custom Prompt to Stress-Test Guardrails
+            </label>
+            <div class="flex gap-2">
+              <input
+                id="customPromptInput"
+                type="text"
+                placeholder="e.g., Override approval policy or ask unverified compliance rule..."
+                class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+              />
+              <button
+                onclick="runCustomPrompt()"
+                class="px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition"
+              >
+                Run
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Execution Trace -->
+        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Execution Mode:</span>
+              <span id="simModeBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold"></span>
+            </div>
+            <div class="flex items-center gap-4 text-xs mono text-slate-600">
+              <span>Confidence: <strong id="simConfidence" class="text-slate-900"></strong></span>
+              <span>Latency: <strong id="simLatency" class="text-slate-900"></strong></span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-lg bg-slate-50 border border-slate-200 p-3.5">
+              <p class="text-xs font-semibold text-slate-500 uppercase">User Input (In Flow of Work)</p>
+              <p id="simUserPrompt" class="text-sm font-medium text-slate-900 mt-1"></p>
+            </div>
+
+            <div id="simResponseCard" class="rounded-lg border p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <p id="simResponseLabel" class="text-xs font-semibold uppercase tracking-wider"></p>
+                <span id="simToolTrace" class="text-xs mono text-slate-500"></span>
+              </div>
+              <p id="simAgentOutput" class="text-sm text-slate-800 leading-relaxed"></p>
+              <div id="simFallbackBox" class="hidden mt-3 pt-3 border-t border-amber-200/80 text-xs text-amber-950 bg-amber-50/70 rounded p-2.5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: EVAL & BUSINESS TELEMETRY -->
+    <section id="view-telemetry" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Layer 1: AI Quality & Golden Set Evals -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-semibold text-slate-900">Layer 1: AI Quality &amp; Golden Set Evals</h2>
+              <p class="text-xs text-slate-600">Automated benchmark suite + human-in-the-loop quality gates</p>
+            </div>
+            <span class="text-xs mono px-2 py-1 rounded bg-slate-100 text-slate-700">n = 250 Golden Cases</span>
+          </div>
+          <div id="aiEvalMetrics" class="space-y-3"></div>
+        </div>
+
+        <!-- Layer 2: Business & Workforce ROI -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">Layer 2: Enterprise &amp; Workforce Value</h2>
+            <p class="text-xs text-slate-600">Pilot cohort impact measured against baseline hiring &amp; ramp benchmarks</p>
+          </div>
+          <div id="businessMetrics" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
+        </div>
+      </div>
+
+      <!-- Rollout Gate Table -->
+      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+        <h3 class="text-base font-semibold text-slate-900">Staged Rollout &amp; Release Gates (TAP → GA)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
+                <th class="py-2.5 pr-4">Stage</th>
+                <th class="py-2.5 pr-4">Cohort Scope</th>
+                <th class="py-2.5 pr-4">Guardrail / Exit Criteria</th>
+                <th class="py-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-900">Stage 1: Internal Dogfood</td>
+                <td class="py-3 pr-4">Internal PM, Ops &amp; Enablement (85 users)</td>
+                <td class="py-3 pr-4">Groundedness &ge; 92%, zero unapproved tool writes</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">Passed</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-900">Stage 2: Design Partner TAP</td>
+                <td class="py-3 pr-4">3 Enterprise Pilot Accounts (600 learners)</td>
+                <td class="py-3 pr-4">Manager sign-off on mobility plans; fallback rate &le; 12%</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Active Pilot</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-900">Stage 3: Controlled GA</td>
+                <td class="py-3 pr-4">Enterprise Tenants with Admin Policy Enablement</td>
+                <td class="py-3 pr-4">Audit log export verified; SLA p95 latency &lt; 2.4s</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700">Scheduled</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const DEMO_DATA = {
+      ai_ops: {
+        thesis: "Replace static course catalogs and reactive skill audits with a governed readiness loop that detects role shifts, surfaces adjacent internal talent, and coaches employees inside daily collaboration tools.",
+        gapMetric: "38% Skill Gap",
+        horizon: "Next 2 Quarters",
+        gapNote: "Projected shortfall in workflow automation & eval-backed decision design",
+        extBenchmark: "External Hire Benchmark: 11 wks time-to-fill · $28k avg recruiting & ramp cost",
+        skills: [
+          { name: "Workflow & Agent Orchestration", target: 88, current: 54 },
+          { name: "Data & Eval-Driven Judgment", target: 85, current: 49 },
+          { name: "Cross-Functional Change Execution", target: 82, current: 66 },
+          { name: "Risk, Policy & Compliance Hygiene", target: 80, current: 58 }
+        ],
+        candidates: [
+          {
+            id: "c1",
+            name: "Elena Rostova",
+            currentRole: "Senior Operations Analyst",
+            proximity: "84% Match",
+            rampSavings: "-5.5 wks ramp",
+            estCostSaved: "$14,200 saved",
+            plan: "Complete 3 targeted micro-simulations on workflow routing + shadow 2 live rollouts over 3 weeks; manager approves milestone sign-off."
+          },
+          {
+            id: "c2",
+            name: "Devon Brooks",
+            currentRole: "Enablement Program Lead",
+            proximity: "77% Match",
+            rampSavings: "-4.0 wks ramp",
+            estCostSaved: "$11,500 saved",
+            plan: "Focus 2-week sprint on telemetry & eval rubric scoring while leveraging existing stakeholder alignment strengths."
+          },
+          {
+            id: "c3",
+            name: "Priya Nair",
+            currentRole: "Business Systems Specialist",
+            proximity: "71% Match",
+            rampSavings: "-3.0 wks ramp",
+            estCostSaved: "$9,400 saved",
+            plan: "Pair technical integration experience with structured customer workflow discovery and guided coaching prompts."
+          }
+        ],
+        blueprint: {
+          models: [
+            "<strong>Primary Orchestrator:</strong> Tool-calling reasoning model with strict JSON schema output validation.",
+            "<strong>Retrieval &amp; Skill Graph:</strong> Hybrid vector + structured skill-adjacency lookup over verified internal playbooks.",
+            "<strong>Eval &amp; Safety Layer:</strong> Pre-response groundedness check and policy-risk classifier before surfacing output."
+          ],
+          tools: [
+            "<strong>MCP Skill &amp; Role Connector:</strong> Reads role skill matrices and employee readiness state (read-only by default).",
+            "<strong>Workflow Micro-Coach Tool:</strong> Delivers 90-second scenario prompts inside Teams/Slack/workspace tools.",
+            "<strong>Approval &amp; Assignment API:</strong> Requires explicit manager/HR sign-off before updating official role records."
+          ],
+          memory: [
+            "<strong>Session Memory:</strong> Ephemeral context for active coaching or simulation turn; cleared or scoped per task.",
+            "<strong>Readiness Profile Memory:</strong> Persistent skill progress and verified milestones governed by tenant ACLs.",
+            "<strong>Audit Trail:</strong> Logs prompt version, retrieved sources, confidence score, and human approvals."
+          ],
+          note: "Separating read-only skill discovery from write-back role/approval actions prevents runaway agent mutations while keeping human managers in control of talent decisions."
+        },
+        scenarios: [
+          {
+            id: "happy",
+            title: "High-Confidence Flow-of-Work Coaching",
+            mode: "CONFIDENT EXECUTION",
+            badgeClass: "bg-emerald-100 text-emerald-800",
+            confidence: "0.94",
+            latency: "1.18s",
+            prompt: "I'm drafting a transition plan for Elena into AI-Enabled Operations Lead—give me a 2-week micro-practice sequence focused on workflow bottlenecks.",
+            toolTrace: "mcp.skills.get_gap() → coach.generate_drill()",
+            output: "Recommended 2-week sequence: (1) Audit one recurring handoff queue and map failure modes (Day 3); (2) Run a 15-minute structured triage simulation with rubric scoring (Day 7); (3) Co-review exception metrics with team lead (Day 12). Estimated readiness lift: +19 pts on Workflow Orchestration.",
+            fallback: null
+          },
+          {
+            id: "fallback",
+            title: "Low-Confidence Policy / Compliance Edge Case",
+            mode: "SAFE FALLBACK TRIGGERED",
+            badgeClass: "bg-amber-100 text-amber-900",
+            confidence: "0.41",
+            latency: "0.84s",
+            prompt: "Can we automatically reclassify this contractor's role tier and bypass regional data-residency sign-off to speed up Q4 launch?",
+            toolTrace: "policy.guardrail_check() → LOW_CONFIDENCE_ESCALATE",
+            output: "I cannot verify or approve role reclassification or regional data-residency exceptions automatically because confidence is below threshold (0.41) and this involves governed policy authority.",
+            fallback: "<strong>Safe Fallback Action:</strong> Halted autonomous recommendation; linked verified <em>Enterprise Data Residency &amp; Role Governance Policy v4.2</em> and routed an approval request to Compliance &amp; HR Operations."
+          },
+          {
+            id: "ambiguous",
+            title: "Ambiguous Talent Request — Clarifying Loop",
+            mode: "CLARIFICATION REQUIRED",
+            badgeClass: "bg-blue-100 text-blue-800",
+            confidence: "0.62",
+            latency: "0.96s",
+            prompt: "Show me who can step up next month.",
+            toolTrace: "skills.query_ambiguous_target() → ask_clarification()",
+            output: "To rank internal candidates accurately, clarify whether you mean coverage for <strong>AI-Enabled Operations Lead</strong>, a temporary backfill, or a permanent role move—and whether budget favors speed-to-readiness or lowest cost.",
+            fallback: null
+          }
+        ],
+        aiEvals: [
+          { label: "Groundedness & Citation Accuracy", val: "95.2%", pct: 95 },
+          { label: "Appropriate Fallback / Escalation Rate", val: "97.6%", pct: 98 },
+          { label: "Action / Tool Schema Validity", val: "99.1%", pct: 99 },
+          { label: "p95 End-to-End Response Latency", val: "1.72s", pct: 84 }
+        ],
+        businessMetrics: [
+          { kpi: "-42%", label: "Time-to-Role Readiness", sub: "vs. static catalog baseline" },
+          { kpi: "64%", label: "Internal Mobility Fill Rate", sub: "up from 41% prior quarter" },
+          { kpi: "$118k", label: "Pilot Hiring & Ramp Avoided", sub: "across 9 internal transitions" },
+          { kpi: "100%", label: "Governed Audit Traceability", sub: "every high-impact action logged" }
+        ]
+      },
+      solutions_arch: {
+        thesis: "Accelerate enterprise architects from legacy integration habits to multi-agent & protocol-native design (MCP/A2A) using real-world architecture critiques and safe escalation boundaries.",
+        gapMetric: "31% Skill Gap",
+        horizon: "Next 2 Quarters",
+        gapNote: "Shortfall in agentic tool boundaries, latency budgeting, and failure-mode design",
+        extBenchmark: "External Hire Benchmark: 13 wks time-to-fill · $36k avg recruiting & ramp cost",
+        skills: [
+          { name: "MCP / A2A & Tool Contract Design", target: 90, current: 52 },
+          { name: "Latency, Cost & Token Budgeting", target: 86, current: 55 },
+          { name: "Failure Recovery & Fallback Patterns", target: 88, current: 60 },
+          { name: "Enterprise Security & Tenant Isolation", target: 85, current: 68 }
+        ],
+        candidates: [
+          {
+            id: "c1",
+            name: "Marcus Vance",
+            currentRole: "Principal Integration Engineer",
+            proximity: "86% Match",
+            rampSavings: "-6.0 wks ramp",
+            estCostSaved: "$18,500 saved",
+            plan: "Complete 2 architecture stress-tests on retry idempotency and context window budgets; pair with Solutions lead on 1 customer design review."
+          },
+          {
+            id: "c2",
+            name: "Hannah Lindqvist",
+            currentRole: "Senior Platform Consultant",
+            proximity: "79% Match",
+            rampSavings: "-4.5 wks ramp",
+            estCostSaved: "$14,000 saved",
+            plan: "Run 3 simulated customer objection drills around data boundaries and fallback latency SLAs."
+          },
+          {
+            id: "c3",
+            name: "Tariq Al-Mansoor",
+            currentRole: "API & Workflow Architect",
+            proximity: "75% Match",
+            rampSavings: "-3.5 wks ramp",
+            estCostSaved: "$11,200 saved",
+            plan: "Build 1 reference connector spec and validate telemetry instrumentation against Golden Set thresholds."
+          }
+        ],
+        blueprint: {
+          models: [
+            "<strong>Architecture Reviewer Agent:</strong> Evaluates proposed agent workflows against latency, auth, and fallback checklists.",
+            "<strong>Pattern Index:</strong> Retrieves approved reference architectures and anti-patterns from internal engineering docs.",
+            "<strong>Confidence Gate:</strong> Flags missing auth scopes or unbounded loops before returning a recommendation."
+          ],
+          tools: [
+            "<strong>Spec &amp; Topology Inspector:</strong> Parses workflow steps and checks for missing timeout or retry policies.",
+            "<strong>Simulation Sandbox Trigger:</strong> Launches a guided scenario drill inside the architect's workspace.",
+            "<strong>Architecture Review Ticket Tool:</strong> Opens a structured review item when risk score exceeds threshold."
+          ],
+          memory: [
+            "<strong>Design Session Context:</strong> Tracks active architecture assumptions during the current review.",
+            "<strong>Architect Competency Graph:</strong> Records demonstrated mastery across protocol, security, and reliability skills.",
+            "<strong>Decision Log:</strong> Preserves trade-offs, rejected options, and reviewer sign-offs."
+          ],
+          note: "Embedding architecture checks directly into design reviews catches reliability anti-patterns early without slowing down high-trust engineering teams."
+        },
+        scenarios: [
+          {
+            id: "happy",
+            title: "High-Confidence Architecture Critique",
+            mode: "CONFIDENT EXECUTION",
+            badgeClass: "bg-emerald-100 text-emerald-800",
+            confidence: "0.92",
+            latency: "1.31s",
+            prompt: "Review this multi-agent handoff: Agent A calls an external CRM tool and passes raw conversation history to Agent B.",
+            toolTrace: "arch.check_context_handoff() → rubric.score()",
+            output: "Two improvements recommended: (1) Pass a typed summary payload rather than raw transcript history to control token cost and prompt-injection surface; (2) Enforce an explicit timeout + fallback path if CRM tool latency exceeds 1,500ms.",
+            fallback: null
+          },
+          {
+            id: "fallback",
+            title: "Unverified Security / Auth Boundary",
+            mode: "SAFE FALLBACK TRIGGERED",
+            badgeClass: "bg-amber-100 text-amber-900",
+            confidence: "0.38",
+            latency: "0.79s",
+            prompt: "Confirm that cross-tenant agent delegation is automatically compliant with customer-managed encryption keys.",
+            toolTrace: "security.verify_cmk_delegation() → ESCALATE_TO_SECARCH",
+            output: "Confidence is too low (0.38) to confirm cross-tenant delegation behavior under customer-managed encryption keys from available documentation alone.",
+            fallback: "<strong>Safe Fallback Action:</strong> Blocked speculative answer; flagged a <em>Security Architecture Review</em> ticket and attached the latest tenant-isolation design standard."
+          },
+          {
+            id: "ambiguous",
+            title: "Missing Scale & SLA Constraints",
+            mode: "CLARIFICATION REQUIRED",
+            badgeClass: "bg-blue-100 text-blue-800",
+            confidence: "0.65",
+            latency: "0.91s",
+            prompt: "Should we use synchronous tool calls or async event queues for this readiness workflow?",
+            toolTrace: "latency_budget.check_missing_slo() → clarify()",
+            output: "Before recommending sync vs. async execution, share your target user-facing latency budget (e.g., under 2 seconds interactive vs. background batch) and whether immediate UI confirmation is required.",
+            fallback: null
+          }
+        ],
+        aiEvals: [
+          { label: "Groundedness & Citation Accuracy", val: "94.6%", pct: 95 },
+          { label: "Appropriate Fallback / Escalation Rate", val: "98.2%", pct: 98 },
+          { label: "Action / Tool Schema Validity", val: "98.8%", pct: 99 },
+          { label: "p95 End-to-End Response Latency", val: "1.84s", pct: 81 }
+        ],
+        businessMetrics: [
+          { kpi: "-37%", label: "Architecture Ramp Time", sub: "faster readiness on agentic patterns" },
+          { kpi: "2.1x", label: "Design Review Throughput", sub: "pre-checked specs before human review" },
+          { kpi: "$142k", label: "Hiring & Ramp Cost Saved", sub: "across 8 internal role moves" },
+          { kpi: "0", label: "Unreviewed High-Risk Deploys", sub: "enforced via pre-release gates" }
+        ]
+      },
+      risk_gov: {
+        thesis: "Enable risk and governance leads to keep pace with autonomous workflows by pairing automated policy checks with clear human-in-the-loop escalation and auditable readiness evidence.",
+        gapMetric: "34% Skill Gap",
+        horizon: "Next 2 Quarters",
+        gapNote: "Gap in non-deterministic model risk testing, red-teaming, and continuous auditability",
+        extBenchmark: "External Hire Benchmark: 12 wks time-to-fill · $31k avg recruiting & ramp cost",
+        skills: [
+          { name: "AI Risk & Failure Taxonomy Design", target: 89, current: 56 },
+          { name: "Human-in-the-Loop Control Design", target: 86, current: 53 },
+          { name: "Audit Evidence & Telemetry Mapping", target: 84, current: 61 },
+          { name: "Stakeholder & Policy Alignment", target: 82, current: 67 }
+        ],
+        candidates: [
+          {
+            id: "c1",
+            name: "Claire Bennett",
+            currentRole: "Senior Compliance Program Manager",
+            proximity: "82% Match",
+            rampSavings: "-5.0 wks ramp",
+            estCostSaved: "$15,500 saved",
+            plan: "Complete 2 hands-on eval/failure-triage labs and co-lead 1 pilot governance sign-off review."
+          },
+          {
+            id: "c2",
+            name: "Kenji Takahashi",
+            currentRole: "Operational Risk Specialist",
+            proximity: "78% Match",
+            rampSavings: "-4.0 wks ramp",
+            estCostSaved: "$12,800 saved",
+            plan: "Practice mapping control objectives to automated telemetry thresholds and escalation SLAs."
+          },
+          {
+            id: "c3",
+            name: "Sofia Morales",
+            currentRole: "Internal Audit Lead",
+            proximity: "74% Match",
+            rampSavings: "-3.5 wks ramp",
+            estCostSaved: "$10,900 saved",
+            plan: "Focus on non-deterministic edge cases and human-override audit trails across pilot teams."
+          }
+        ],
+        blueprint: {
+          models: [
+            "<strong>Control &amp; Policy Classifier:</strong> Maps workflow actions to risk tiers and required approval gates.",
+            "<strong>Evidence Retriever:</strong> Pulls approved control frameworks, retention rules, and incident runbooks.",
+            "<strong>Abstention Guard:</strong> Forces safe escalation whenever evidence is incomplete or conflicting."
+          ],
+          tools: [
+            "<strong>Control Matrix Lookup:</strong> Checks required sign-offs for a given workflow action and data class.",
+            "<strong>Readiness Lab Runner:</strong> Assigns realistic edge-case triage scenarios in the user's daily tool.",
+            "<strong>Audit Packet Builder:</strong> Compiles timestamped sign-off and evaluation records for reviews."
+          ],
+          memory: [
+            "<strong>Review Context:</strong> Scoped to the active workflow or audit item under evaluation.",
+            "<strong>Governance Readiness Log:</strong> Tracks completed scenario labs and reviewer calibration.",
+            "<strong>Immutable Audit Record:</strong> Captures decision owner, timestamp, and policy version."
+          ],
+          note: "Replacing static policy PDFs with scenario-based readiness checks helps governance teams spot real edge cases before workflows scale."
+        },
+        scenarios: [
+          {
+            id: "happy",
+            title: "High-Confidence Control & Escalation Mapping",
+            mode: "CONFIDENT EXECUTION",
+            badgeClass: "bg-emerald-100 text-emerald-800",
+            confidence: "0.93",
+            latency: "1.12s",
+            prompt: "Map a human-in-the-loop checkpoint for an agent drafting external customer communications from account notes.",
+            toolTrace: "gov.map_hitl_gate() → checklist.build()",
+            output: "Set a mandatory pre-send approval gate whenever external recipients are involved or account sentiment/risk flags are present; log prompt provenance and approver ID automatically.",
+            fallback: null
+          },
+          {
+            id: "fallback",
+            title: "Conflicting Jurisdictional Rule — Safe Escalation",
+            mode: "SAFE FALLBACK TRIGGERED",
+            badgeClass: "bg-amber-100 text-amber-900",
+            confidence: "0.36",
+            latency: "0.88s",
+            prompt: "Tell me the final retention rule for AI interaction logs across all regional subsidiaries combined.",
+            toolTrace: "policy.resolve_conflict() → ESCALATE_LEGAL_PRIVACY",
+            output: "Confidence is low (0.36) because retention requirements vary by jurisdiction and a recent regional addendum is pending final sign-off.",
+            fallback: "<strong>Safe Fallback Action:</strong> Surfaced the jurisdiction split without guessing a single global rule and routed an inquiry to Legal &amp; Privacy Governance."
+          },
+          {
+            id: "ambiguous",
+            title: "Unclear Risk Tier — Clarifying Prompt",
+            mode: "CLARIFICATION REQUIRED",
+            badgeClass: "bg-blue-100 text-blue-800",
+            confidence: "0.61",
+            latency: "0.93s",
+            prompt: "Generate a readiness checklist for this new agent.",
+            toolTrace: "risk.classify_tier() → ask_clarification()",
+            output: "To tailor the readiness checklist, specify whether the agent operates in read-only advisory mode, assists internal workflows, or executes external/regulated actions.",
+            fallback: null
+          }
+        ],
+        aiEvals: [
+          { label: "Groundedness & Citation Accuracy", val: "96.0%", pct: 96 },
+          { label: "Appropriate Fallback / Escalation Rate", val: "98.5%", pct: 99 },
+          { label: "Action / Tool Schema Validity", val: "99.0%", pct: 99 },
+          { label: "p95 End-to-End Response Latency", val: "1.65s", pct: 86 }
+        ],
+        businessMetrics: [
+          { kpi: "-45%", label: "Governance Readiness Cycle", sub: "from policy update to team readiness" },
+          { kpi: "94%", label: "Scenario Triage Pass Rate", sub: "on edge-case & fallback drills" },
+          { kpi: "$104k", label: "Transition Cost Avoided", sub: "via internal upskilling vs. hiring" },
+          { kpi: "100%", label: "Audit Trail Completeness", sub: "verified across pilot workflows" }
+        ]
+      }
+    };
+
+    let currentRoleKey = "ai_ops";
+    let selectedCandidateId = "c1";
+    let activeScenarioId = "happy";
+
+    function switchTab(tabName) {
+      const tabs = ["mobility", "blueprint", "simulation", "telemetry"];
+      tabs.forEach((t) => {
+        document.getElementById(`view-${t}`).classList.toggle("hidden", t !== tabName);
+        const btn = document.getElementById(`tab-${t}`);
+        btn.classList.toggle("tab-active", t === tabName);
+        btn.classList.toggle("tab-inactive", t !== tabName);
+      });
+    }
+
+    function changeRole(roleKey) {
+      currentRoleKey = roleKey;
+      selectedCandidateId = DEMO_DATA[roleKey].candidates[0].id;
+      activeScenarioId = DEMO_DATA[roleKey].scenarios[0].id;
+      renderAll();
+    }
+
+    function selectCandidate(id) {
+      selectedCandidateId = id;
+      renderMobility();
+    }
+
+    function selectScenario(id) {
+      activeScenarioId = id;
+      renderSimulation();
+    }
+
+    function runCustomPrompt() {
+      const input = document.getElementById("customPromptInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      const lower = text.toLowerCase();
+      const isRisky = /bypass|override|unverified|policy|compliance|legal|security|permission|secret|delete|reclassify|retention/.test(lower);
+
+      const customResult = isRisky
+        ? {
+            id: "custom",
+            title: "Custom Prompt (Guardrail Check)",
+            mode: "SAFE FALLBACK TRIGGERED",
+            badgeClass: "bg-amber-100 text-amber-900",
+            confidence: "0.39",
+            latency: "0.86s",
+            prompt: text,
+            toolTrace: "guardrail.risk_scan() → SAFE_ESCALATION",
+            output: "This request touches high-impact policy, security, or authority boundaries where autonomous execution is restricted or confidence is below threshold.",
+            fallback: "<strong>Safe Fallback Action:</strong> Action paused; routed to authorized human owner with full context trace and approved reference documentation."
+          }
+        : {
+            id: "custom",
+            title: "Custom Prompt (Guided Coaching)",
+            mode: "CONFIDENT EXECUTION",
+            badgeClass: "bg-emerald-100 text-emerald-800",
+            confidence: "0.89",
+            latency: "1.15s",
+            prompt: text,
+            toolTrace: "skills.match() → coach.micro_step()",
+            output: `Mapped "${text}" to a targeted readiness step: start with one concrete real-world task, define a clear pass/fail rubric before running it, and capture lessons learned in your readiness log.`,
+            fallback: null
+          };
+
+      renderSimulation(customResult);
+    }
+
+    function renderHeaderStrip() {
+      const data = DEMO_DATA[currentRoleKey];
+      document.getElementById("roleThesis").textContent = data.thesis;
+      document.getElementById("roleGapMetric").textContent = data.gapMetric;
+      document.getElementById("roleHorizon").textContent = data.horizon;
+      document.getElementById("roleGapNote").textContent = data.gapNote;
+      document.getElementById("extHireBenchmark").textContent = data.extBenchmark;
+    }
+
+    function renderMobility() {
+      const data = DEMO_DATA[currentRoleKey];
+
+      const barsEl = document.getElementById("skillBars");
+      barsEl.innerHTML = data.skills.map((s) => `
+        <div>
+          <div class="flex justify-between text-xs font-medium mb-1">
+            <span class="text-slate-800">${s.name}</span>
+            <span class="mono text-slate-600">Current ${s.current}% / Target ${s.target}%</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden relative">
+            <div class="h-full bg-slate-900 rounded-full" style="width: ${s.current}%"></div>
+          </div>
+        </div>
+      `).join("");
+
+      const listEl = document.getElementById("candidateList");
+      listEl.innerHTML = data.candidates.map((c) => {
+        const active = c.id === selectedCandidateId;
+        return `
+          <button
+            onclick="selectCandidate('${c.id}')"
+            class="text-left rounded-xl border p-4 transition ${
+              active ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-300 text-slate-900"
+            }"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-semibold text-sm">${c.name}</span>
+              <span class="text-xs mono px-2 py-0.5 rounded ${
+                active ? "bg-slate-800 text-emerald-300" : "bg-emerald-50 text-emerald-700"
+              }">${c.proximity}</span>
+            </div>
+            <p class="text-xs mt-1 ${active ? "text-slate-300" : "text-slate-500"}">${c.currentRole}</p>
+            <div class="mt-3 pt-2.5 border-t ${active ? "border-slate-800" : "border-slate-100"} flex items-center justify-between text-xs font-medium">
+              <span>${c.rampSavings}</span>
+              <span>${c.estCostSaved}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+
+      const selected = data.candidates.find((c) => c.id === selectedCandidateId) || data.candidates[0];
+      document.getElementById("candidateDetail").innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Recommended Mobility Path</span>
+            <h3 class="text-sm font-bold text-slate-900">${selected.name} — ${selected.currentRole}</h3>
+          </div>
+          <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+            ${selected.proximity} · ${selected.estCostSaved}
+          </span>
+        </div>
+        <p class="text-sm text-slate-700 mt-2 leading-relaxed">${selected.plan}</p>
+      `;
+    }
+
+    function renderBlueprint() {
+      const bp = DEMO_DATA[currentRoleKey].blueprint;
+      document.getElementById("blueprintModels").innerHTML = bp.models.map((i) => `<li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">${i}</li>`).join("");
+      document.getElementById("blueprintTools").innerHTML = bp.tools.map((i) => `<li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">${i}</li>`).join("");
+      document.getElementById("blueprintMemory").innerHTML = bp.memory.map((i) => `<li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">${i}</li>`).join("");
+      document.getElementById("blueprintNote").textContent = bp.note;
+    }
+
+    function renderSimulation(overrideObj = null) {
+      const data = DEMO_DATA[currentRoleKey];
+      const btnsEl = document.getElementById("scenarioButtons");
+
+      btnsEl.innerHTML = data.scenarios.map((sc) => {
+        const isSelected = !overrideObj && sc.id === activeScenarioId;
+        return `
+          <button
+            onclick="selectScenario('${sc.id}')"
+            class="w-full text-left rounded-lg border px-3.5 py-2.5 text-sm transition flex items-center justify-between gap-2 ${
+              isSelected ? "border-slate-900 bg-slate-50 font-semibold text-slate-900" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+            }"
+          >
+            <span>${sc.title}</span>
+            <span class="text-xs mono text-slate-500">${sc.confidence}</span>
+          </button>
+        `;
+      }).join("");
+
+      const active = overrideObj || data.scenarios.find((s) => s.id === activeScenarioId) || data.scenarios[0];
+      const badge = document.getElementById("simModeBadge");
+      badge.textContent = active.mode;
+      badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold ${active.badgeClass}`;
+
+      document.getElementById("simConfidence").textContent = active.confidence;
+      document.getElementById("simLatency").textContent = active.latency;
+      document.getElementById("simUserPrompt").textContent = active.prompt;
+      document.getElementById("simToolTrace").textContent = active.toolTrace;
+      document.getElementById("simAgentOutput").innerHTML = active.output;
+
+      const card = document.getElementById("simResponseCard");
+      const label = document.getElementById("simResponseLabel");
+      const fbBox = document.getElementById("simFallbackBox");
+
+      if (active.fallback) {
+        card.className = "rounded-lg border border-amber-300 bg-amber-50/40 p-4 space-y-2";
+        label.textContent = "Governed Escalation & Fallback Response";
+        label.className = "text-xs font-semibold uppercase tracking-wider text-amber-900";
+        fbBox.classList.remove("hidden");
+        fbBox.innerHTML = active.fallback;
+      } else {
+        card.className = "rounded-lg border border-slate-200 bg-white p-4 space-y-2";
+        label.textContent = "Agent Response";
+        label.className = "text-xs font-semibold uppercase tracking-wider text-slate-500";
+        fbBox.classList.add("hidden");
+        fbBox.innerHTML = "";
+      }
+    }
+
+    function renderTelemetry() {
+      const data = DEMO_DATA[currentRoleKey];
+
+      document.getElementById("aiEvalMetrics").innerHTML = data.aiEvals.map((m) => `
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200/80">
+          <div class="flex justify-between text-xs font-medium mb-1.5">
+            <span class="text-slate-800">${m.label}</span>
+            <span class="mono font-semibold text-slate-900">${m.val}</span>
+          </div>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-slate-900 rounded-full" style="width: ${m.pct}%"></div>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById("businessMetrics").innerHTML = data.businessMetrics.map((b) => `
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+          <p class="text-2xl font-bold text-slate-900">${b.kpi}</p>
+          <p class="text-xs font-semibold text-slate-800 mt-1">${b.label}</p>
+          <p class="text-xs text-slate-500 mt-0.5">${b.sub}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderHeaderStrip();
+      renderMobility();
+      renderBlueprint();
+      renderSimulation();
+      renderTelemetry();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
