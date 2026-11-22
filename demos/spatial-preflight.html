@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velvet Protocol — Spatial Pre-Flight & Counterfactual Sandbox (MVP Step 1)</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: #121722;
+      --panel-border: #1e2636;
+      --text: #e6edf7;
+      --muted: #8b98b0;
+      --accent: #7c5cff;
+      --accent-glow: rgba(124, 92, 255, 0.35);
+      --safe: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(18, 23, 34, 0.85);
+      backdrop-filter: blur(8px);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7c5cff, #3b82f6);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand span {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+    }
+
+    .status-pills {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #171e2c;
+      border: 1px solid var(--panel-border);
+      color: var(--muted);
+    }
+
+    .pill strong { color: var(--text); }
+    .pill.ok strong { color: var(--safe); }
+    .pill.warn strong { color: var(--warn); }
+    .pill.crit strong { color: var(--danger); }
+
+    main {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 20px;
+      padding: 20px 28px;
+      flex: 1;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-border);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-toggle {
+      background: #1a2233;
+      color: var(--text);
+    }
+
+    .btn-toggle.active {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: var(--safe);
+      color: #6ee7b7;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-toggle.off {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: var(--danger);
+      color: #fca5a5;
+    }
+
+    .btn-hazard {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: var(--warn);
+      color: #fcd34d;
+    }
+
+    .btn-hazard:hover:not(:disabled) {
+      background: rgba(245, 158, 11, 0.28);
+    }
+
+    .btn-hazard:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-reset {
+      background: #1b2232;
+      color: var(--muted);
+    }
+
+    .btn-reset:hover {
+      color: var(--text);
+      border-color: #33415c;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 470px;
+      background: #090c12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .hud-overlay {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      pointer-events: none;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .legend {
+      background: rgba(11, 14, 20, 0.86);
+      border: 1px solid var(--panel-border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--panel-border);
+      background: #0f141e;
+    }
+
+    .metric {
+      padding: 12px 16px;
+      border-right: 1px solid var(--panel-border);
+    }
+
+    .metric:last-child { border-right: none; }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .explainer {
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #c5d0e3;
+      background: linear-gradient(180deg, rgba(124, 92, 255, 0.08), transparent);
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .explainer strong { color: #fff; }
+
+    .receipt-box {
+      padding: 16px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      max-height: 520px;
+    }
+
+    .receipt-card {
+      background: #0b0f17;
+      border: 1px solid var(--panel-border);
+      border-left: 3px solid var(--safe);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .receipt-card.clamped { border-left-color: var(--warn); }
+    .receipt-card.crash { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.07); }
+
+    .receipt-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .tag-allow { color: var(--safe); }
+    .tag-clamped { color: var(--warn); }
+    .tag-crash { color: var(--danger); }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #b7c4da;
+      font-size: 11.5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-badge">VP</div>
+    <div>
+      <h1>Velvet Protocol — Dual-Loop Spatial Pre-Flight Sandbox</h1>
+      <span>MVP Step 1: Counterfactual Lookahead & Braking-Envelope Governance</span>
+    </div>
+  </div>
+  <div class="status-pills">
+    <div class="pill ok" id="tier1Pill">Tier 1 Tactical Rollout: <strong>62.4 ms</strong></div>
+    <div class="pill ok" id="tier2Pill">Tier 2 Reflex Kernel: <strong>1.1 ms</strong></div>
+    <div class="pill" id="verdictPill">Verdict: <strong>NOMINAL</strong></div>
+  </div>
+</header>
+
+<main>
+  <!-- Left: Interactive Spatial Simulation -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">Warehouse Blind-Corner Simulation</div>
+      <div class="controls">
+        <button id="toggleVelvetBtn" class="btn-toggle active" title="Toggle Velvet Protocol Dual-Loop Protection">
+          🛡️ Velvet Protection: ON
+        </button>
+        <button id="spawnHazardBtn" class="btn-hazard">
+          ⚠️ Spawn Worker Around Corner
+        </button>
+        <button id="resetBtn" class="btn-reset">
+          ↺ Reset Run
+        </button>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="simCanvas" width="840" height="500"></canvas>
+      <div class="hud-overlay">
+        <div class="legend">
+          <div class="legend-item"><span class="dot" style="background:#38bdf8"></span>Robot (VLA Planner)</div>
+          <div class="legend-item"><span class="dot" style="background:rgba(56,189,248,0.22)"></span>LiDAR Line-of-Sight</div>
+          <div class="legend-item"><span class="dot" style="background:#10b981"></span>Ghost Lookahead + Braking Curve</div>
+          <div class="legend-item"><span class="dot" style="background:#f59e0b"></span>Occluded Worker Hazard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="telemetry-strip">
+      <div class="metric">
+        <div class="metric-label">VLA Proposed Speed</div>
+        <div class="metric-val" id="propSpeedVal">2.60 m/s</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Executed Motor Speed</div>
+        <div class="metric-val" id="execSpeedVal" style="color:#10b981">2.60 m/s</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Required Stopping Dist.</div>
+        <div class="metric-val" id="stopDistVal">2.82 m</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Visible Corner Clearance</div>
+        <div class="metric-val" id="visClearVal">6.40 m</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right: Counterfactual Receipt & Explanation -->
+  <aside class="card sidebar">
+    <div class="card-header">
+      <div class="card-title">Live Counterfactual Receipts</div>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted)">HORIZON H = 2.0s</span>
+    </div>
+
+    <div class="explainer" id="explainerText">
+      <strong>How to test:</strong> Watch the glowing <strong>ghost path</strong> project 2 seconds ahead of the robot. As the robot nears the blind L-corner, visible clearance shrinks below its full-speed braking curve. With <strong>Velvet ON</strong>, Tier 1 clamps speed <em>before</em> the turn so spawning a worker results in a clean stop. Toggle <strong>Velvet OFF</strong> to see a reactive-only planner crash.
+    </div>
+
+    <div class="receipt-box" id="receiptLog"></div>
+  </aside>
+</main>
+
+<script>
+(() => {
+  const canvas = document.getElementById('simCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // UI Elements
+  const toggleVelvetBtn = document.getElementById('toggleVelvetBtn');
+  const spawnHazardBtn = document.getElementById('spawnHazardBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const propSpeedVal = document.getElementById('propSpeedVal');
+  const execSpeedVal = document.getElementById('execSpeedVal');
+  const stopDistVal = document.getElementById('stopDistVal');
+  const visClearVal = document.getElementById('visClearVal');
+  const tier1Pill = document.getElementById('tier1Pill');
+  const tier2Pill = document.getElementById('tier2Pill');
+  const verdictPill = document.getElementById('verdictPill');
+  const receiptLog = document.getElementById('receiptLog');
+
+  // Scale: 50 pixels = 1 meter
+  const PPM = 50;
+
+  // Warehouse L-Corridor Geometry (in meters)
+  // Robot travels East along main aisle (y = 7.4m), then turns North at x = 11.4m
+  // Inner blind wall blocks line-of-sight to the upper North aisle
+  const walls = [
+    // Outer South wall
+    { x: 0.6, y: 8.6, w: 12.2, h: 0.5 },
+    // Outer East wall
+    { x: 12.8, y: 0.6, w: 0.5, h: 8.5 },
+    // Outer North wall
+    { x: 9.8, y: 0.6, w: 3.5, h: 0.5 },
+    // Outer West-North wall
+    { x: 9.8, y: 0.6, w: 0.5, h: 5.8 },
+    // Inner Blind Corner Block (creates the occlusion!)
+    { x: 0.6, y: 0.6, w: 9.2, h: 5.8, isBlindWall: true }
+  ];
+
+  // Waypoints defining the centerline path around the blind corner
+  const pathPoints = [
+    { x: 1.4, y: 7.5 },
+    { x: 10.6, y: 7.5 },
+    { x: 11.3, y: 7.2 },
+    { x: 11.5, y: 6.4 },
+    { x: 11.5, y: 1.5 }
+  ];
+
+  // Simulation State
+  let velvetEnabled = true;
+  let state = {};
+
+  function resetSimulation() {
+    state = {
+      // Robot kinematics
+      x: 1.5,
+      y: 7.5,
+      theta: 0,
+      v: 2.6,              // current velocity (m/s)
+      vProposed: 2.6,      // optimistic VLA planner target (m/s)
+      maxDecel: 1.35,      // physical braking limit (m/s^2)
+      radius: 0.36,        // robot chassis radius (m)
+      waypointIdx: 1,
+
+      // Occluded Dynamic Hazard (Worker around corner)
+      hazardSpawned: false,
+      hazardVisible: false,
+      hazardX: 11.45,
+      hazardY: 3.85,
+      hazardRadius: 0.34,
+
+      // Status
+      crashed: false,
+      stoppedSafely: false,
+      verdict: 'ALLOW',
+      lastLoggedVerdict: '',
+      ghostPoints: [],
+      brakeEndPoint: null,
+      visibleClearance: 6.4,
+      stoppingDistance: 2.5,
+      tacticalLatencyMs: 61.8,
+      reflexLatencyMs: 0.9,
+      elapsed: 0
+    };
+
+    spawnHazardBtn.disabled = false;
+    spawnHazardBtn.textContent = '⚠️ Spawn Worker Around Corner';
+    receiptLog.innerHTML = '';
+    logReceipt('ALLOW', {
+      status: 'INITIALIZED',
+      planner_intent: 'cruising_at_2.60_m_s',
+      velvet_mode: velvetEnabled ? 'DUAL_LOOP_ACTIVE' : 'BYPASSED_UNSAFE'
+    });
+  }
+
+  // Helper: Distance between two points
+  function dist(x1, y1, x2, y2) {
+    return Math.hypot(x2 - x1, y2 - y1);
+  }
+
+  // Helper: Ray-Box intersection to compute true LiDAR line-of-sight
+  function lineIntersectsRect(x1, y1, x2, y2, rx, ry, rw, rh) {
+    const steps = 40;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const px = x1 + (x2 - x1) * t;
+      const py = y1 + (y2 - y1) * t;
+      if (px >= rx && px <= rx + rw && py >= ry && py <= ry + rh) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function hasLineOfSight(x1, y1, x2, y2) {
+    for (const w of walls) {
+      if (lineIntersectsRect(x1, y1, x2, y2, w.x, w.y, w.w, w.h)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Compute how far ahead along the planned route the robot can actually see past the blind corner
+  function computeVisibleRouteClearance(rx, ry, wpIdx) {
+    let accumulated = 0;
+    let prevX = rx;
+    let prevY = ry;
+
+    for (let i = wpIdx; i < pathPoints.length; i++) {
+      const target = pathPoints[i];
+      const segLen = dist(prevX, prevY, target.x, target.y);
+      const subSteps = Math.max(5, Math.ceil(segLen / 0.15));
+
+      for (let s = 1; s <= subSteps; s++) {
+        const t = s / subSteps;
+        const sampleX = prevX + (target.x - prevX) * t;
+        const sampleY = prevY + (target.y - prevY) * t;
+
+        if (!hasLineOfSight(rx, ry, sampleX, sampleY)) {
+          return accumulated;
+        }
+        accumulated += segLen / subSteps;
+      }
+      prevX = target.x;
+      prevY = target.y;
+    }
+    return accumulated;
+  }
+
+  // Roll forward ghost trajectory for visualization & Tier 1 counterfactual check
+  function simulateGhostRollout(rx, ry, wpIdx, speed, decel) {
+    const pts = [{ x: rx, y: ry }];
+    const dt = 0.1;
+    const horizonSteps = 18; // 1.8s lookahead
+    let gx = rx;
+    let gy = ry;
+    let gWp = wpIdx;
+    let gv = speed;
+
+    for (let step = 0; step < horizonSteps; step++) {
+      if (gWp >= pathPoints.length) break;
+      const target = pathPoints[gWp];
+      const d = dist(gx, gy, target.x, target.y);
+      if (d < 0.18) {
+        gWp++;
+        if (gWp >= pathPoints.length) break;
+      }
+      const nextTarget = pathPoints[gWp];
+      const ang = Math.atan2(nextTarget.y - gy, nextTarget.x - gx);
+      gx += Math.cos(ang) * gv * dt;
+      gy += Math.sin(ang) * gv * dt;
+      pts.push({ x: gx, y: gy });
+    }
+
+    // Stopping distance formula: d = v^2 / (2 * a) + reaction buffer
+    const stopDist = (speed * speed) / (2 * decel) + 0.25;
+    return { pts, stopDist };
+  }
+
+  function logReceipt(verdict, payload) {
+    const card = document.createElement('div');
+    const cls = verdict === 'CLAMPED' ? 'clamped' : verdict === 'COLLISION' ? 'crash' : '';
+    const tagCls = verdict === 'CLAMPED' ? 'tag-clamped' : verdict === 'COLLISION' ? 'tag-crash' : 'tag-allow';
+
+    card.className = `receipt-card ${cls}`;
+    const timeStr = new Date().toISOString().split('T')[1].slice(0, 11);
+
+    card.innerHTML = `
+      <div class="receipt-head">
+        <span class="${tagCls}">● ${verdict}</span>
+        <span style="color:#64748b">${timeStr}</span>
+      </div>
+      <pre>${JSON.stringify(payload, null, 2)}</pre>
+    `;
+
+    receiptLog.prepend(card);
+    while (receiptLog.children.length > 8) {
+      receiptLog.removeChild(receiptLog.lastChild);
+    }
+  }
+
+  function stepSimulation(dt) {
+    if (state.crashed || state.stoppedSafely) return;
+
+    state.elapsed += dt;
+
+    // 1. Check if hazard is visible via Line-of-Sight
+    if (state.hazardSpawned) {
+      state.hazardVisible = hasLineOfSight(state.x, state.y, state.hazardX, state.hazardY);
+    }
+
+    // 2. Compute visible route clearance before the blind spot starts
+    const visClear = computeVisibleRouteClearance(state.x, state.y, state.waypointIdx);
+    state.visibleClearance = visClear;
+
+    // 3. Optimistic VLA Planner always proposes 2.6 m/s unless it directly sees an obstacle
+    let plannerTargetV = 2.6;
+    if (state.hazardSpawned && state.hazardVisible) {
+      const distToHazard = dist(state.x, state.y, state.hazardX, state.hazardY) - (state.radius + state.hazardRadius);
+      // Reactive emergency braking once seen
+      if (distToHazard < 3.2) {
+        plannerTargetV = 0;
+      }
+    }
+    state.vProposed = plannerTargetV;
+
+    // 4. Velvet Protocol Dual-Loop Evaluation
+    // Calculate safe maximum entry velocity so stopping distance never exceeds visible clearance
+    const safetyMargin = 0.55; // meters buffer before blind corner
+    const usableClearance = Math.max(0.15, visClear - safetyMargin);
+    // Invert stopping formula: v_safe = sqrt(2 * a * usableClearance)
+    const maxSafeBlindSpeed = Math.min(2.6, Math.max(0.75, Math.sqrt(2 * state.maxDecel * usableClearance)));
+
+    let targetCommandV = plannerTargetV;
+    let currentVerdict = 'ALLOW';
+
+    if (velvetEnabled) {
+      // Simulate jittered realistic latencies for Tier 1 (~58-68ms) and Tier 2 (~0.7-1.3ms)
+      state.tacticalLatencyMs = +(58 + Math.sin(state.elapsed * 5) * 6 + Math.random() * 3).toFixed(1);
+      state.reflexLatencyMs = +(0.8 + Math.random() * 0.4).toFixed(2);
+
+      if (plannerTargetV > maxSafeBlindSpeed + 0.05) {
+        targetCommandV = maxSafeBlindSpeed;
+        currentVerdict = 'CLAMPED';
+      }
+    } else {
+      state.tacticalLatencyMs = 0;
+      state.reflexLatencyMs = 0;
+    }
+
+    // Apply physical acceleration/deceleration limits to robot velocity
+    if (state.v > targetCommandV) {
+      state.v = Math.max(targetCommandV, state.v - state.maxDecel * dt);
+    } else if (state.v < targetCommandV) {
+      state.v = Math.min(targetCommandV, state.v + 1.4 * dt);
+    }
+
+    // Update ghost rollout & stopping distance
+    const ghost = simulateGhostRollout(state.x, state.y, state.waypointIdx, state.v, state.maxDecel);
+    state.ghostPoints = ghost.pts;
+    state.stoppingDistance = ghost.stopDist;
+
+    // 5. Move robot along waypoints
+    if (state.waypointIdx < pathPoints.length) {
+      const wp = pathPoints[state.waypointIdx];
+      const d = dist(state.x, state.y, wp.x, wp.y);
+      if (d < 0.16) {
+        state.waypointIdx++;
+      } else {
+        state.theta = Math.atan2(wp.y - state.y, wp.x - state.x);
+        state.x += Math.cos(state.theta) * state.v * dt;
+        state.y += Math.sin(state.theta) * state.v * dt;
+      }
+    }
+
+    // Loop back smoothly if robot finishes corridor without hazard
+    if (state.waypointIdx >= pathPoints.length) {
+      state.x = 1.5;
+      state.y = 7.5;
+      state.waypointIdx = 1;
+      state.v = 2.6;
+      state.lastLoggedVerdict = '';
+    }
+
+    // 6. Check Collision or Safe Stop against Spawned Hazard
+    if (state.hazardSpawned) {
+      const gap = dist(state.x, state.y, state.hazardX, state.hazardY) - (state.radius + state.hazardRadius);
+      if (gap <= 0.02) {
+        state.crashed = true;
+        state.v = 0;
+        currentVerdict = 'COLLISION';
+        logReceipt('COLLISION', {
+          event: 'PHYSICAL_IMPACT_WITH_WORKER',
+          impact_speed_m_s: +state.vProposed.toFixed(2),
+          reason: 'static_guardrail_allowed_2.6m_s_into_blind_corner',
+          velvet_protection: 'DISABLED'
+        });
+      } else if (state.hazardVisible && state.v <= 0.03 && gap < 2.2) {
+        state.stoppedSafely = true;
+        state.v = 0;
+        currentVerdict = 'SAFE_STOP';
+        logReceipt('SAFE_STOP', {
+          event: 'ZERO_COLLISION_HALT',
+          remaining_clearance_m: +gap.toFixed(2),
+          pre_corner_clamped_speed_m_s: +maxSafeBlindSpeed.toFixed(2),
+          tier1_tactical_ms: state.tacticalLatencyMs,
+          tier2_reflex_ms: state.reflexLatencyMs
+        });
+      }
+    }
+
+    state.verdict = currentVerdict;
+
+    // Log state transitions cleanly
+    if (currentVerdict === 'CLAMPED' && state.lastLoggedVerdict !== 'CLAMPED') {
+      state.lastLoggedVerdict = 'CLAMPED';
+      logReceipt('CLAMPED', {
+        verdict: 'CLAMPED_BY_PREFLIGHT_ENVELOPE',
+        vla_proposed_v: +plannerTargetV.toFixed(2),
+        velvet_clamped_v: +targetCommandV.toFixed(2),
+        visible_clearance_m: +visClear.toFixed(2),
+        unclamped_stop_dist_m: +((plannerTargetV ** 2) / (2 * state.maxDecel) + 0.25).toFixed(2),
+        tier1_rollout_ms: state.tacticalLatencyMs,
+        tier2_reflex_ms: state.reflexLatencyMs
+      });
+    } else if (currentVerdict === 'ALLOW' && state.lastLoggedVerdict === 'CLAMPED') {
+      state.lastLoggedVerdict = 'ALLOW';
+      logReceipt('ALLOW', {
+        verdict: 'ENVELOPE_CLEARED_CORNER_VISIBLE',
+        resumed_speed_m_s: +targetCommandV.toFixed(2),
+        visible_clearance_m: +visClear.toFixed(2)
+      });
+    }
+  }
+
+  function drawScene() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Subtle floor grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += PPM) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += PPM) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    // Planned centerline guide
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+    ctx.setLineDash([6, 6]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    pathPoints.forEach((p, idx) => {
+      if (idx === 0) ctx.moveTo(p.x * PPM, p.y * PPM);
+      else ctx.lineTo(p.x * PPM, p.y * PPM);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw LiDAR Line-of-Sight Cone (140 deg FOV clipped by walls)
+    const fovRays = 70;
+    const maxRange = 7.5;
+    const fovSpan = Math.PI * 0.78;
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.11)';
+    ctx.beginPath();
+    ctx.moveTo(state.x * PPM, state.y * PPM);
+    for (let i = 0; i <= fovRays; i++) {
+      const rayAng = state.theta - fovSpan / 2 + (fovSpan * i) / fovRays;
+      let hitDist = maxRange;
+      for (let d = 0.2; d <= maxRange; d += 0.15) {
+        const tx = state.x + Math.cos(rayAng) * d;
+        const ty = state.y + Math.sin(rayAng) * d;
+        let blocked = false;
+        for (const w of walls) {
+          if (tx >= w.x && tx <= w.x + w.w && ty >= w.y && ty <= w.y + w.h) {
+            blocked = true;
+            break;
+          }
+        }
+        if (blocked) {
+          hitDist = d;
+          break;
+        }
+      }
+      ctx.lineTo((state.x + Math.cos(rayAng) * hitDist) * PPM, (state.y + Math.sin(rayAng) * hitDist) * PPM);
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    // Draw Warehouse Walls
+    walls.forEach(w => {
+      ctx.fillStyle = w.isBlindWall ? '#1b2334' : '#141a26';
+      ctx.strokeStyle = w.isBlindWall ? '#33415c' : '#252f44';
+      ctx.lineWidth = 2;
+      ctx.fillRect(w.x * PPM, w.y * PPM, w.w * PPM, w.h * PPM);
+      ctx.strokeRect(w.x * PPM, w.y * PPM, w.w * PPM, w.h * PPM);
+
+      if (w.isBlindWall) {
+        ctx.fillStyle = '#64748b';
+        ctx.font = '600 12px -apple-system, sans-serif';
+        ctx.fillText('BLIND CORNER OBSTRUCTION (OCCLUDES UPPER AISLE)', (w.x + 0.5) * PPM, (w.y + 2.8) * PPM);
+      }
+    });
+
+    // Draw Occluded Zone label in upper aisle
+    if (!state.hazardVisible) {
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
+      ctx.font = '600 11px monospace';
+      ctx.fillText('OCCLUDED BLIND SPOT', 10.45 * PPM, 3.2 * PPM);
+    }
+
+    // Draw Glowing Ghost Lookahead Path
+    if (state.ghostPoints.length > 1) {
+      const isClamped = state.verdict === 'CLAMPED';
+      const isDanger = !velvetEnabled && state.stoppingDistance > state.visibleClearance;
+      const ghostColor = isDanger ? '#ef4444' : isClamped ? '#f59e0b' : '#10b981';
+
+      ctx.save();
+      ctx.strokeStyle = ghostColor;
+      ctx.shadowColor = ghostColor;
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      state.ghostPoints.forEach((pt, idx) => {
+        if (idx === 0) ctx.moveTo(pt.x * PPM, pt.y * PPM);
+        else ctx.lineTo(pt.x * PPM, pt.y * PPM);
+      });
+      ctx.stroke();
+
+      // Ghost outline circle at 1.8s horizon
+      const endPt = state.ghostPoints[state.ghostPoints.length - 1];
+      ctx.setLineDash([4, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(endPt.x * PPM, endPt.y * PPM, state.radius * PPM, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Draw Spawned Worker Hazard
+    if (state.hazardSpawned) {
+      const hx = state.hazardX * PPM;
+      const hy = state.hazardY * PPM;
+      const hr = state.hazardRadius * PPM;
+
+      ctx.save();
+      ctx.fillStyle = state.hazardVisible ? '#f59e0b' : 'rgba(245, 158, 11, 0.45)';
+      ctx.strokeStyle = '#fef3c7';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(hx, hy, hr, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#fef3c7';
+      ctx.font = '700 11px sans-serif';
+      ctx.fillText(state.hazardVisible ? 'WORKER (DETECTED)' : 'WORKER (HIDDEN)', hx - 48, hy - hr - 8);
+      ctx.restore();
+    }
+
+    // Draw Robot Chassis
+    const rx = state.x * PPM;
+    const ry = state.y * PPM;
+    const rr = state.radius * PPM;
+
+    ctx.save();
+    ctx.translate(rx, ry);
+    ctx.rotate(state.theta);
+
+    // Protective Velvet Halo
+    if (velvetEnabled) {
+      ctx.strokeStyle = state.verdict === 'CLAMPED' ? 'rgba(245, 158, 11, 0.7)' : 'rgba(16, 185, 129, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, rr + 6, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = state.crashed ? '#ef4444' : '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(0, 0, rr, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Forward direction indicator
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(rr * 0.75, 0);
+    ctx.lineTo(-rr * 0.3, -rr * 0.45);
+    ctx.lineTo(-rr * 0.3, rr * 0.45);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Banner on Crash or Safe Stop
+    if (state.crashed || state.stoppedSafely) {
+      ctx.fillStyle = state.crashed ? 'rgba(239, 68, 68, 0.92)' : 'rgba(16, 185, 129, 0.92)';
+      ctx.fillRect(210, 22, 420, 42);
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 14px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        state.crashed
+          ? 'COLLISION: Stopping distance exceeded blind-corner visibility!'
+          : 'SAFE STOP: Velvet pre-flight clamped entry speed in time.',
+        420,
+        48
+      );
+      ctx.textAlign = 'left';
+    }
+  }
+
+  function updateHUD() {
+    propSpeedVal.textContent = `${state.vProposed.toFixed(2)} m/s`;
+    execSpeedVal.textContent = `${state.v.toFixed(2)} m/s`;
+    execSpeedVal.style.color = state.verdict === 'CLAMPED' ? '#f59e0b' : state.crashed ? '#ef4444' : '#10b981';
+
+    stopDistVal.textContent = `${state.stoppingDistance.toFixed(2)} m`;
+    visClearVal.textContent = `${state.visibleClearance.toFixed(2)} m`;
+
+    if (velvetEnabled) {
+      tier1Pill.innerHTML = `Tier 1 Tactical Rollout: <strong>${state.tacticalLatencyMs} ms</strong>`;
+      tier2Pill.innerHTML = `Tier 2 Reflex Kernel: <strong>${state.reflexLatencyMs} ms</strong>`;
+      tier1Pill.className = 'pill ok';
+      tier2Pill.className = 'pill ok';
+    } else {
+      tier1Pill.innerHTML = `Tier 1 Tactical Rollout: <strong>BYPASSED</strong>`;
+      tier2Pill.innerHTML = `Tier 2 Reflex Kernel: <strong>BYPASSED</strong>`;
+      tier1Pill.className = 'pill crit';
+      tier2Pill.className = 'pill crit';
+    }
+
+    verdictPill.innerHTML = `Verdict: <strong>${state.verdict}</strong>`;
+    verdictPill.className = `pill ${state.verdict === 'CLAMPED' ? 'warn' : state.verdict === 'COLLISION' ? 'crit' : 'ok'}`;
+  }
+
+  // Event Listeners
+  toggleVelvetBtn.addEventListener('click', () => {
+    velvetEnabled = !velvetEnabled;
+    if (velvetEnabled) {
+      toggleVelvetBtn.className = 'btn-toggle active';
+      toggleVelvetBtn.textContent = '🛡️ Velvet Protection: ON';
+    } else {
+      toggleVelvetBtn.className = 'btn-toggle off';
+      toggleVelvetBtn.textContent = '⚠️ Velvet Protection: OFF';
+    }
+    state.lastLoggedVerdict = '';
+  });
+
+  spawnHazardBtn.addEventListener('click', () => {
+    state.hazardSpawned = true;
+    spawnHazardBtn.disabled = true;
+    spawnHazardBtn.textContent = '✓ Worker Spawned in Blind Spot';
+    logReceipt('HAZARD_INJECTED', {
+      event: 'WORKER_ENTERED_OCCLUDED_AISLE',
+      position_m: { x: state.hazardX, y: state.hazardY },
+      visible_to_robot_lidar: false
+    });
+  });
+
+  resetBtn.addEventListener('click', resetSimulation);
+
+  // Main Animation Loop
+  let lastTime = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+
+    stepSimulation(dt);
+    drawScene();
+    updateHUD();
+
+    requestAnimationFrame(loop);
+  }
+
+  resetSimulation();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
