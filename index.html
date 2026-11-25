@@ -72,15 +72,18 @@
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* Sticky Top Header — high z-index ensures tabs are always clickable */
     header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      background: rgba(252, 251, 249, 0.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+    }
+
+    [data-theme="dark"] header {
+      background: rgba(11, 15, 25, 0.92);
     }
 
     .nav-container {
@@ -167,7 +170,7 @@
       height: 7px;
       border-radius: 50%;
       background-color: var(--accent-emerald);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-emerald) 22%, transparent);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
     }
 
     .nav-actions {
@@ -188,7 +191,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: border-color 0.15s ease, transform 0.1s ease;
     }
 
     .theme-toggle:hover {
@@ -203,7 +205,6 @@
       font-weight: 600;
       padding: 0.5rem 1rem;
       border-radius: 8px;
-      transition: opacity 0.15s ease;
       cursor: pointer;
     }
 
@@ -211,7 +212,6 @@
       opacity: 0.9;
     }
 
-    /* Main Layout */
     main {
       max-width: 1120px;
       margin: 0 auto;
@@ -226,12 +226,6 @@
 
     section:last-of-type {
       border-bottom: none;
-    }
-
-    /* Hero / Overview */
-    #overview {
-      padding-top: 4.5rem;
-      padding-bottom: 4.5rem;
     }
 
     .eyebrow-pill {
@@ -315,7 +309,6 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* Section Headers */
     .section-kicker {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
@@ -340,7 +333,6 @@
       font-size: 0.98rem;
     }
 
-    /* Cards Grid */
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -424,7 +416,6 @@
       text-decoration: underline;
     }
 
-    /* Live Interposer Sandbox */
     .sandbox {
       background: var(--bg-elevated);
       border: 1px solid var(--border-strong);
@@ -474,7 +465,6 @@
     .status-escalate { color: #fbbf24; font-weight: 600; }
     .status-block { color: #f87171; font-weight: 600; }
 
-    /* Contact / Footer */
     .connect-box {
       background: var(--bg-elevated);
       border: 1px solid var(--border-strong);
@@ -563,7 +553,6 @@
   </header>
 
   <main>
-    <!-- OVERVIEW -->
     <section id="overview">
       <div class="eyebrow-pill">
         <span class="eyebrow-dot"></span>
@@ -589,7 +578,6 @@
       </div>
     </section>
 
-    <!-- SHIPPED SYSTEMS -->
     <section id="shipped-systems">
       <div class="section-kicker">Production Architecture &amp; Impact</div>
       <h2>Shipped Systems</h2>
@@ -660,7 +648,6 @@
       </div>
     </section>
 
-    <!-- LIVE INTERPOSER DEMO -->
     <section id="live-interposer-demo">
       <div class="section-kicker">Interactive Control Plane Sandbox</div>
       <h2>Live Interposer Demo</h2>
@@ -678,7 +665,6 @@
       </div>
     </section>
 
-    <!-- DEMOS -->
     <section id="demos">
       <div class="section-kicker">Interactive Prototypes &amp; Artifacts</div>
       <h2>Demos</h2>
@@ -695,7 +681,7 @@
               Interactive demo mapping role-level skill adjacencies, AI fluency diagnostics, and adaptive learning pathways for enterprise transformation.
             </p>
           </div>
-          <a href="workforce-readiness.html" class="card-link">Launch Interactive Demo →</a>
+          <a href="demos/workforce-readiness.html" class="card-link">Launch Interactive Demo →</a>
         </article>
 
         <article class="card">
@@ -722,7 +708,6 @@
       </div>
     </section>
 
-    <!-- AMBIGUITY TO SCALE -->
     <section id="ambiguity-to-scale">
       <div class="section-kicker">Operating Playbook</div>
       <h2>Ambiguity-to-Scale</h2>
@@ -757,7 +742,6 @@
       </div>
     </section>
 
-    <!-- CREDENTIALS -->
     <section id="credentials">
       <div class="section-kicker">Education, Recognition &amp; Community</div>
       <h2>Credentials</h2>
@@ -787,7 +771,6 @@
       </div>
     </section>
 
-    <!-- CONNECT -->
     <section id="connect">
       <div class="connect-box">
         <div>
@@ -811,7 +794,6 @@
   </footer>
 
   <script>
-    // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     const rootEl = document.documentElement;
     const savedTheme = localStorage.getItem('pr-theme');
@@ -827,7 +809,6 @@
       themeToggle.textContent = nextTheme === 'dark' ? '☀' : '☾';
     });
 
-    // Active Navigation Highlight on Scroll
     const navLinks = document.querySelectorAll('nav.nav-links a');
     const sections = document.querySelectorAll('main section');
 
@@ -844,7 +825,6 @@
       });
     }, { passive: true });
 
-    // Live Interposer Sandbox
     const scenarios = {
       allow: {
         verdict: 'ALLOW',
