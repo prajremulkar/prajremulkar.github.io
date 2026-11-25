@@ -113,4 +113,781 @@
       justify-content: center;
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
-      font-size: 0.85
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    nav.nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+      flex-wrap: wrap;
+    }
+
+    nav.nav-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 0.25rem 0;
+      transition: color 0.15s ease;
+      cursor: pointer;
+    }
+
+    nav.nav-links a:hover,
+    nav.nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    .nav-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-emerald) 22%, transparent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-primary);
+    }
+
+    .btn-connect {
+      text-decoration: none;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: opacity 0.15s ease;
+      cursor: pointer;
+    }
+
+    .btn-connect:hover {
+      opacity: 0.9;
+    }
+
+    /* Main Layout */
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    section {
+      scroll-margin-top: 84px;
+      padding: 4.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* Hero / Overview */
+    #overview {
+      padding-top: 4.5rem;
+      padding-bottom: 4.5rem;
+    }
+
+    .eyebrow-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--accent-amber);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d97706;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 3.85rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: 1.15rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+      font-weight: 700;
+      line-height: 1.35;
+      max-width: 900px;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-subtitle .indigo {
+      color: var(--accent-indigo);
+    }
+
+    .hero-subtitle .amber {
+      color: var(--accent-amber);
+    }
+
+    .hero-bio {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 780px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-bio strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Section Headers */
+    .section-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-indigo);
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 720px;
+      margin-bottom: 2.25rem;
+      font-size: 0.98rem;
+    }
+
+    /* Cards Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.35rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.12rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+    }
+
+    .metric-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+
+    .metric-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-indigo);
+      text-decoration: none;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Live Interposer Sandbox */
+    .sandbox {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 1.65rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .sandbox-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .sim-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sim-btn:hover,
+    .sim-btn.active {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-color: var(--btn-bg);
+    }
+
+    .sandbox-output {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1.25rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      line-height: 1.65;
+    }
+
+    .status-allow { color: #34d399; font-weight: 600; }
+    .status-escalate { color: #fbbf24; font-weight: 600; }
+    .status-block { color: #f87171; font-weight: 600; }
+
+    /* Contact / Footer */
+    .connect-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .connect-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .outline-btn {
+      text-decoration: none;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .outline-btn:hover {
+      border-color: var(--text-primary);
+    }
+
+    footer {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .nav-container {
+        flex-wrap: wrap;
+      }
+      nav.nav-links {
+        order: 3;
+        width: 100%;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border);
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="#overview" class="brand">
+        <span class="brand-monogram">PR</span>
+        <span class="brand-text">
+          <span class="brand-name">Prajakta S. Remulkar</span>
+          <span class="brand-sub">Principal AI PM • Velvet Protocol</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#shipped-systems">Shipped Systems</a>
+        <a href="#live-interposer-demo" class="nav-live"><span class="live-dot"></span>Live Interposer Demo</a>
+        <a href="#demos">Demos</a>
+        <a href="#ambiguity-to-scale">Ambiguity-to-Scale</a>
+        <a href="#credentials">Credentials</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle light/dark mode">
+          ☾
+        </button>
+        <a href="#connect" class="btn-connect">Connect</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- OVERVIEW -->
+    <section id="overview">
+      <div class="eyebrow-pill">
+        <span class="eyebrow-dot"></span>
+        0-TO-1 BUILDER • SHOW, DON'T TELL • BAY AREA, CA
+      </div>
+
+      <h1>Prajakta S. Remulkar</h1>
+
+      <p class="hero-subtitle">
+        <span class="indigo">Principal AI Product Manager &amp; 0-to-1 Agentic Orchestration Architect</span>
+        <span class="amber"> — Bridging Hyperscaler Enterprise AI (Microsoft) &amp; Sub-10ms Runtime Agent Governance (Velvet Protocol).</span>
+      </p>
+
+      <p class="hero-bio">
+        Technical product leader with 15+ years turning zero-precedent ambiguity and raw telemetry primitives into multi-million-dollar enterprise platforms and autonomous agent control planes. <strong>MS in Electrical Engineering</strong>, <strong>Duke Fuqua MBA</strong>, and <strong>IEEE CQR Best Speaker</strong> award recipient.
+      </p>
+
+      <div class="pill-row">
+        <span class="badge-pill">✦ Featured in MSFT CEO Keynote</span>
+        <span class="badge-pill">✦ Principal AI PM @ Microsoft</span>
+        <span class="badge-pill">✦ Founder, Velvet Protocol</span>
+        <span class="badge-pill">✦ MS EE • Duke Fuqua MBA</span>
+      </div>
+    </section>
+
+    <!-- SHIPPED SYSTEMS -->
+    <section id="shipped-systems">
+      <div class="section-kicker">Production Architecture &amp; Impact</div>
+      <h2>Shipped Systems</h2>
+      <p class="section-desc">
+        End-to-end AI platforms, multi-agent orchestration pipelines, and evaluation harnesses shipped from 0-to-1 ambiguity to global scale.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div>
+            <div class="card-tag">Microsoft • Enterprise Agentic Workflows</div>
+            <h3>Headless Multi-Agent Account &amp; Sales Orchestration</h3>
+            <p>
+              Architected schema-locked Model Context Protocol (MCP) agent workflows unifying internal tenant knowledge and external connectors under strict RBAC and top-k citation grounding checks.
+            </p>
+          </div>
+          <div class="metric-strip">
+            <span class="metric-chip">+60% Workflow Accuracy</span>
+            <span class="metric-chip">+25% Task Completion</span>
+            <span class="metric-chip">MCP &amp; Grounding Evals</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="card-tag">Microsoft Foundry • AI Quality &amp; Evaluation</div>
+            <h3>Automated Agent Reliability &amp; Evaluation Harness</h3>
+            <p>
+              Built repeatable evaluation pipelines benchmarking frontier and fine-tuned models on numerical accuracy, citation faithfulness, unsupported claims, edge-case failure traces, and p95 latency.
+            </p>
+          </div>
+          <div class="metric-strip">
+            <span class="metric-chip">Numerical &amp; Citation Evals</span>
+            <span class="metric-chip">Trace Failure Telemetry</span>
+            <span class="metric-chip">Release Gate Standards</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="card-tag">Velvet Protocol • Runtime Governance Proxy</div>
+            <h3>Sub-10ms Deterministic Executive Control Plane</h3>
+            <p>
+              Designed an open-source runtime interposer sitting between foundation models and real-world APIs/actuators—enforcing schema locks, quantitative risk envelopes, and human circuit breakers outside the prompt window.
+            </p>
+          </div>
+          <div class="metric-strip">
+            <span class="metric-chip">&lt;10ms Reflex Latency</span>
+            <span class="metric-chip">Zero Judge-LLM Overhead</span>
+            <span class="metric-chip">Rust / FastAPI / Policy Engine</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="card-tag">Enterprise Growth &amp; Spatial Intelligence</div>
+            <h3>High-Scale Location &amp; Telemetry Platforms (&gt;$5M ARR)</h3>
+            <p>
+              Scaled enterprise data and location-intelligence products across Verizon Media / Yahoo and Ericsson, including low-altitude UAS traffic telemetry collaboration with NASA.
+            </p>
+          </div>
+          <div class="metric-strip">
+            <span class="metric-chip">&gt;$5M ARR Scale</span>
+            <span class="metric-chip">NASA UTM Collaboration</span>
+            <span class="metric-chip">Global Cross-Functional Lead</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- LIVE INTERPOSER DEMO -->
+    <section id="live-interposer-demo">
+      <div class="section-kicker">Interactive Control Plane Sandbox</div>
+      <h2>Live Interposer Demo</h2>
+      <p class="section-desc">
+        Test how Velvet Protocol intercepts outbound agent tool calls in under 10 milliseconds—evaluating schema integrity, risk thresholds, and injection boundaries before execution.
+      </p>
+
+      <div class="sandbox">
+        <div class="sandbox-controls">
+          <button type="button" class="sim-btn active" onclick="runInterposer('allow', this)">1. Read Customer Account Summary</button>
+          <button type="button" class="sim-btn" onclick="runInterposer('escalate', this)">2. Issue $18,500 Credit Memo</button>
+          <button type="button" class="sim-btn" onclick="runInterposer('block', this)">3. Indirect Injection: Export IAM Keys</button>
+        </div>
+        <pre id="interposerOutput" class="sandbox-output"></pre>
+      </div>
+    </section>
+
+    <!-- DEMOS -->
+    <section id="demos">
+      <div class="section-kicker">Interactive Prototypes &amp; Artifacts</div>
+      <h2>Demos</h2>
+      <p class="section-desc">
+        Working product prototypes built to validate agentic workflows, workforce readiness intelligence, and spatial pre-flight safety verification.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div>
+            <div class="card-tag">Talent &amp; Skills Intelligence</div>
+            <h3>Workforce Readiness &amp; Agentic Learning</h3>
+            <p>
+              Interactive demo mapping role-level skill adjacencies, AI fluency diagnostics, and adaptive learning pathways for enterprise transformation.
+            </p>
+          </div>
+          <a href="workforce-readiness.html" class="card-link">Launch Interactive Demo →</a>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="card-tag">Dual-Loop Safety Architecture</div>
+            <h3>Predictive Spatial Pre-Flight Verifier</h3>
+            <p>
+              Sub-10ms reflex paired with a 50–250ms tactical horizon lookahead verifier simulating kinematic braking envelopes and counterfactual receipt logs.
+            </p>
+          </div>
+          <a href="#live-interposer-demo" class="card-link">Inspect Runtime Policy Engine ↑</a>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="card-tag">AI Literacy &amp; Community</div>
+            <h3>Interactive AI Learning for Young Readers</h3>
+            <p>
+              Co-authored illustrated book and hands-on curriculum introducing core AI reasoning, data grounding, and safe human-in-the-loop habits to ages 6–10.
+            </p>
+          </div>
+          <a href="#connect" class="card-link">Request Overview →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- AMBIGUITY TO SCALE -->
+    <section id="ambiguity-to-scale">
+      <div class="section-kicker">Operating Playbook</div>
+      <h2>Ambiguity-to-Scale</h2>
+      <p class="section-desc">
+        How I take emerging AI capabilities from raw research primitives to trusted, measurable enterprise adoption.
+      </p>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-tag">01 • Failure Telemetry First</div>
+          <h3>Turn v0 Breakages into Eval Suites</h3>
+          <p>
+            Treat silent aggregation errors, context drift, and ungrounded citations as structured telemetry—converting real customer failure traces into deterministic regression benchmarks.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-tag">02 • Decouple Reasoning &amp; Execution</div>
+          <h3>Schema-Locked Tool Boundaries</h3>
+          <p>
+            Let foundation models reason probabilistically while enforcing strict schema validation, RBAC permissions, and quantitative risk gates outside the context window.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-tag">03 • Measurable Customer Trust</div>
+          <h3>Ship With Clear Quality Bars</h3>
+          <p>
+            Align research, engineering, and go-to-market teams around transparent release criteria—accuracy, faithfulness, latency, and human escalation controls.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CREDENTIALS -->
+    <section id="credentials">
+      <div class="section-kicker">Education, Recognition &amp; Community</div>
+      <h2>Credentials</h2>
+      <p class="section-desc">
+        Technical depth in electrical engineering and distributed systems paired with executive product strategy and community leadership.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-tag">Academic Foundation</div>
+          <h3>Education</h3>
+          <p>
+            <strong>MBA, Marketing &amp; Strategy</strong> — Duke University, The Fuqua School of Business<br />
+            <strong>MS, Electrical Engineering</strong> — University of Texas at Arlington<br />
+            <strong>BE, Electronics &amp; Telecommunications</strong> — University of Mumbai
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-tag">Honors &amp; Civic Impact</div>
+          <h3>Recognition &amp; Pro-Bono Advisory</h3>
+          <p>
+            <strong>IEEE CQR Best Speaker Award</strong> — Recognized for technical leadership in communications quality and reliability.<br />
+            <strong>Taproot Foundation &amp; Community AI Educator</strong> — Designing AI-enabled fundraising workflows for nonprofits and digital safety workshops for senior centers.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONNECT -->
+    <section id="connect">
+      <div class="connect-box">
+        <div>
+          <div class="section-kicker">Get in Touch</div>
+          <h2>Let's Build Reliable AI Systems</h2>
+          <p style="color: var(--text-secondary); max-width: 560px; margin-top: 0.35rem;">
+            Open to Principal / Director AI Product leadership conversations, agentic evaluation &amp; governance architecture, and advisory collaborations.
+          </p>
+        </div>
+
+        <div class="connect-links">
+          <a href="https://github.com/prajremulkar" target="_blank" rel="noopener noreferrer" class="btn-connect">GitHub (@prajremulkar)</a>
+          <a href="https://www.linkedin.com/in/prajaktaremulkar" target="_blank" rel="noopener noreferrer" class="outline-btn">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Prajakta S. Remulkar • Bay Area, California
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const rootEl = document.documentElement;
+    const savedTheme = localStorage.getItem('pr-theme');
+    if (savedTheme) {
+      rootEl.setAttribute('data-theme', savedTheme);
+      themeToggle.textContent = savedTheme === 'dark' ? '☀' : '☾';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const nextTheme = rootEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      rootEl.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('pr-theme', nextTheme);
+      themeToggle.textContent = nextTheme === 'dark' ? '☀' : '☾';
+    });
+
+    // Active Navigation Highlight on Scroll
+    const navLinks = document.querySelectorAll('nav.nav-links a');
+    const sections = document.querySelectorAll('main section');
+
+    window.addEventListener('scroll', () => {
+      let currentId = 'overview';
+      sections.forEach((sec) => {
+        const top = sec.offsetTop - 120;
+        if (window.scrollY >= top) {
+          currentId = sec.getAttribute('id');
+        }
+      });
+      navLinks.forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+      });
+    }, { passive: true });
+
+    // Live Interposer Sandbox
+    const scenarios = {
+      allow: {
+        verdict: 'ALLOW',
+        css: 'status-allow',
+        latency: '3.4 ms',
+        tool: 'crm.get_account_brief(account_id="ENT-4092")',
+        policy: 'RBAC_TENANT_READ_ONLY • SCHEMA_VALID',
+        reason: 'Scoped read-only tool call within caller tenant boundary; PII redaction mask active.'
+      },
+      escalate: {
+        verdict: 'ESCALATE_HUMAN_APPROVAL',
+        css: 'status-escalate',
+        latency: '5.1 ms',
+        tool: 'billing.issue_credit_memo(account_id="ENT-4092", amount_usd=18500)',
+        policy: 'FINANCIAL_THRESHOLD_GATE (max_auto_usd <= 5000)',
+        reason: 'Requested $18,500 exceeds autonomous ceiling ($5,000). Execution paused; approval ticket dispatched.'
+      },
+      block: {
+        verdict: 'BLOCK_POLICY_VIOLATION',
+        css: 'status-block',
+        latency: '2.8 ms',
+        tool: 'iam.export_service_credentials(dest="external-webhook")',
+        policy: 'ZERO_TRUST_EXFIL_GUARD • UNTRUSTED_CONTEXT_TAINT',
+        reason: 'Tool call triggered immediately after untrusted external document ingestion. Blocked prior to network egress.'
+      }
+    };
+
+    function runInterposer(key, btnEl) {
+      document.querySelectorAll('.sim-btn').forEach((b) => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      const s = scenarios[key];
+      const out = document.getElementById('interposerOutput');
+      out.innerHTML =
+        `[VELVET-INTERPOSER] Intercepted outbound tool call\n` +
+        `  Tool Call   : ${s.tool}\n` +
+        `  Policy Rule : ${s.policy}\n` +
+        `  Eval Latency: ${s.latency}\n` +
+        `  Decision    : <span class="${s.css}">${s.verdict}</span>\n` +
+        `  Audit Trace : ${s.reason}`;
+    }
+
+    runInterposer('allow');
+  </script>
+</body>
+</html>
