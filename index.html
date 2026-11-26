@@ -1116,134 +1116,107 @@ function hex2rgba(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-// ─── HERO CANVAS: Brain (Physical AI) · Agent Workflows (Digital AI) · Spatial Robot (Physical AI) ───
+// ─── HERO CANVAS: Brain + Workflows centered, floating in spatial intelligence space ───
 (function() {
   const cv = document.getElementById('heroCanvas');
   if (!cv) return;
   const ctx = cv.getContext('2d');
-  let W, H, neuralNodes, packets, animId, t = 0;
+  let W, H, bcx, bcy, brx, bry, neurons, wfNodes, packets, animId, t = 0;
   const dpr = devicePixelRatio || 1;
   const col = '#00C4E8';
   function c(a) { return hex2rgba(col, a); }
 
-  // ── Digital AI: structured agent network (right side) ──
-  const AGENTS = [
-    { rx:.72, ry:.14, hub:true  },
-    { rx:.58, ry:.06, hub:false },
-    { rx:.88, ry:.06, hub:false },
-    { rx:.58, ry:.26, hub:false },
-    { rx:.88, ry:.26, hub:false },
-    { rx:.72, ry:.36, hub:false },
-  ];
-  const AEDGES = [[0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[3,4]];
+  function init() {
+    bcx = W * .50; bcy = H * .40;
+    const base = Math.min(W, H) * .22;
+    brx = base * 1.15; bry = base;
 
-  // ── Physical AI: spatial grid + robot path ──
-  const ROBOT_WP = [[.18,.5],[.42,.35],[.68,.48],[.52,.75],[.28,.82],[.14,.65]];
-  let rbIdx = 0, rbProg = 0;
+    // Workflow nodes — manually placed around brain, within canvas
+    const r = base * 1.95;
+    wfNodes = [
+      { ax: bcx + r * .60, ay: bcy - r * .82 },
+      { ax: bcx + r * .98, ay: bcy + r * .10 },
+      { ax: bcx + r * .72, ay: bcy + r * .88 },
+      { ax: bcx - r * .72, ay: bcy + r * .88 },
+      { ax: bcx - r * .98, ay: bcy + r * .10 },
+      { ax: bcx - r * .60, ay: bcy - r * .82 },
+    ].map((n, i) => ({
+      x: n.ax, y: n.ay,
+      angle: Math.atan2(n.ay - bcy, n.ax - bcx),
+      phase: i * Math.PI / 3,
+      r: 6 * dpr
+    }));
 
-  function gauss() {
-    let u=0, v=0;
-    while(!u) u=Math.random(); while(!v) v=Math.random();
-    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
-  }
-
-  function initNeural() {
-    // Neural nodes contained inside brain region (left-center)
-    const bcx = W*.28, bcy = H*.28, brx = W*.19, bry = H*.19;
-    const N = 30, HUB = 5;
-    neuralNodes = Array.from({length:N}, (_, i) => ({
-      x: bcx + gauss()*brx*.7, y: bcy + gauss()*bry*.7,
-      vx: (Math.random()-.5)*.20*dpr, vy: (Math.random()-.5)*.16*dpr,
-      rz: .4+Math.random()*.6,
-      r: (i<HUB ? 3.0 : 1.6+Math.random()*.9)*dpr,
-      phase: Math.random()*Math.PI*2,
-      hub: i<HUB, firing:0, fireTimer: Math.random()*180
+    // Neural nodes inside brain
+    const N = 24;
+    neurons = Array.from({length: N}, (_, i) => ({
+      x: bcx + (Math.random() - .5) * brx * 1.3,
+      y: bcy + (Math.random() - .5) * bry * 1.3,
+      vx: (Math.random() - .5) * .10 * dpr,
+      vy: (Math.random() - .5) * .08 * dpr,
+      r: (i < 4 ? 2.8 : 1.5 + Math.random() * .8) * dpr,
+      phase: Math.random() * Math.PI * 2,
+      hub: i < 4, firing: 0,
+      fireTimer: 100 + Math.random() * 320
     }));
     packets = [];
   }
 
   function resize() {
     const rect = cv.parentElement.getBoundingClientRect();
-    W = cv.width = rect.width*dpr; H = cv.height = rect.height*dpr;
-    cv.style.width = rect.width+'px'; cv.style.height = rect.height+'px';
-    initNeural();
+    W = cv.width = rect.width * dpr; H = cv.height = rect.height * dpr;
+    cv.style.width = rect.width + 'px'; cv.style.height = rect.height + 'px';
+    init();
   }
 
-  // ── Draw recognizable top-view brain silhouette ──
-  function drawBrain(bcx, bcy, brx, bry, a) {
+  // Top-view two-lobe brain silhouette
+  function drawBrain(a) {
     ctx.save();
-    ctx.lineWidth = 1.6*dpr;
+    ctx.lineWidth = 1.8 * dpr;
 
-    // Right hemisphere
+    // Right hemisphere arc
     ctx.beginPath();
-    ctx.moveTo(bcx+brx*.04, bcy-bry*.14);
-    ctx.bezierCurveTo(bcx+brx*.32, bcy-bry*1.0, bcx+brx*1.12, bcy-bry*.70, bcx+brx*1.06, bcy-bry*.06);
-    ctx.bezierCurveTo(bcx+brx*1.06, bcy+bry*.52, bcx+brx*.74, bcy+bry*.94, bcx+brx*.28, bcy+bry*1.04);
-    ctx.bezierCurveTo(bcx+brx*.08, bcy+bry*1.08, bcx+brx*.02, bcy+bry*.90, bcx+brx*.03, bcy+bry*.58);
+    ctx.moveTo(bcx + brx * .05, bcy - bry * .15);
+    ctx.bezierCurveTo(bcx + brx * .32, bcy - bry * 1.02, bcx + brx * 1.14, bcy - bry * .72, bcx + brx * 1.08, bcy - bry * .05);
+    ctx.bezierCurveTo(bcx + brx * 1.08, bcy + bry * .54, bcx + brx * .76, bcy + bry * .96, bcx + brx * .30, bcy + bry * 1.06);
+    ctx.bezierCurveTo(bcx + brx * .10, bcy + bry * 1.10, bcx + brx * .02, bcy + bry * .92, bcx + brx * .04, bcy + bry * .60);
     ctx.strokeStyle = c(a); ctx.stroke();
 
-    // Left hemisphere
+    // Left hemisphere arc (mirror)
     ctx.beginPath();
-    ctx.moveTo(bcx-brx*.04, bcy-bry*.14);
-    ctx.bezierCurveTo(bcx-brx*.32, bcy-bry*1.0, bcx-brx*1.12, bcy-bry*.70, bcx-brx*1.06, bcy-bry*.06);
-    ctx.bezierCurveTo(bcx-brx*1.06, bcy+bry*.52, bcx-brx*.74, bcy+bry*.94, bcx-brx*.28, bcy+bry*1.04);
-    ctx.bezierCurveTo(bcx-brx*.08, bcy+bry*1.08, bcx-brx*.02, bcy+bry*.90, bcx-brx*.03, bcy+bry*.58);
+    ctx.moveTo(bcx - brx * .05, bcy - bry * .15);
+    ctx.bezierCurveTo(bcx - brx * .32, bcy - bry * 1.02, bcx - brx * 1.14, bcy - bry * .72, bcx - brx * 1.08, bcy - bry * .05);
+    ctx.bezierCurveTo(bcx - brx * 1.08, bcy + bry * .54, bcx - brx * .76, bcy + bry * .96, bcx - brx * .30, bcy + bry * 1.06);
+    ctx.bezierCurveTo(bcx - brx * .10, bcy + bry * 1.10, bcx - brx * .02, bcy + bry * .92, bcx - brx * .04, bcy + bry * .60);
     ctx.strokeStyle = c(a); ctx.stroke();
 
     // Interhemispheric fissure
     ctx.beginPath();
-    ctx.moveTo(bcx, bcy-bry*.95);
-    ctx.bezierCurveTo(bcx-brx*.04, bcy-bry*.3, bcx+brx*.04, bcy+bry*.3, bcx, bcy+bry*1.0);
-    ctx.strokeStyle = c(a*.8); ctx.stroke();
+    ctx.moveTo(bcx, bcy - bry * .98);
+    ctx.bezierCurveTo(bcx - brx * .04, bcy - bry * .32, bcx + brx * .04, bcy + bry * .32, bcx, bcy + bry * 1.02);
+    ctx.strokeStyle = c(a * .75); ctx.stroke();
 
-    // Cortical fold lines (gyri) — right
-    ctx.lineWidth = .9*dpr;
+    // Gyri — right
+    ctx.lineWidth = 1.0 * dpr;
     ctx.beginPath();
-    ctx.moveTo(bcx+brx*.28, bcy-bry*.80);
-    ctx.bezierCurveTo(bcx+brx*.72, bcy-bry*.70, bcx+brx*.88, bcy-bry*.28, bcx+brx*.80, bcy+bry*.22);
-    ctx.strokeStyle = c(a*.5); ctx.stroke();
+    ctx.moveTo(bcx + brx * .30, bcy - bry * .82);
+    ctx.bezierCurveTo(bcx + brx * .74, bcy - bry * .70, bcx + brx * .90, bcy - bry * .26, bcx + brx * .82, bcy + bry * .24);
+    ctx.strokeStyle = c(a * .45); ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(bcx+brx*.52, bcy-bry*.44);
-    ctx.bezierCurveTo(bcx+brx*.84, bcy-bry*.14, bcx+brx*.90, bcy+bry*.38, bcx+brx*.65, bcy+bry*.68);
-    ctx.strokeStyle = c(a*.5); ctx.stroke();
+    ctx.moveTo(bcx + brx * .54, bcy - bry * .42);
+    ctx.bezierCurveTo(bcx + brx * .86, bcy - bry * .12, bcx + brx * .92, bcy + bry * .40, bcx + brx * .66, bcy + bry * .70);
+    ctx.strokeStyle = c(a * .45); ctx.stroke();
 
-    // Cortical fold lines — left (mirror)
+    // Gyri — left (mirror)
     ctx.beginPath();
-    ctx.moveTo(bcx-brx*.28, bcy-bry*.80);
-    ctx.bezierCurveTo(bcx-brx*.72, bcy-bry*.70, bcx-brx*.88, bcy-bry*.28, bcx-brx*.80, bcy+bry*.22);
-    ctx.strokeStyle = c(a*.5); ctx.stroke();
+    ctx.moveTo(bcx - brx * .30, bcy - bry * .82);
+    ctx.bezierCurveTo(bcx - brx * .74, bcy - bry * .70, bcx - brx * .90, bcy - bry * .26, bcx - brx * .82, bcy + bry * .24);
+    ctx.strokeStyle = c(a * .45); ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(bcx-brx*.52, bcy-bry*.44);
-    ctx.bezierCurveTo(bcx-brx*.84, bcy-bry*.14, bcx-brx*.90, bcy+bry*.38, bcx-brx*.65, bcy+bry*.68);
-    ctx.strokeStyle = c(a*.5); ctx.stroke();
+    ctx.moveTo(bcx - brx * .54, bcy - bry * .42);
+    ctx.bezierCurveTo(bcx - brx * .86, bcy - bry * .12, bcx - brx * .92, bcy + bry * .40, bcx - brx * .66, bcy + bry * .70);
+    ctx.strokeStyle = c(a * .45); ctx.stroke();
 
-    ctx.restore();
-  }
-
-  // ── Draw simple iconic robot ──
-  function drawRobot(rx, ry, s, a) {
-    ctx.save();
-    ctx.lineWidth = 1.4*dpr;
-    ctx.strokeStyle = c(a); ctx.fillStyle = c(a*.12);
-    // Head
-    ctx.beginPath(); ctx.rect(rx-s*4.5, ry-s*13, s*9, s*7); ctx.fill(); ctx.stroke();
-    // Eyes
-    ctx.fillStyle = c(a*.9);
-    ctx.beginPath(); ctx.arc(rx-s*2, ry-s*10.5, s*1.3, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(rx+s*2, ry-s*10.5, s*1.3, 0, Math.PI*2); ctx.fill();
-    // Antenna
-    ctx.strokeStyle = c(a*.7);
-    ctx.beginPath(); ctx.moveTo(rx, ry-s*13); ctx.lineTo(rx, ry-s*17); ctx.stroke();
-    ctx.fillStyle = c(a); ctx.beginPath(); ctx.arc(rx, ry-s*17, s*1.5, 0, Math.PI*2); ctx.fill();
-    // Body
-    ctx.strokeStyle = c(a); ctx.fillStyle = c(a*.10);
-    ctx.beginPath(); ctx.rect(rx-s*6, ry-s*5, s*12, s*11); ctx.fill(); ctx.stroke();
-    // Arms
-    ctx.beginPath(); ctx.moveTo(rx-s*6, ry-s*2); ctx.lineTo(rx-s*10, ry+s*1); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(rx+s*6, ry-s*2); ctx.lineTo(rx+s*10, ry+s*1); ctx.stroke();
-    // Legs
-    ctx.beginPath(); ctx.moveTo(rx-s*3, ry+s*6); ctx.lineTo(rx-s*3, ry+s*13); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(rx+s*3, ry+s*6); ctx.lineTo(rx+s*3, ry+s*13); ctx.stroke();
     ctx.restore();
   }
 
@@ -1251,117 +1224,128 @@ function hex2rgba(hex, a) {
     ctx.clearRect(0, 0, W, H);
     t++;
 
-    const bcx = W*.28, bcy = H*.28, brx = W*.20, bry = H*.20;
-    const brainA = .28 + .05*Math.sin(t*.012);
+    // ══ SPATIAL INTELLIGENCE GRID (full canvas, perspective from center) ══
+    const hy = bcy + bry * 1.55; // horizon just below brain
+    const vpx = W * .50;
 
-    // ══ 1. BRAIN GLOW ══
-    const bg = ctx.createRadialGradient(bcx, bcy, 0, bcx, bcy, brx*1.3);
-    bg.addColorStop(0, c(.07)); bg.addColorStop(1, 'transparent');
-    ctx.fillStyle = bg; ctx.fillRect(bcx-brx*1.4, bcy-bry*1.4, brx*2.8, bry*2.8);
+    // Radiating lines (all directions from vp)
+    for (let i = -9; i <= 9; i++) {
+      ctx.beginPath(); ctx.moveTo(vpx, hy);
+      ctx.lineTo(vpx + (i / 9) * W * .68, H);
+      ctx.strokeStyle = c(.07); ctx.lineWidth = .55 * dpr; ctx.stroke();
+    }
+    // Horizontal rows below horizon
+    for (let r2 = 0; r2 <= 7; r2++) {
+      const prog = r2 / 7, ease = prog * prog;
+      const y2 = hy + ease * (H - hy), sp = ease * W * .62;
+      ctx.beginPath(); ctx.moveTo(vpx - sp, y2); ctx.lineTo(vpx + sp, y2);
+      ctx.strokeStyle = c(.03 + ease * .10); ctx.lineWidth = .55 * dpr; ctx.stroke();
+    }
+    // Concentric ellipses above horizon (spatial depth in all directions)
+    for (let i = 1; i <= 5; i++) {
+      const ew = brx * (1.6 + i * .55), eh = ew * .28;
+      ctx.beginPath(); ctx.ellipse(bcx, hy, ew, eh, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = c(.03 + i * .01); ctx.lineWidth = .5 * dpr; ctx.stroke();
+    }
 
-    // ══ 2. BRAIN SILHOUETTE ══
-    drawBrain(bcx, bcy, brx, bry, brainA);
+    // ══ BRAIN GLOW ══
+    const grd = ctx.createRadialGradient(bcx, bcy, 0, bcx, bcy, brx * 1.5);
+    grd.addColorStop(0, c(.12)); grd.addColorStop(.55, c(.04)); grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(bcx - brx * 1.6, bcy - bry * 1.6, brx * 3.2, bry * 3.2);
 
-    // ══ 3. NEURAL NODES (synaptic firing inside brain) ══
-    neuralNodes.forEach(n => {
-      n.x += n.vx; n.y += n.vy; n.phase += .010;
-      const dx = n.x-bcx, dy = n.y-bcy;
-      const d = Math.sqrt(dx*dx+dy*dy);
-      if (d > Math.min(brx,bry)*.92) { n.vx -= dx/d*.25; n.vy -= dy/d*.25; }
+    // ══ WORKFLOW CONNECTIONS (bezier curves from brain edge to nodes) ══
+    wfNodes.forEach(n => {
+      const edgeX = bcx + Math.cos(n.angle) * brx * .92;
+      const edgeY = bcy + Math.sin(n.angle) * bry * .92;
+      const cpX = bcx + Math.cos(n.angle) * brx * 1.6;
+      const cpY = bcy + Math.sin(n.angle) * bry * 1.6;
+      ctx.beginPath();
+      ctx.moveTo(edgeX, edgeY);
+      ctx.quadraticCurveTo(cpX, cpY, n.x, n.y);
+      ctx.strokeStyle = c(.20); ctx.lineWidth = 1.1 * dpr; ctx.stroke();
+    });
+
+    // Data packets on connections (slow, outward and return)
+    if (Math.random() < .025) {
+      const ni = Math.floor(Math.random() * wfNodes.length);
+      packets.push({ ni, p: 0, s: .004 + Math.random() * .004, out: Math.random() < .6 });
+    }
+    packets = packets.filter(pk => pk.p <= 1);
+    packets.forEach(pk => {
+      pk.p += pk.s;
+      const n = wfNodes[pk.ni];
+      const ex = bcx + Math.cos(n.angle) * brx * .92;
+      const ey = bcy + Math.sin(n.angle) * bry * .92;
+      const cpX = bcx + Math.cos(n.angle) * brx * 1.6;
+      const cpY = bcy + Math.sin(n.angle) * bry * 1.6;
+      const p = pk.out ? pk.p : 1 - pk.p;
+      const x = (1-p)*(1-p)*ex + 2*(1-p)*p*cpX + p*p*n.x;
+      const y = (1-p)*(1-p)*ey + 2*(1-p)*p*cpY + p*p*n.y;
+      ctx.beginPath(); ctx.arc(x, y, 4.5 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = c(.14); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 2.2 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+    });
+
+    // ══ BRAIN SILHOUETTE ══
+    drawBrain(.30 + .06 * Math.sin(t * .007));
+
+    // ══ NEURAL FIRING inside brain ══
+    neurons.forEach(n => {
+      n.x += n.vx; n.y += n.vy; n.phase += .007;
+      // Soft-contain inside brain ellipse
+      const nx = (n.x - bcx) / brx, ny = (n.y - bcy) / bry;
+      if (nx*nx + ny*ny > .82) { n.vx -= nx * brx * .012; n.vy -= ny * bry * .012; }
       n.fireTimer--;
-      if (n.hub && n.fireTimer<=0) { n.firing=1.0; n.fireTimer=140+Math.random()*200; }
-      if (n.firing>0) {
-        n.firing = Math.max(0, n.firing-.020);
-        if (n.firing>.4) neuralNodes.forEach(m => {
-          if (m===n || m.firing>0) return;
-          const ex=m.x-n.x, ey=m.y-n.y;
-          if (Math.sqrt(ex*ex+ey*ey)<105*dpr) m.firing = n.firing*(.5+Math.random()*.3);
+      if (n.hub && n.fireTimer <= 0) { n.firing = 1.0; n.fireTimer = 280 + Math.random() * 280; }
+      if (n.firing > 0) {
+        n.firing = Math.max(0, n.firing - .014);
+        if (n.firing > .5) neurons.forEach(m => {
+          if (m === n || m.firing > 0) return;
+          const dx = m.x - n.x, dy = m.y - n.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 90 * dpr) m.firing = n.firing * (.45 + Math.random() * .3);
         });
       }
     });
-    const LD = 95*dpr;
-    for (let i=0;i<neuralNodes.length;i++) for (let j=i+1;j<neuralNodes.length;j++) {
-      const a=neuralNodes[i], b=neuralNodes[j];
-      const dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
-      if (d<LD) {
-        const fire=Math.max(a.firing,b.firing);
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-        ctx.strokeStyle=c((1-d/LD)*(.18+fire*.60)); ctx.lineWidth=(.6+fire*1.6)*dpr; ctx.stroke();
+    const LD = 82 * dpr;
+    for (let i = 0; i < neurons.length; i++) for (let j = i+1; j < neurons.length; j++) {
+      const a = neurons[i], b = neurons[j];
+      const dx = a.x-b.x, dy = a.y-b.y, d = Math.sqrt(dx*dx+dy*dy);
+      if (d < LD) {
+        const fire = Math.max(a.firing, b.firing);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = c((1-d/LD) * (.18 + fire * .58));
+        ctx.lineWidth = (.6 + fire * 1.5) * dpr; ctx.stroke();
       }
     }
-    neuralNodes.forEach(n => {
-      const r=n.r*(.88+.12*Math.sin(n.phase));
-      const a=n.rz*(n.hub?.9:.6)+n.firing*.4;
-      if (n.hub||n.firing>.1) {
-        ctx.beginPath(); ctx.arc(n.x,n.y,r*(n.hub?5:3.5)*(1+n.firing*.8),0,Math.PI*2);
-        ctx.fillStyle=c(.07+n.firing*.12); ctx.fill();
+    neurons.forEach(n => {
+      const r = n.r * (.88 + .12 * Math.sin(n.phase));
+      const alpha = (n.hub ? .85 : .55) + n.firing * .35;
+      if (n.hub || n.firing > .1) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, r * (n.hub ? 5 : 3.5) * (1 + n.firing * .8), 0, Math.PI * 2);
+        ctx.fillStyle = c(.07 + n.firing * .12); ctx.fill();
       }
-      ctx.beginPath(); ctx.arc(n.x,n.y,r,0,Math.PI*2);
-      ctx.fillStyle=c(Math.min(1,a)); ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = c(Math.min(1, alpha)); ctx.fill();
     });
 
-    // ══ 4. DIGITAL AI: agent workflow network (right side) ══
-    const ap = a => ({x:a.rx*W, y:a.ry*H});
-    if (Math.random()<.09) {
-      const e=AEDGES[Math.floor(Math.random()*AEDGES.length)];
-      packets.push({f:e[0],t:e[1],p:0,s:.012+Math.random()*.010});
-    }
-    packets = packets.filter(pk=>pk.p<=1);
-    packets.forEach(pk=>pk.p+=pk.s);
-
-    AEDGES.forEach(([a,b])=>{
-      const p0=ap(AGENTS[a]),p1=ap(AGENTS[b]);
-      ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.lineTo(p1.x,p1.y);
-      ctx.strokeStyle=c(.22); ctx.lineWidth=1.1*dpr; ctx.stroke();
+    // ══ WORKFLOW NODES (pulsing rings around brain) ══
+    wfNodes.forEach((n, i) => {
+      const pulse = .88 + .12 * Math.sin(t * .007 + n.phase);
+      const r = n.r * pulse;
+      ctx.beginPath(); ctx.arc(n.x, n.y, r * 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = c(.08); ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = c(.72); ctx.lineWidth = 1.5 * dpr; ctx.stroke();
+      ctx.beginPath(); ctx.arc(n.x, n.y, r * .45, 0, Math.PI * 2);
+      ctx.fillStyle = c(.68); ctx.fill();
     });
-    packets.forEach(pk=>{
-      const p0=ap(AGENTS[pk.f]),p1=ap(AGENTS[pk.t]);
-      const x=p0.x+(p1.x-p0.x)*pk.p, y=p0.y+(p1.y-p0.y)*pk.p;
-      ctx.beginPath(); ctx.arc(x,y,5*dpr,0,Math.PI*2); ctx.fillStyle=c(.18); ctx.fill();
-      ctx.beginPath(); ctx.arc(x,y,2.5*dpr,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
-    });
-    AGENTS.forEach((n,i)=>{
-      const {x,y}=ap(n);
-      const pulse=.88+.12*Math.sin(t*.016*1.3+i*1.1);
-      const r=(n.hub?11:7)*dpr*pulse;
-      ctx.beginPath(); ctx.arc(x,y,r*2.4,0,Math.PI*2); ctx.fillStyle=c(n.hub?.10:.05); ctx.fill();
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
-      ctx.strokeStyle=c(n.hub?.95:.65); ctx.lineWidth=(n.hub?2:1.3)*dpr; ctx.stroke();
-      ctx.beginPath(); ctx.arc(x,y,r*.45,0,Math.PI*2); ctx.fillStyle=c(n.hub?.9:.55); ctx.fill();
-    });
-
-    // ══ 5. PHYSICAL AI: spatial perspective grid + robot ══
-    const gy0=H*.58, vpx=W*.5;
-    for (let r2=0;r2<=8;r2++) {
-      const prog=r2/8, ease=prog*prog;
-      const y2=gy0+ease*(H-gy0), spread=ease*W*.58;
-      ctx.beginPath(); ctx.moveTo(vpx-spread,y2); ctx.lineTo(vpx+spread,y2);
-      ctx.strokeStyle=c(.04+ease*.11); ctx.lineWidth=.6*dpr; ctx.stroke();
-    }
-    for (let co=-7;co<=7;co++) {
-      ctx.beginPath(); ctx.moveTo(vpx,gy0); ctx.lineTo(vpx+(co/7)*W*.52,H);
-      ctx.strokeStyle=c(.09); ctx.lineWidth=.6*dpr; ctx.stroke();
-    }
-
-    // Robot path trace
-    const rPath=ROBOT_WP.map(p=>({x:p[0]*W, y:gy0+(p[1])*(H-gy0)*.62}));
-    ctx.beginPath(); rPath.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
-    ctx.strokeStyle=c(.20); ctx.lineWidth=1.3*dpr;
-    ctx.setLineDash([4*dpr,5*dpr]); ctx.stroke(); ctx.setLineDash([]);
-
-    // Animate robot along path
-    rbProg+=.0035;
-    if (rbProg>=1) { rbProg=0; rbIdx=(rbIdx+1)%ROBOT_WP.length; }
-    const r0=ROBOT_WP[rbIdx], r1=ROBOT_WP[(rbIdx+1)%ROBOT_WP.length];
-    const ez=rbProg<.5?2*rbProg*rbProg:-1+(4-2*rbProg)*rbProg;
-    const rrx=(r0[0]+(r1[0]-r0[0])*ez)*W;
-    const rry=gy0+(r0[1]+(r1[1]-r0[1])*ez)*(H-gy0)*.62;
-    drawRobot(rrx, rry, 2.2*dpr, .78);
 
     animId = requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize', ()=>{ cancelAnimationFrame(animId); resize(); draw(); });
+  window.addEventListener('resize', () => { cancelAnimationFrame(animId); resize(); draw(); });
   resize(); draw();
 })();
 
