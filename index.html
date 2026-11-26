@@ -152,14 +152,14 @@ section{padding-block:88px}
   pointer-events:none;opacity:.5
 }
 .hero-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
-  position:relative
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;max-width:680px;margin:0 auto;position:relative
 }
 .hero-identity{
-  display:flex;align-items:center;gap:18px;margin-bottom:20px
+  display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:24px
 }
 .hero-photo{
-  width:96px;height:96px;border-radius:50%;flex-shrink:0;
+  width:120px;height:120px;border-radius:50%;flex-shrink:0;
   background:var(--bg-e);border:2px solid var(--border-mid);
   overflow:hidden;position:relative;
   display:flex;align-items:center;justify-content:center
@@ -169,29 +169,29 @@ section{padding-block:88px}
   filter:grayscale(100%);position:relative;z-index:1
 }
 .hero-photo-initials{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
+  font-family:var(--font-display);font-size:28px;font-weight:700;
   color:var(--accent);letter-spacing:-.02em;
   position:absolute;z-index:0
 }
-.hero-name-block{}
+.hero-name-block{text-align:center}
 .hero-name{
   font-family:var(--font-display);
-  font-size:clamp(22px,2.8vw,30px);font-weight:700;
-  line-height:1.15;letter-spacing:-.02em;margin-bottom:4px;
+  font-size:clamp(28px,4vw,44px);font-weight:700;
+  line-height:1.1;letter-spacing:-.025em;margin-bottom:8px;
   color:var(--fg)
 }
 .hero-name em{color:var(--fg);font-style:normal}
 .hero-name .praj{color:var(--accent);font-style:normal}
 .hero-role{
   font-family:var(--font-display);font-size:14px;font-weight:500;
-  color:var(--fg-2);letter-spacing:.01em
+  color:var(--fg-2);letter-spacing:.01em;max-width:420px;margin:0 auto
 }
 .hero-title{
-  font-size:17px;line-height:1.6;color:var(--fg-2);
-  margin-bottom:32px;max-width:460px
+  font-size:17px;line-height:1.65;color:var(--fg-2);
+  margin-bottom:36px;max-width:580px;text-align:center
 }
 .hero-badges{
-  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;justify-content:center
 }
 .badge{
   display:inline-flex;align-items:center;gap:6px;
@@ -203,7 +203,7 @@ section{padding-block:88px}
   background:var(--accent-dim);border-color:rgba(0,196,232,.25);
   color:var(--accent)
 }
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .btn-primary{
   display:inline-flex;align-items:center;gap:8px;
   background:var(--accent);color:#07090F;
@@ -680,30 +680,27 @@ footer{
   <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="hero-grid" id="heroGrid">
-      <div>
-        <div class="hero-identity">
-          <div class="hero-photo">
-            <!-- Replace src with your actual photo path e.g. src="praj.jpg" -->
-            <img src="Praj pic.jpg" alt="Prajakta Remulkar" onerror="this.style.display='none'">
-            <span class="hero-photo-initials">PR</span>
-          </div>
-          <div class="hero-name-block">
-            <h1 class="hero-name">Prajakta <em>(<span class="praj">Praj</span>) S. Remulkar</em></h1>
-            <div class="hero-role">Forward Deployment Product Manager at Microsoft &amp; Builder at Velvet Protocol</div>
-          </div>
+      <div class="hero-identity">
+        <div class="hero-photo">
+          <img src="Praj pic.jpg" alt="Prajakta Remulkar" onerror="this.style.display='none'">
+          <span class="hero-photo-initials">PR</span>
         </div>
-        <p class="hero-title">
-          I build enterprise AI from zero-to-one ambiguity to production reality. At Microsoft, I partner directly with enterprise customers to take agentic workflows from early architecture to reliable deployment. At Velvet Protocol, I build validation scenarios and runtime safety infrastructure to accelerate real-world robotics adoption in the market.
-        </p>
-        <div class="hero-actions">
-          <a href="#scenarios" class="btn-primary">
-            View Customer Scenarios
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="btn-ghost">
-            LinkedIn
-          </a>
+        <div class="hero-name-block">
+          <h1 class="hero-name">Prajakta <em>(<span class="praj">Praj</span>) S. Remulkar</em></h1>
+          <div class="hero-role">Forward Deployment Product Manager at Microsoft &amp; Builder at Velvet Protocol</div>
         </div>
+      </div>
+      <p class="hero-title">
+        I build enterprise AI from zero-to-one ambiguity to production reality. At Microsoft, I partner directly with enterprise customers to take agentic workflows from early architecture to reliable deployment. At Velvet Protocol, I build validation scenarios and runtime safety infrastructure to accelerate real-world robotics adoption in the market.
+      </p>
+      <div class="hero-actions">
+        <a href="#scenarios" class="btn-primary">
+          View Customer Scenarios
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="btn-ghost">
+          LinkedIn
+        </a>
       </div>
     </div>
   </div>
