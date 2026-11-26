@@ -30,7 +30,114 @@ body {
   min-height: 100vh;
 }
 
-/* ── STAGE BANNER ── */
+/* ═══════════════════════════════════════════
+   TOAST SYSTEM
+═══════════════════════════════════════════ */
+#toastContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 340px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-s);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.55);
+  transform: translateX(360px);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .4s;
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+}
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+.toast.hide {
+  transform: translateX(360px);
+  opacity: 0;
+}
+.toast-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  border-radius: 12px 0 0 12px;
+}
+.toast-bar-info   { background: var(--accent); }
+.toast-bar-warn   { background: var(--warn); }
+.toast-bar-danger { background: var(--danger); }
+.toast-bar-good   { background: var(--good); }
+
+.toast-inner { padding-left: 10px; }
+.toast-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.toast-label-info   { color: var(--accent); }
+.toast-label-warn   { color: var(--warn); }
+.toast-label-danger { color: var(--danger); }
+.toast-label-good   { color: var(--good); }
+
+.toast-title {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.toast-body {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--fg-2);
+  line-height: 1.55;
+}
+.toast-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: rgba(255,255,255,.12);
+  transition: width linear;
+}
+
+/* ═══════════════════════════════════════════
+   CALLOUT ARROWS — point at specific UI parts
+═══════════════════════════════════════════ */
+.callout {
+  position: fixed;
+  z-index: 998;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s;
+}
+.callout.show { opacity: 1; }
+.callout-pill {
+  background: rgba(0,196,232,.13);
+  border: 1.5px solid rgba(0,196,232,.4);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.callout-pill.warn  { background: rgba(245,158,11,.13); border-color: rgba(245,158,11,.4); color: var(--warn); }
+.callout-pill.good  { background: rgba(34,197,94,.13);  border-color: rgba(34,197,94,.4);  color: var(--good); }
+.callout-pill.danger{ background: rgba(239,68,68,.13);  border-color: rgba(239,68,68,.4);  color: var(--danger); }
+
+/* ═══════════════════════════════════════════
+   STORY BANNER
+═══════════════════════════════════════════ */
 .story-banner {
   background: rgba(0,196,232,.07);
   border-bottom: 1px solid rgba(0,196,232,.18);
@@ -47,27 +154,29 @@ body {
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--accent);
+  white-space: nowrap;
 }
 .story-desc {
+  font-family: var(--font-ui);
   font-size: 12px;
   color: var(--fg-2);
   flex: 1;
   text-align: center;
+  transition: color .4s;
 }
-.story-stages {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
+.story-stages { display: flex; gap: 6px; align-items: center; }
 .stage-dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--border-mid);
   transition: background .4s;
+  cursor: default;
 }
 .stage-dot.active { background: var(--accent); }
-.stage-dot.done { background: var(--fg-3); }
+.stage-dot.done   { background: var(--fg-3); }
 
-/* ── TOP BAR ── */
+/* ═══════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════ */
 .topbar {
   background: var(--bg-s);
   border-bottom: 1px solid var(--border);
@@ -82,7 +191,6 @@ body {
   font-size: 15px;
   font-weight: 700;
   color: var(--fg);
-  letter-spacing: -.01em;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -93,9 +201,9 @@ body {
   box-shadow: 0 0 6px var(--good);
   transition: background .6s, box-shadow .6s;
 }
-.relay-dot.off { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
-.relay-dot.warn { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
-.topbar-meta { font-size: 11px; color: var(--fg-3); letter-spacing: .04em; }
+.relay-dot.off  { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+.relay-dot.warn { background: var(--warn);   box-shadow: 0 0 6px var(--warn); }
+.topbar-meta { font-size: 11px; color: var(--fg-3); }
 .back-link {
   font-family: var(--font-ui);
   font-size: 12px;
@@ -106,7 +214,9 @@ body {
 }
 .back-link:hover { opacity: 1; }
 
-/* ── STATUS ROW ── */
+/* ═══════════════════════════════════════════
+   STATUS ROW
+═══════════════════════════════════════════ */
 .status-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -114,11 +224,7 @@ body {
   background: var(--border);
   border-bottom: 1px solid var(--border);
 }
-.status-cell {
-  background: var(--bg-s);
-  padding: 16px 20px;
-  transition: background .4s;
-}
+.status-cell { background: var(--bg-s); padding: 16px 20px; }
 .status-label {
   font-size: 10px;
   color: var(--fg-3);
@@ -131,8 +237,6 @@ body {
   font-size: 20px;
   font-weight: 700;
   color: var(--fg);
-  letter-spacing: -.01em;
-  transition: color .4s;
 }
 .status-indicator {
   display: inline-flex;
@@ -146,15 +250,16 @@ body {
   width: 9px; height: 9px; border-radius: 50%;
   transition: background .5s, box-shadow .5s;
 }
-.led-green { background: var(--good); box-shadow: 0 0 6px var(--good); animation: pulse 2s infinite; }
+.led-green { background: var(--good);   box-shadow: 0 0 6px var(--good);   animation: pulse 2s infinite; }
 .led-red   { background: var(--danger); box-shadow: 0 0 4px var(--danger); animation: none; }
 .led-warn  { background: var(--warn);   box-shadow: 0 0 6px var(--warn);   animation: blink 1s infinite; }
-.led-off   { background: var(--fg-3); box-shadow: none; animation: none; }
-
+.led-off   { background: var(--fg-3);   box-shadow: none; animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-/* ── MAIN LAYOUT ── */
+/* ═══════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════ */
 .main {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -163,7 +268,7 @@ body {
   min-height: calc(100vh - 160px);
 }
 
-/* ── TOPICS TABLE ── */
+/* TOPICS TABLE */
 .topics-panel { background: var(--bg); padding: 20px; }
 .panel-header {
   display: flex;
@@ -193,15 +298,17 @@ body {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
-  transition: opacity .5s, color .5s;
+  transition: opacity .5s;
 }
 .topics-table tr:last-child td { border-bottom: none; }
 .topics-table tr:hover td { background: var(--bg-e); }
 .topic-name  { color: var(--accent); font-size: 12px; }
-.topic-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; font-size: 13px; }
+.topic-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; }
 .topic-rate  { color: var(--fg-2); font-size: 11px; }
 .topic-last  { color: var(--fg-2); font-size: 11px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .topic-age   { color: var(--fg-3); font-size: 11px; white-space: nowrap; }
+tr.stale td  { opacity: .5; }
+
 .topic-status-badge {
   display: inline-block;
   font-size: 10px;
@@ -209,17 +316,12 @@ body {
   padding: 2px 7px;
   border-radius: 4px;
   letter-spacing: .06em;
-  transition: background .4s, color .4s, border-color .4s;
+  transition: background .4s, color .4s;
 }
-.badge-live  { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.25);  color: var(--good); }
-.badge-stale { background: rgba(245,158,11,.10); border: 1px solid rgba(245,158,11,.25); color: var(--warn); }
-.badge-dead  { background: rgba(239,68,68,.10);  border: 1px solid rgba(239,68,68,.25);  color: var(--danger); }
+.badge-live  { background:rgba(34,197,94,.12);  border:1px solid rgba(34,197,94,.25);  color:var(--good); }
+.badge-stale { background:rgba(245,158,11,.10); border:1px solid rgba(245,158,11,.25); color:var(--warn); }
 
-/* stale row dims */
-tr.stale td { opacity: .55; }
-tr.dead  td { opacity: .35; }
-
-/* ── SIDE PANEL ── */
+/* SIDE PANEL */
 .side-panel {
   background: var(--bg-s);
   padding: 20px;
@@ -253,7 +355,7 @@ tr.dead  td { opacity: .35; }
 .info-val.warn   { color: var(--warn); }
 .info-val.danger { color: var(--danger); }
 
-/* ── LOG ── */
+/* LOG */
 .log-block {
   flex: 1;
   border: 1px solid var(--border);
@@ -266,7 +368,7 @@ tr.dead  td { opacity: .35; }
   flex: 1;
   padding: 10px 12px;
   overflow-y: auto;
-  max-height: 280px;
+  max-height: 260px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -278,7 +380,7 @@ tr.dead  td { opacity: .35; }
 .log-line .warn { color: var(--warn); }
 .log-line .err  { color: var(--danger); }
 
-/* ── DEMO BADGE ── */
+/* DEMO NOTICE */
 .demo-notice {
   background: rgba(0,196,232,.06);
   border: 1px solid rgba(0,196,232,.15);
@@ -290,23 +392,13 @@ tr.dead  td { opacity: .35; }
 }
 .demo-notice strong { color: var(--accent); }
 
-/* ── FOOTER ── */
-.footer {
-  background: var(--bg-s);
-  border-top: 1px solid var(--border);
-  padding: 10px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--fg-3);
-}
-
-/* ── DISCONNECTED OVERLAY ── */
+/* ═══════════════════════════════════════════
+   DISCONNECTED OVERLAY
+═══════════════════════════════════════════ */
 .dc-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7,9,15,.85);
+  background: rgba(7,9,15,.82);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -322,19 +414,26 @@ tr.dead  td { opacity: .35; }
   border-radius: 16px;
   padding: 36px 48px;
   text-align: center;
-  max-width: 400px;
+  max-width: 420px;
 }
-.dc-icon { font-size: 36px; margin-bottom: 16px; }
-.dc-title {
+.dc-icon  { font-size: 36px; margin-bottom: 16px; }
+.dc-title { font-family: var(--font-ui); font-size: 20px; font-weight: 700; color: var(--danger); margin-bottom: 8px; }
+.dc-sub   { font-size: 12px; color: var(--fg-2); line-height: 1.6; margin-bottom: 4px; }
+.dc-insight {
+  margin-top: 14px;
+  background: rgba(239,68,68,.07);
+  border: 1px solid rgba(239,68,68,.2);
+  border-radius: 8px;
+  padding: 10px 14px;
   font-family: var(--font-ui);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--danger);
-  margin-bottom: 8px;
+  font-size: 11.5px;
+  color: var(--fg-2);
+  line-height: 1.6;
+  text-align: left;
 }
-.dc-sub { font-size: 12px; color: var(--fg-2); line-height: 1.6; }
+.dc-insight strong { color: var(--warn); }
 .dc-reconnect {
-  margin-top: 20px;
+  margin-top: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -343,7 +442,6 @@ tr.dead  td { opacity: .35; }
   color: var(--warn);
 }
 .spin {
-  display: inline-block;
   width: 14px; height: 14px;
   border: 2px solid var(--warn);
   border-top-color: transparent;
@@ -352,32 +450,55 @@ tr.dead  td { opacity: .35; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* FOOTER */
+.footer {
+  background: var(--bg-s);
+  border-top: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--fg-3);
+}
+
 @media (max-width: 700px) {
   .main { grid-template-columns: 1fr; }
   .status-row { grid-template-columns: repeat(2,1fr); }
   .side-panel { display: none; }
+  #toastContainer { left: 12px; right: 12px; max-width: none; top: auto; bottom: 20px; }
+  .toast { transform: translateY(80px); }
+  .toast.show { transform: translateY(0); }
+  .toast.hide { transform: translateY(80px); }
 }
 </style>
 </head>
 <body>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer"></div>
 
 <!-- DISCONNECTION OVERLAY -->
 <div class="dc-overlay" id="dcOverlay">
   <div class="dc-card">
     <div class="dc-icon">🔌</div>
     <div class="dc-title">Robot Disconnected</div>
-    <div class="dc-sub">The field robot lost its outbound TCP connection.<br>No VPN needed — waiting for robot to reconnect on its own.</div>
+    <div class="dc-sub">The field robot lost its outbound TCP connection to the relay server.</div>
+    <div class="dc-insight">
+      <strong>What would normally happen:</strong> You'd call the customer's IT team to open a firewall port, set up a VPN, and restart everything — easily 2–4 hours.<br><br>
+      <strong>What happens here:</strong> Nothing. The relay waits. The robot reconnects on its own when it comes back online.
+    </div>
     <div class="dc-reconnect">
       <div class="spin"></div>
-      <span id="reconnectMsg">Auto-reconnect in progress…</span>
+      <span>Auto-reconnect in progress — no IT ticket needed</span>
     </div>
   </div>
 </div>
 
 <!-- STORY BANNER -->
 <div class="story-banner">
-  <div class="story-label">Demo</div>
-  <div class="story-desc" id="storyDesc">Robot is live and streaming topics to the engineer</div>
+  <div class="story-label">▶ Demo</div>
+  <div class="story-desc" id="storyDesc">Robot is live and streaming topics through the tunnel</div>
   <div class="story-stages" id="stageDots"></div>
 </div>
 
@@ -393,16 +514,16 @@ tr.dead  td { opacity: .35; }
 
 <!-- STATUS ROW -->
 <div class="status-row">
-  <div class="status-cell">
+  <div class="status-cell" id="cellRobot">
     <div class="status-label">Robot</div>
     <div class="status-value">
-      <span class="status-indicator" id="robotStatus">
+      <span class="status-indicator">
         <span class="led led-green" id="robotLed"></span>
         <span id="robotLabel">CONNECTED</span>
       </span>
     </div>
   </div>
-  <div class="status-cell">
+  <div class="status-cell" id="cellEng">
     <div class="status-label">Engineer</div>
     <div class="status-value">
       <span class="status-indicator">
@@ -424,7 +545,6 @@ tr.dead  td { opacity: .35; }
 <!-- MAIN -->
 <div class="main">
 
-  <!-- TOPICS TABLE -->
   <div class="topics-panel">
     <div class="panel-header">
       <div class="panel-title">Active Topics</div>
@@ -444,9 +564,7 @@ tr.dead  td { opacity: .35; }
     </table>
   </div>
 
-  <!-- SIDE PANEL -->
   <div class="side-panel">
-
     <div class="info-block">
       <div class="info-block-title">Connection Info</div>
       <div class="info-row"><span class="info-key">Relay</span><span class="info-val accent">138.197.209.48</span></div>
@@ -471,13 +589,11 @@ tr.dead  td { opacity: .35; }
     </div>
 
     <div class="demo-notice">
-      <strong>Scripted demo</strong> — walks through a real outage scenario: live session → robot drops → auto-reconnect → topics resume. No VPN or IT ticket needed at any point.
+      <strong>Scripted demo</strong> — walks through a real outage scenario automatically. Watch the toasts to follow along.
     </div>
-
   </div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <span>Velvet Protocol · ROS 2 Tunnel v0.1</span>
   <span>Outbound-only TCP relay · No VPN · No IT ticket</span>
@@ -485,6 +601,49 @@ tr.dead  td { opacity: .35; }
 </div>
 
 <script>
+// ── HELPERS ──
+const r  = n => Math.floor(Math.random()*n);
+const rf = n => Math.random()*n;
+function fmt2(n) { return String(n).padStart(2,'0'); }
+function nowTs() {
+  const d = new Date();
+  return `${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
+}
+function pickRandom(arr) { return arr[r(arr.length)]; }
+
+// ── TOAST SYSTEM ──
+// type: 'info' | 'warn' | 'danger' | 'good'
+function showToast({ type='info', label, title, body, duration=6000 }) {
+  const container = document.getElementById('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `
+    <div class="toast-bar toast-bar-${type}"></div>
+    <div class="toast-inner">
+      <div class="toast-label toast-label-${type}">${label}</div>
+      <div class="toast-title">${title}</div>
+      <div class="toast-body">${body}</div>
+    </div>
+    <div class="toast-progress" id="tp${Date.now()}"></div>
+  `;
+  container.appendChild(el);
+
+  // Animate in
+  requestAnimationFrame(() => {
+    el.classList.add('show');
+    const bar = el.querySelector('.toast-progress');
+    bar.style.width = '100%';
+    bar.style.transition = `width ${duration}ms linear`;
+    setTimeout(() => { bar.style.width = '0%'; }, 50);
+  });
+
+  // Animate out
+  setTimeout(() => {
+    el.classList.add('hide');
+    setTimeout(() => el.remove(), 450);
+  }, duration);
+}
+
 // ── TOPICS ──
 const TOPICS = [
   { name: '/hello',         rate: 10,  base: 10406, fmt: () => `"Hello from robot! seq=${r(9999)}"` },
@@ -494,20 +653,17 @@ const TOPICS = [
   { name: '/scan',          rate: 10,  base: 5631,  fmt: () => `{ranges:[${[0,1,2,3,4].map(()=>(rf(5)).toFixed(2)).join(',')},...]}` },
   { name: '/robot_status',  rate: .5,  base: 461,   fmt: () => `{state:"NAVIGATING", errors:0}` },
 ];
-const r  = n => Math.floor(Math.random()*n);
-const rf = n => Math.random()*n;
 
-let counts    = TOPICS.map(t => t.base);
-let ages      = TOPICS.map(() => r(3));
-let frozen    = false;   // topics stopped updating
+let counts     = TOPICS.map(t => t.base);
+let ages       = TOPICS.map(() => r(3));
+let frozen     = false;
 let reconnects = 0;
-let startTime = Date.now();
+let startTime  = Date.now();
 
 // ── STORY STAGES ──
-// Each stage: { desc, durationMs, onEnter, tick (called every 500ms) }
 const STAGES = [
   {
-    desc: 'Robot live — streaming topics through the tunnel to your engineer',
+    desc: '① Robot is live — streaming 6 topics through the tunnel in real time',
     duration: 9000,
     onEnter() {
       setRobot('CONNECTED', 'green');
@@ -516,6 +672,14 @@ const STAGES = [
       setBadge('LIVE', 'live');
       showOverlay(false);
       frozen = false;
+
+      showToast({
+        type: 'info',
+        label: '① Session started',
+        title: 'Robot is online',
+        body: 'The robot\'s ROS 2 bridge dialed out through TCP port 9000 — your standard outbound port. No firewall rules opened, no VPN configured. The engineer is now seeing live topic data.',
+        duration: 8000
+      });
     },
     tick() {
       tickCounts();
@@ -523,26 +687,34 @@ const STAGES = [
     }
   },
   {
-    desc: 'Robot battery warning — network becoming unstable',
+    desc: '② Battery dropping — network becoming unstable, some packets lost',
     duration: 6000,
     onEnter() {
       setRobot('UNSTABLE', 'warn');
       setRelay('warn');
       setBadge('DEGRADED', 'stale');
-      log('warn', '[WARN]', 'robot_bridge: high latency detected (340ms)');
-      log('warn', '[WARN]', '/battery_state: voltage dropping 11.2V');
+      log('warn', '[WARN]', 'robot_bridge: high latency (340ms)');
+      log('warn', '[WARN]', '/battery_state: voltage 11.2V — low');
+
+      showToast({
+        type: 'warn',
+        label: '② Warning',
+        title: 'Network becoming unstable',
+        body: 'Robot battery is dropping and latency is spiking. Some messages are getting lost. The tunnel is still up — it\'s handling the degraded connection gracefully without dropping the session.',
+        duration: 5500
+      });
     },
     tick() {
-      if (Math.random() > .4) tickCounts();  // some msgs get through
+      if (Math.random() > .4) tickCounts();
       if (Math.random() > .6) log('warn', '[WARN]', 'packet loss on robot channel');
     }
   },
   {
-    desc: 'Robot dropped — TCP connection closed. Waiting for auto-reconnect…',
+    desc: '③ Robot dropped — TCP closed. Tunnel is waiting for auto-reconnect…',
     duration: 10000,
     onEnter() {
       setRobot('DISCONNECTED', 'red');
-      setEngineer('CONNECTED', 'green');  // engineer side stays up
+      setEngineer('CONNECTED', 'green');
       setRelay('off');
       setBadge('STALE', 'stale');
       frozen = true;
@@ -550,14 +722,21 @@ const STAGES = [
       log('err', '[ERR]', 'robot_bridge: connection closed (EOF)');
       log('err', '[ERR]', 'all topics frozen — last values shown');
       log('info', '[AUTO]', 'reconnect timer started (backoff: 5s)');
+
+      showToast({
+        type: 'danger',
+        label: '③ Outage',
+        title: 'Robot went offline',
+        body: '<b>Without this tunnel:</b> you\'d call the customer\'s IT team to reopen firewall rules — easily 2–4 hours.<br><br><b>With this tunnel:</b> the relay waits. The robot reconnects itself when it comes back. Zero IT involvement.',
+        duration: 9000
+      });
     },
     tick() {
-      // No topic updates — just log reconnect attempts
       log('info', '[AUTO]', 'reconnect attempt ' + (reconnects+1) + '…');
     }
   },
   {
-    desc: 'Robot reconnected — topics resuming. No IT ticket filed.',
+    desc: '④ Reconnected — topics resuming. Zero IT changes made.',
     duration: 7000,
     onEnter() {
       reconnects++;
@@ -570,6 +749,14 @@ const STAGES = [
       log('ok', '[AUTH]', 'robot_bridge reconnected successfully');
       log('ok', '[INFO]', 'topics resuming from last sequence');
       log('ok', '[INFO]', 'no VPN reconfigured · no IT ticket filed');
+
+      showToast({
+        type: 'good',
+        label: '④ Recovered',
+        title: 'Robot reconnected on its own',
+        body: 'The robot dialed back in automatically. Topics resumed within seconds. The engineer never lost their session. Reconnect count: 1. Customer IT changes: 0.',
+        duration: 6500
+      });
     },
     tick() {
       tickCounts();
@@ -577,14 +764,22 @@ const STAGES = [
     }
   },
   {
-    desc: 'Session stable — 0 customer IT changes needed throughout',
+    desc: '⑤ Session stable — this is what every field deployment should look like',
     duration: Infinity,
     onEnter() {
       log('ok', '[STAT]', 'session healthy · reconnects: 1 · IT changes: 0');
+
+      showToast({
+        type: 'good',
+        label: '⑤ Done',
+        title: 'Full outage cycle complete',
+        body: 'Robot went down and came back — without a single IT ticket, VPN config, or firewall rule. That\'s the whole pitch: outbound-only TCP, auto-reconnect, no customer IT required.',
+        duration: 8000
+      });
     },
     tick() {
       tickCounts();
-      if (Math.random() > .7) log('info', '[RELAY]', pickRandom(['/hello','/odom','/cmd_vel']) + ' forwarded → engineer');
+      if (Math.random() > .6) log('info', '[RELAY]', pickRandom(['/hello','/odom','/cmd_vel']) + ' forwarded → engineer');
     }
   }
 ];
@@ -602,7 +797,6 @@ function buildDots() {
     el.appendChild(d);
   });
 }
-
 function updateDots() {
   STAGES.forEach((_, i) => {
     const d = document.getElementById('dot' + i);
@@ -610,11 +804,9 @@ function updateDots() {
     d.className = 'stage-dot' + (i < stageIdx ? ' done' : i === stageIdx ? ' active' : '');
   });
 }
-
 function advanceStage() {
-  stageIdx++;
+  stageIdx = Math.min(stageIdx + 1, STAGES.length - 1);
   stageElapsed = 0;
-  if (stageIdx >= STAGES.length) stageIdx = STAGES.length - 1;
   document.getElementById('storyDesc').textContent = STAGES[stageIdx].desc;
   STAGES[stageIdx].onEnter();
   updateDots();
@@ -623,16 +815,15 @@ function advanceStage() {
 // ── STATE HELPERS ──
 function setRobot(label, state) {
   document.getElementById('robotLabel').textContent = label;
-  const led = document.getElementById('robotLed');
-  led.className = 'led led-' + state;
+  document.getElementById('robotLed').className = 'led led-' + state;
 }
 function setEngineer(label, state) {
   document.getElementById('engLabel').textContent = label;
   document.getElementById('engLed').className = 'led led-' + state;
 }
 function setRelay(state) {
-  const dot = document.getElementById('relayDot');
-  dot.className = 'relay-dot' + (state === 'warn' ? ' warn' : state === 'off' ? ' off' : '');
+  document.getElementById('relayDot').className = 'relay-dot' +
+    (state === 'warn' ? ' warn' : state === 'off' ? ' off' : '');
 }
 function setBadge(text, cls) {
   const b = document.getElementById('topicBadge');
@@ -640,39 +831,29 @@ function setBadge(text, cls) {
   b.className = 'topic-status-badge badge-' + cls;
 }
 function showOverlay(show) {
-  const ov = document.getElementById('dcOverlay');
-  ov.classList.toggle('visible', show);
+  document.getElementById('dcOverlay').classList.toggle('visible', show);
 }
-function pickRandom(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 
-// ── TOPIC HELPERS ──
+// ── TOPICS ──
 function tickCounts() {
   TOPICS.forEach((t, i) => {
     counts[i] += Math.round(t.rate * (.8 + Math.random() * .4));
     ages[i] = Math.floor(Math.random() * 3);
   });
 }
-
 function renderTopics() {
-  const tbody = document.getElementById('topicBody');
-  const isOff = frozen;
-  tbody.innerHTML = TOPICS.map((t, i) => `
-    <tr class="${isOff ? 'stale' : ''}">
+  document.getElementById('topicBody').innerHTML = TOPICS.map((t, i) => `
+    <tr class="${frozen ? 'stale' : ''}">
       <td class="topic-name">${t.name}</td>
       <td class="topic-count">${counts[i].toLocaleString()}</td>
-      <td class="topic-rate">${isOff ? '<span style="color:var(--warn)">0 Hz</span>' : t.rate + ' Hz'}</td>
+      <td class="topic-rate">${frozen ? '<span style="color:var(--warn)">0 Hz</span>' : t.rate + ' Hz'}</td>
       <td class="topic-last">${t.fmt()}</td>
-      <td class="topic-age">${isOff ? '<span style="color:var(--warn)">stale</span>' : ages[i] < 1 ? 'just now' : ages[i] + 's ago'}</td>
+      <td class="topic-age">${frozen ? '<span style="color:var(--warn)">stale</span>' : ages[i] < 1 ? 'just now' : ages[i] + 's ago'}</td>
     </tr>
   `).join('');
 }
 
 // ── LOG ──
-function fmt2(n) { return String(n).padStart(2,'0'); }
-function nowTs() {
-  const d = new Date();
-  return `${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
-}
 function log(type, tag, msg) {
   const logBody = document.getElementById('logBody');
   const div = document.createElement('div');
@@ -687,45 +868,33 @@ function log(type, tag, msg) {
 buildDots();
 STAGES[0].onEnter();
 document.getElementById('storyDesc').textContent = STAGES[0].desc;
-
-// Seed log
-log('ok', '[START]', 'relay server listening on :9000');
-log('ok', '[AUTH]', 'robot_bridge authenticated');
-log('ok', '[AUTH]', 'engineer_bridge authenticated');
-log('info', '[INFO]', 'tunnel active — forwarding topics');
-
+log('ok',   '[START]', 'relay server listening on :9000');
+log('ok',   '[AUTH]',  'robot_bridge authenticated');
+log('ok',   '[AUTH]',  'engineer_bridge authenticated');
+log('info', '[INFO]',  'tunnel active — forwarding topics');
 renderTopics();
 
-// ── MAIN LOOP (500ms) ──
+// ── MAIN LOOP ──
 let tick = 0;
 setInterval(() => {
   tick++;
   stageElapsed += 500;
 
   const stage = STAGES[stageIdx];
-  stage.tick();
+  if (tick % 4 === 0) stage.tick();  // log every ~2s
 
-  // Advance stage?
-  if (stage.duration !== Infinity && stageElapsed >= stage.duration) {
-    advanceStage();
-  }
+  if (stage.duration !== Infinity && stageElapsed >= stage.duration) advanceStage();
 
   // Uptime
-  const elapsed = Date.now() - startTime;
-  const s = Math.floor(elapsed/1000);
+  const s = Math.floor((Date.now() - startTime) / 1000);
   document.getElementById('uptime').textContent =
     `${fmt2(Math.floor(s/3600))}:${fmt2(Math.floor((s%3600)/60))}:${fmt2(s%60)}`;
 
-  // Total msgs
-  const total = counts.reduce((a,b) => a+b, 0);
-  document.getElementById('totalMsgs').textContent = total.toLocaleString();
+  // Totals
+  document.getElementById('totalMsgs').textContent = counts.reduce((a,b)=>a+b,0).toLocaleString();
 
   // Latency
-  if (!frozen) {
-    document.getElementById('latencyVal').textContent = (10 + r(8)) + 'ms';
-  } else {
-    document.getElementById('latencyVal').textContent = '—';
-  }
+  document.getElementById('latencyVal').textContent = frozen ? '—' : (10 + r(8)) + 'ms';
 
   // Clock
   document.getElementById('clockStr').textContent = new Date().toUTCString().slice(17,25) + ' UTC';
