@@ -272,16 +272,46 @@ section{padding-block:88px}
 
 /* ─── SCENARIOS ─── */
 .scenarios{background:var(--bg-s);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.scenarios-carousel-wrap{position:relative}
 .scenarios-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
-  background:var(--border);border:1px solid var(--border);
-  border-radius:var(--r-lg);overflow:hidden
+  display:flex;
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden;
+  transition:none
 }
 .scenario-card{
   background:var(--bg-s);padding:32px;
+  flex:0 0 100%;
   transition:background var(--transition)
 }
 .scenario-card:hover{background:var(--bg-hover)}
+/* carousel controls */
+.carousel-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:var(--bg-s);border:1px solid var(--border-mid);
+  color:var(--fg);font-size:18px;cursor:pointer;
+  display:grid;place-items:center;z-index:10;
+  transition:border-color var(--transition),background var(--transition),opacity var(--transition);
+  box-shadow:0 2px 12px rgba(0,0,0,.18)
+}
+.carousel-btn:hover{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.carousel-btn:disabled{opacity:.25;cursor:default;pointer-events:none}
+.carousel-btn-prev{left:-20px}
+.carousel-btn-next{right:-20px}
+.carousel-dots{
+  display:flex;justify-content:center;gap:8px;margin-top:18px
+}
+.carousel-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border-mid);border:none;cursor:pointer;padding:0;
+  transition:background var(--transition),transform var(--transition)
+}
+.carousel-dot.active{background:var(--accent);transform:scale(1.3)}
+.carousel-track{
+  display:flex;width:100%;
+  transition:transform .38s cubic-bezier(0.4,0,0.2,1)
+}
 .scenario-tag{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--bg-e);border:1px solid var(--border);
@@ -580,13 +610,9 @@ footer{
 .divider{height:1px;background:var(--border);margin:0}
 
 /* ─── RESPONSIVE ─── */
-@media(max-width:1100px){
-  .scenarios-grid{grid-template-columns:repeat(2,1fr)}
-}
 @media(max-width:900px){
   .hero-grid{flex-direction:column}
   .hero-visual{display:none}
-  .scenarios-grid{grid-template-columns:1fr}
   .demo-body{grid-template-columns:1fr}
   .posts-grid{grid-template-columns:1fr}
   .playbook-grid{grid-template-columns:1fr}
@@ -727,7 +753,10 @@ footer{
     <div class="section-label">Customer Scenarios · Live Demos</div>
     <h2 class="section-title">AI That Works in the Real World</h2>
     <p class="section-sub">Demos in Digital and Physical AI</p>
-    <div class="scenarios-grid fade-in" style="grid-template-columns:repeat(2,1fr)">
+    <div class="scenarios-carousel-wrap fade-in">
+      <button class="carousel-btn carousel-btn-prev" id="scenPrev" aria-label="Previous">&#8592;</button>
+      <div class="scenarios-grid" id="scenGrid">
+        <div class="carousel-track" id="scenTrack">
 
       <div class="scenario-card">
         <div class="scenario-visual">
@@ -790,7 +819,11 @@ footer{
         </a>
       </div>
 
-    </div>
+        </div><!-- /carousel-track -->
+      </div><!-- /scenarios-grid -->
+      <button class="carousel-btn carousel-btn-next" id="scenNext" aria-label="Next">&#8594;</button>
+    </div><!-- /scenarios-carousel-wrap -->
+    <div class="carousel-dots" id="scenDots"></div>
   </div>
 </section>
 
@@ -1539,6 +1572,50 @@ function hex2rgba(hex, a) {
   resize(); draw();
 })();
 
+
+// ─── SCENARIO CAROUSEL ───
+(function() {
+  const track = document.getElementById('scenTrack');
+  const prevBtn = document.getElementById('scenPrev');
+  const nextBtn = document.getElementById('scenNext');
+  const dotsWrap = document.getElementById('scenDots');
+  if (!track) return;
+
+  const cards = Array.from(track.querySelectorAll('.scenario-card'));
+  const total = cards.length;
+  let current = 0;
+
+  // Build dots
+  cards.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  function goTo(idx) {
+    current = idx;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+
+  prevBtn.addEventListener('click', () => { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', () => { if (current < total - 1) goTo(current + 1); });
+
+  // Touch/swipe support
+  let startX = 0;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (dx < -40 && current < total - 1) goTo(current + 1);
+    if (dx > 40 && current > 0) goTo(current - 1);
+  }, { passive: true });
+
+  goTo(0);
+})();
 
 // ─── THEME TOGGLE ───
 const root = document.documentElement;
