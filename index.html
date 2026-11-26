@@ -186,8 +186,15 @@ section{padding-block:88px}
 .hero-name .praj{color:var(--accent);font-style:normal}
 .hero-role{
   font-family:var(--font-display);font-size:13px;font-weight:500;
-  color:var(--fg-2);letter-spacing:.01em;margin-bottom:14px
+  color:var(--fg-2);letter-spacing:.01em;margin-bottom:10px
 }
+.hero-tagline{
+  font-family:var(--font-display);font-size:15px;font-weight:600;
+  color:var(--fg);letter-spacing:-.01em;margin-bottom:16px;
+  line-height:1.3
+}
+.hero-tagline .tl-sep{color:var(--accent);opacity:.7;margin:0 6px;font-weight:400}
+.hero-tagline .tl-phys{color:var(--accent)}
 .hero-title{
   font-size:15px;line-height:1.65;color:var(--fg-2);
   margin-bottom:24px;max-width:420px
@@ -616,11 +623,13 @@ footer{
 
   /* Hero stagger — each child animates in sequence */
   .hero-identity{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .05s,transform .5s var(--spring) .05s}
-  .hero-title{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .15s,transform .5s var(--spring) .15s}
+  .hero-tagline{opacity:0;transform:translateY(10px);transition:opacity .5s var(--spring) .12s,transform .5s var(--spring) .12s}
+  .hero-title{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .20s,transform .5s var(--spring) .20s}
   .hero-badges{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .25s,transform .5s var(--spring) .25s}
   .hero-actions{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .35s,transform .5s var(--spring) .35s}
   .hero-visual{opacity:0;transform:translateX(20px);transition:opacity .7s var(--spring) .2s,transform .7s var(--spring) .2s}
   .hero-ready .hero-identity,
+  .hero-ready .hero-tagline,
   .hero-ready .hero-title,
   .hero-ready .hero-badges,
   .hero-ready .hero-actions,
@@ -692,6 +701,7 @@ footer{
         <div class="hero-content">
           <h1 class="hero-name">Prajakta <em>(<span class="praj">Praj</span>) S. Remulkar</em></h1>
           <div class="hero-role">Forward Deployment Product Manager at Microsoft &amp; Builder at Velvet Protocol</div>
+          <div class="hero-tagline">Digital agents<span class="tl-sep">·</span><span class="tl-phys">Physical systems</span><span class="tl-sep">·</span>Production reality</div>
           <p class="hero-title">
             I build enterprise AI from zero-to-one ambiguity to production reality. At Microsoft, I partner directly with enterprise customers to take agentic workflows from early architecture to reliable deployment. At Velvet Protocol, I build validation scenarios and runtime safety infrastructure to accelerate real-world robotics adoption in the market.
           </p>
