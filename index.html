@@ -1,5 +1,13 @@
-<title>Prajakta S. Remulkar</title>
+<title>Prajakta (Praj) S. Remulkar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Principal AI Forward Deployment PM at Microsoft. Founder, Velvet Protocol. Building Physical & Spatial AI infrastructure before the market arrives.">
+<meta property="og:title" content="Prajakta (Praj) S. Remulkar — AI PM & Builder">
+<meta property="og:description" content="Forward Deployment AI at Microsoft. Founder, Velvet Protocol. Physical & Spatial AI.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Prajakta (Praj) S. Remulkar">
+<meta name="twitter:description" content="Forward Deployment AI PM at Microsoft · Founder, Velvet Protocol · Physical & Spatial AI">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307090F'/%3E%3Crect width='32' height='32' rx='8' fill='%2300C4E8' opacity='.15'/%3E%3Ctext x='50%25' y='50%25' font-family='system-ui,sans-serif' font-weight='800' font-size='13' fill='%2300C4E8' text-anchor='middle' dominant-baseline='central'%3EPR%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
 
 <style>
@@ -591,11 +599,59 @@ footer{
   letter-spacing:.06em
 }
 
-/* ─── MOTION ─── */
+/* ─── MOTION — Jakub + Jhey principles for creative portfolio ─── */
+/* Spring easing: feels physical, not mechanical */
+:root { --spring: cubic-bezier(0.16,1,0.3,1); }
+
 @media(prefers-reduced-motion:no-preference){
-  .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+  /* Section reveals: clip-path sweep (more intentional than opacity fade) */
+  .fade-in{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .6s var(--spring), transform .6s var(--spring)
+  }
   .fade-in.visible{opacity:1;transform:none}
+
+  /* Hero stagger — each child animates in sequence */
+  .hero-identity{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .05s,transform .5s var(--spring) .05s}
+  .hero-title{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .15s,transform .5s var(--spring) .15s}
+  .hero-badges{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .25s,transform .5s var(--spring) .25s}
+  .hero-actions{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .35s,transform .5s var(--spring) .35s}
+  .hero-visual{opacity:0;transform:translateX(20px);transition:opacity .7s var(--spring) .2s,transform .7s var(--spring) .2s}
+  .hero-ready .hero-identity,
+  .hero-ready .hero-title,
+  .hero-ready .hero-badges,
+  .hero-ready .hero-actions,
+  .hero-ready .hero-visual{opacity:1;transform:none}
+
+  /* Card hover: lift + border glow (Jakub: tactile, polished) */
+  .scenario-card{transition:background var(--transition),transform .3s var(--spring),box-shadow .3s var(--spring),border-color .3s var(--spring)}
+  .scenario-card:hover{
+    background:var(--bg-hover);
+    transform:translateY(-4px);
+    box-shadow:0 12px 40px rgba(0,196,232,.08);
+    border-color:rgba(0,196,232,.3)
+  }
+  .post-card{transition:border-color var(--transition),transform .3s var(--spring),box-shadow .3s var(--spring)}
+  .post-card:hover{
+    border-color:var(--border-mid);
+    transform:translateY(-3px);
+    box-shadow:0 8px 28px rgba(0,0,0,.2)
+  }
+  .playbook-card{transition:border-color var(--transition),transform .3s var(--spring)}
+  .playbook-card:hover{transform:translateY(-2px)}
+
+  /* Stat cards: subtle entrance pulse */
+  .stat-card{transition:border-color var(--transition),transform .3s var(--spring)}
+  .stat-card:hover{transform:translateY(-2px);border-color:var(--border-mid)}
+
+  /* System rows: left accent reveal on hover */
+  .system-row{transition:background var(--transition),padding-left .3s var(--spring)}
+  .system-row:hover{background:var(--bg-hover);padding-left:40px}
 }
+
+/* Active nav link */
+.nav-links a.active{color:var(--accent)!important;opacity:1!important}
 </style>
 
 <!-- NAV -->
@@ -623,7 +679,7 @@ footer{
 <section class="hero" id="hero">
   <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="hero-grid">
+    <div class="hero-grid" id="heroGrid">
       <div>
         <div class="hero-identity">
           <div class="hero-photo">
@@ -1410,10 +1466,24 @@ btn.addEventListener('click', () => {
   try { localStorage.setItem('theme', next); } catch(e) {}
 });
 
-// ─── NAV SCROLL ───
-window.addEventListener('scroll', () => {
+// ─── HERO ENTRANCE (staggered, Jakub principle) ───
+requestAnimationFrame(() => {
+  setTimeout(() => document.getElementById('heroGrid')?.classList.add('hero-ready'), 80);
+});
+
+// ─── NAV SCROLL + ACTIVE SECTION TRACKING ───
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+function updateNav() {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
-}, { passive: true });
+  const mid = window.scrollY + window.innerHeight * .4;
+  let active = sections[0];
+  sections.forEach(s => { if (s.offsetTop <= mid) active = s; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active?.id));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
 
 // ─── FADE IN OBSERVER ───
 const faders = document.querySelectorAll('.fade-in');
