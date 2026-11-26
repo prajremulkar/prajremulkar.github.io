@@ -1,4 +1,9 @@
-﻿<title>Prajakta (Praj) S. Remulkar</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prajakta (Praj) S. Remulkar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Principal AI Forward Deployment PM at Microsoft. Founder, Velvet Protocol. Building Physical & Spatial AI infrastructure before the market arrives.">
 <meta property="og:title" content="Prajakta (Praj) S. Remulkar — AI PM & Builder">
@@ -268,7 +273,7 @@ section{padding-block:88px}
 /* ─── SCENARIOS ─── */
 .scenarios{background:var(--bg-s);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .scenarios-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
   background:var(--border);border:1px solid var(--border);
   border-radius:var(--r-lg);overflow:hidden
 }
@@ -575,6 +580,9 @@ footer{
 .divider{height:1px;background:var(--border);margin:0}
 
 /* ─── RESPONSIVE ─── */
+@media(max-width:1100px){
+  .scenarios-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:900px){
   .hero-grid{flex-direction:column}
   .hero-visual{display:none}
@@ -608,12 +616,10 @@ footer{
   letter-spacing:.06em
 }
 
-/* ─── MOTION — Jakub + Jhey principles for creative portfolio ─── */
-/* Spring easing: feels physical, not mechanical */
+/* ─── MOTION ─── */
 :root { --spring: cubic-bezier(0.16,1,0.3,1); }
 
 @media(prefers-reduced-motion:no-preference){
-  /* Section reveals: clip-path sweep (more intentional than opacity fade) */
   .fade-in{
     opacity:0;
     transform:translateY(20px);
@@ -621,7 +627,6 @@ footer{
   }
   .fade-in.visible{opacity:1;transform:none}
 
-  /* Hero stagger — each child animates in sequence */
   .hero-identity{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .05s,transform .5s var(--spring) .05s}
   .hero-tagline{opacity:0;transform:translateY(10px);transition:opacity .5s var(--spring) .12s,transform .5s var(--spring) .12s}
   .hero-title{opacity:0;transform:translateY(12px);transition:opacity .5s var(--spring) .20s,transform .5s var(--spring) .20s}
@@ -635,7 +640,6 @@ footer{
   .hero-ready .hero-actions,
   .hero-ready .hero-visual{opacity:1;transform:none}
 
-  /* Card hover: lift + border glow (Jakub: tactile, polished) */
   .scenario-card{transition:background var(--transition),transform .3s var(--spring),box-shadow .3s var(--spring),border-color .3s var(--spring)}
   .scenario-card:hover{
     background:var(--bg-hover);
@@ -652,11 +656,9 @@ footer{
   .playbook-card{transition:border-color var(--transition),transform .3s var(--spring)}
   .playbook-card:hover{transform:translateY(-2px)}
 
-  /* Stat cards: subtle entrance pulse */
   .stat-card{transition:border-color var(--transition),transform .3s var(--spring)}
   .stat-card:hover{transform:translateY(-2px);border-color:var(--border-mid)}
 
-  /* System rows: left accent reveal on hover */
   .system-row{transition:background var(--transition),padding-left .3s var(--spring)}
   .system-row:hover{background:var(--bg-hover);padding-left:40px}
 }
@@ -729,40 +731,6 @@ footer{
 
       <div class="scenario-card">
         <div class="scenario-visual">
-          <canvas id="physicalCanvas" aria-hidden="true"></canvas>
-          <div class="scenario-visual-label">SPATIAL-PREFLIGHT · ACTIVE</div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="scenario-tag" style="margin-bottom:0">🛰 Physical AI</div>
-          <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
-        </div>
-        <div class="scenario-title">Predictive Spatial Pre-Flight Safety Verifier</div>
-        <div class="scenario-desc">Autonomous systems in shared physical space need sub-second safety decisions before each action. A dual-loop architecture: a &lt;10ms reflex layer for immediate boundary enforcement, plus a 50–250ms tactical lookahead that simulates kinematic braking envelopes and logs counterfactual receipts.</div>
-        <div class="scenario-stack">
-          <span class="chip chip-accent">Sub-10ms Reflex Layer</span>
-          <span class="chip">Kinematic Simulation</span>
-          <span class="chip">Counterfactual Logging</span>
-          <span class="chip">Dual-Loop Architecture</span>
-        </div>
-        <div class="scenario-outcome">
-          <div>
-            <div class="outcome-num">&lt;10ms</div>
-            <div class="outcome-label">Reflex latency</div>
-          </div>
-          <div style="width:1px;height:32px;background:var(--border);margin:0 8px"></div>
-          <div>
-            <div class="outcome-num">0</div>
-            <div class="outcome-label">Judge-LLM calls per decision</div>
-          </div>
-        </div>
-        <a href="demos/spatial-preflight.html" class="scenario-link" style="margin-top:20px">
-          Launch Spatial Pre-Flight Demo
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-
-      <div class="scenario-card">
-        <div class="scenario-visual">
           <canvas id="digitalCanvas" aria-hidden="true"></canvas>
           <div class="scenario-visual-label">MCP-ORCHESTRATION · RUNNING</div>
         </div>
@@ -783,6 +751,41 @@ footer{
         </div>
         <a href="demos/workforce-readiness.html" class="scenario-link" style="margin-top:20px">
           Launch Workforce Readiness Demo
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- ROS 2 TUNNEL CARD -->
+      <div class="scenario-card">
+        <div class="scenario-visual">
+          <canvas id="tunnelCanvas" aria-hidden="true"></canvas>
+          <div class="scenario-visual-label">ROS2-TUNNEL · ACTIVE</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="scenario-tag" style="margin-bottom:0">🤖 Physical AI</div>
+          <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live</span>
+        </div>
+        <div class="scenario-title">ROS 2 Remote Debug Tunnel</div>
+        <div class="scenario-desc">Field-deployed robots break in environments where you can't touch the customer's network. An outbound-only TCP relay that lets any engineer see live ROS 2 topic data from anywhere — no VPN, no inbound ports, no IT ticket required.</div>
+        <div class="scenario-stack">
+          <span class="chip chip-accent">Outbound-Only TCP Relay</span>
+          <span class="chip">Live Topic Dashboard</span>
+          <span class="chip">Auth + Auto-Reconnect</span>
+          <span class="chip">ROS 2 Package</span>
+        </div>
+        <div class="scenario-outcome">
+          <div>
+            <div class="outcome-num">0</div>
+            <div class="outcome-label">Customer IT changes needed</div>
+          </div>
+          <div style="width:1px;height:32px;background:var(--border);margin:0 8px"></div>
+          <div>
+            <div class="outcome-num">&lt;2min</div>
+            <div class="outcome-label">Time to live topic view</div>
+          </div>
+        </div>
+        <a href="http://138.197.209.48:8080" target="_blank" rel="noopener" class="scenario-link" style="margin-top:20px">
+          View Live Dashboard
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -1114,7 +1117,7 @@ function hex2rgba(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-// ─── HERO CANVAS: Prominent side-view brain + wireframe cubes in spatial room ───
+// ─── HERO CANVAS ───
 (function() {
   const cv = document.getElementById('heroCanvas');
   if (!cv) return;
@@ -1124,7 +1127,6 @@ function hex2rgba(hex, a) {
   const col = '#00C4E8';
   function c(a) { return hex2rgba(col, a); }
 
-  // Side-view lateral brain path (frontal lobe on right)
   function setBrainPath() {
     ctx.beginPath();
     ctx.moveTo(cx + rx*.10, cy + ry*.88);
@@ -1137,15 +1139,13 @@ function hex2rgba(hex, a) {
     ctx.closePath();
   }
 
-  // 3D perspective projection (camera at origin, looking along +Z)
   let vpx, vpy, fov;
   function proj(wx, wy, wz) {
     return { x: vpx + (wx/wz)*fov, y: vpy - (wy/wz)*fov };
   }
 
-  // Draw one wireframe cube at world pos (wx,wy,wz) half-size s
   function drawCube(wx, wy, wz, s, alpha) {
-    if (wz - s < 0.1) return; // behind camera
+    if (wz - s < 0.1) return;
     const v = [
       proj(wx-s, wy-s, wz-s), proj(wx+s, wy-s, wz-s),
       proj(wx+s, wy+s, wz-s), proj(wx-s, wy+s, wz-s),
@@ -1160,7 +1160,6 @@ function hex2rgba(hex, a) {
     ctx.stroke();
   }
 
-  // Wireframe cubes: world coords — wy<0 appears below VP (floor area), wy>0 above
   const CUBES = [
     { wx:-2.4, wy:-0.55, wz:1.9, s:0.42 },
     { wx: 2.8, wy:-0.55, wz:2.1, s:0.38 },
@@ -1171,18 +1170,15 @@ function hex2rgba(hex, a) {
     { wx: 0.2, wy:-0.45, wz:4.4, s:0.90 },
     { wx:-1.6, wy: 0.35, wz:2.4, s:0.26 },
     { wx: 2.0, wy: 0.35, wz:2.8, s:0.24 },
-  ].sort((a,b) => b.wz - a.wz); // back to front
+  ].sort((a,b) => b.wz - a.wz);
 
   function init() {
     cx = W * .50; cy = H * .36;
     const base = Math.min(W * .24, H * .32);
     rx = base * 1.15; ry = base;
-
     vpx = W * .50;
     vpy = cy + ry * 1.52;
     fov = H * .32;
-
-    // Scatter particles inside brain via rejection sampling
     setBrainPath();
     particles = [];
     let tries = 0;
@@ -1203,8 +1199,6 @@ function hex2rgba(hex, a) {
         });
       }
     }
-
-    // Brain→floor projection anchors
     const floorY = vpy;
     connNodes = [
       {fx:W*.16, fy:floorY+(H-floorY)*.60},
@@ -1251,10 +1245,7 @@ function hex2rgba(hex, a) {
   function draw() {
     ctx.clearRect(0, 0, W, H);
     t++;
-
     const floorY = vpy;
-
-    // ══ SPATIAL ROOM: perspective walls + ceiling ══
     for (let i=-5; i<=5; i++) {
       ctx.beginPath(); ctx.moveTo(vpx,floorY); ctx.lineTo(vpx+(i/5)*W*.72,H);
       ctx.strokeStyle=c(.06); ctx.lineWidth=.5*dpr; ctx.stroke();
@@ -1271,17 +1262,12 @@ function hex2rgba(hex, a) {
       ctx.beginPath(); ctx.moveTo(vpx,floorY*.30); ctx.lineTo(vpx+(i/3)*W*.55,0);
       ctx.strokeStyle=c(.022); ctx.lineWidth=.35*dpr; ctx.stroke();
     }
-    // Horizon line
     ctx.beginPath(); ctx.moveTo(0,floorY); ctx.lineTo(W,floorY);
     ctx.strokeStyle=c(.06); ctx.lineWidth=.5*dpr; ctx.stroke();
-
-    // ══ WIREFRAME CUBES ══
     CUBES.forEach(cube => {
       const depthFade = 1 - (cube.wz - 1.5) / 4.0;
       drawCube(cube.wx, cube.wy, cube.wz, cube.s, .22 * depthFade + .08);
     });
-
-    // ══ BRAIN→FLOOR LINES + PACKETS ══
     connNodes.forEach((n,ri) => {
       const sx=cx+(n.fx-vpx)*.12, sy=cy+ry*.82;
       const c1x=cx+(n.fx-vpx)*.5, c1y=cy+ry*1.30;
@@ -1289,7 +1275,6 @@ function hex2rgba(hex, a) {
       ctx.beginPath(); ctx.moveTo(sx,sy);
       ctx.bezierCurveTo(c1x,c1y,c2x,c2y,n.fx,n.fy);
       ctx.strokeStyle=c(.20); ctx.lineWidth=1.0*dpr; ctx.stroke();
-
       n.spawn--;
       if (n.spawn<=0) { n.pkts.push({p:0,s:.002+Math.random()*.003}); n.spawn=80+Math.random()*220; }
       n.pkts=n.pkts.filter(pk=>pk.p<=1);
@@ -1301,7 +1286,6 @@ function hex2rgba(hex, a) {
         ctx.beginPath(); ctx.arc(x,y,4.5*dpr,0,Math.PI*2); ctx.fillStyle=c(.15); ctx.fill();
         ctx.beginPath(); ctx.arc(x,y,2.2*dpr,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
       });
-
       const rr = 5+5*(((t*.007+ri*.6)%1));
       ctx.beginPath(); ctx.arc(n.fx,n.fy,rr*dpr,0,Math.PI*2);
       ctx.strokeStyle=c(.12*(1-(rr-5)/5)); ctx.lineWidth=.7*dpr; ctx.stroke();
@@ -1310,27 +1294,17 @@ function hex2rgba(hex, a) {
       ctx.beginPath(); ctx.arc(n.fx,n.fy,2.2*dpr,0,Math.PI*2);
       ctx.fillStyle=c(.55); ctx.fill();
     });
-
-    // ══ BRAIN OUTER GLOW (wider, brighter) ══
     const bg=ctx.createRadialGradient(cx,cy-ry*.1,0,cx,cy,rx*2.2);
     bg.addColorStop(0,c(.28)); bg.addColorStop(.28,c(.12)); bg.addColorStop(.6,c(.04)); bg.addColorStop(1,'transparent');
     ctx.fillStyle=bg; ctx.fillRect(cx-rx*2.5,cy-ry*2.5,rx*5,ry*5);
-
-    // ══ BRAIN INNER FILL (brighter) ══
     setBrainPath();
     const ig=ctx.createRadialGradient(cx+rx*.08,cy+ry*.05,0,cx,cy,rx*.90);
     ig.addColorStop(0,c(.32)); ig.addColorStop(.45,c(.14)); ig.addColorStop(1,c(.03));
     ctx.fillStyle=ig; ctx.fill();
-
-    // ══ BRAIN OUTLINE ══
     setBrainPath();
     ctx.strokeStyle=c(.42+.08*Math.sin(t*.003));
     ctx.lineWidth=2.2*dpr; ctx.stroke();
-
-    // ══ SULCI ══
     drawSulci(.32+.06*Math.sin(t*.003));
-
-    // ══ PARTICLES: dense glow cloud ══
     particles.forEach(p=>{
       p.x+=p.vx; p.y+=p.vy; p.phase+=.003;
       const nx=(p.x-cx)/rx, ny=(p.y-cy)/ry;
@@ -1350,8 +1324,6 @@ function hex2rgba(hex, a) {
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r*pulse,0,Math.PI*2);
       ctx.fillStyle=c(Math.min(1,a)); ctx.fill();
     });
-
-    // Neural connections inside brain
     const LD=60*dpr;
     for (let i=0;i<particles.length;i+=2) for (let j=i+1;j<particles.length;j+=2) {
       const a=particles[i],b=particles[j];
@@ -1363,7 +1335,6 @@ function hex2rgba(hex, a) {
         ctx.lineWidth=(.45+fire*1.1)*dpr; ctx.stroke();
       }
     }
-
     animId=requestAnimationFrame(draw);
   }
 
@@ -1371,108 +1342,7 @@ function hex2rgba(hex, a) {
   resize(); draw();
 })();
 
-// ─── PHYSICAL AI CANVAS: perspective spatial grid + agent dot ───
-(function() {
-  const cv = document.getElementById('physicalCanvas');
-  if (!cv) return;
-  const ctx = cv.getContext('2d');
-  let W, H, animId, t = 0;
-  const COLS = 12, ROWS = 8;
-
-  function resize() {
-    const rect = cv.parentElement.getBoundingClientRect();
-    W = cv.width = rect.width * devicePixelRatio;
-    H = cv.height = rect.height * devicePixelRatio;
-    cv.style.width = rect.width + 'px';
-    cv.style.height = rect.height + 'px';
-  }
-
-  function project(gx, gy) {
-    const vp = { x: W / 2, y: H * .15 };
-    const base = { x0: W * .05, x1: W * .95, y: H * .95 };
-    const lx = base.x0 + (base.x1 - base.x0) * gx / COLS;
-    const rx = lx;
-    const bx = base.x0 + (base.x1 - base.x0) * gx / COLS;
-    const by = base.y;
-    const tx2 = vp.x + (bx - vp.x) * gy / ROWS;
-    const ty2 = vp.y + (by - vp.y) * gy / ROWS;
-    return { x: tx2, y: ty2 };
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    const ac = getAccent();
-    const col = ac.length === 7 ? ac : '#00C4E8';
-    t += .008;
-
-    // Grid lines
-    for (let r = 0; r <= ROWS; r++) {
-      ctx.beginPath();
-      const p0 = project(0, r), p1 = project(COLS, r);
-      ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
-      const alpha = r === 0 ? .05 : (.06 + .04 * (r / ROWS));
-      ctx.strokeStyle = hex2rgba(col, alpha);
-      ctx.lineWidth = devicePixelRatio;
-      ctx.stroke();
-    }
-    for (let c = 0; c <= COLS; c++) {
-      ctx.beginPath();
-      const p0 = project(c, 0), p1 = project(c, ROWS);
-      ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
-      ctx.strokeStyle = hex2rgba(col, .06);
-      ctx.lineWidth = devicePixelRatio;
-      ctx.stroke();
-    }
-
-    // Agent path (sinusoidal route across grid)
-    const pathPts = [];
-    for (let i = 0; i <= 60; i++) {
-      const gx = (i / 60) * COLS;
-      const gy = ROWS / 2 + Math.sin(i * .3) * 2.5;
-      pathPts.push(project(gx, gy));
-    }
-    ctx.beginPath();
-    pathPts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-    ctx.strokeStyle = hex2rgba(col, .25);
-    ctx.lineWidth = 1.5 * devicePixelRatio;
-    ctx.setLineDash([4 * devicePixelRatio, 6 * devicePixelRatio]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Agent dot (animated along path)
-    const progress = (t * .18) % 1;
-    const idx = Math.floor(progress * (pathPts.length - 1));
-    const agent = pathPts[Math.min(idx, pathPts.length - 1)];
-    if (agent) {
-      // Radius pulse
-      const r2 = (10 + 4 * Math.sin(t * 3)) * devicePixelRatio;
-      ctx.beginPath(); ctx.arc(agent.x, agent.y, r2, 0, Math.PI * 2);
-      ctx.fillStyle = hex2rgba(col, .07); ctx.fill();
-      ctx.beginPath(); ctx.arc(agent.x, agent.y, 5 * devicePixelRatio, 0, Math.PI * 2);
-      ctx.fillStyle = col; ctx.fill();
-      // Coordinate label
-      const gxA = (progress * COLS).toFixed(2), gyA = (ROWS / 2 + Math.sin(progress * COLS * .3) * 2.5).toFixed(2);
-      ctx.font = `${10 * devicePixelRatio}px monospace`;
-      ctx.fillStyle = hex2rgba(col, .7);
-      ctx.fillText(`${gxA}, ${gyA}`, agent.x + 8 * devicePixelRatio, agent.y - 8 * devicePixelRatio);
-    }
-
-    // Scan line
-    const scanY = H * .1 + (H * .85) * ((t * .12) % 1);
-    const scanGrad = ctx.createLinearGradient(0, scanY - 20 * devicePixelRatio, 0, scanY + 2 * devicePixelRatio);
-    scanGrad.addColorStop(0, hex2rgba(col, 0));
-    scanGrad.addColorStop(1, hex2rgba(col, .08));
-    ctx.fillStyle = scanGrad;
-    ctx.fillRect(0, scanY - 20 * devicePixelRatio, W, 22 * devicePixelRatio);
-
-    animId = requestAnimationFrame(draw);
-  }
-
-  new ResizeObserver(() => { cancelAnimationFrame(animId); resize(); draw(); }).observe(cv.parentElement);
-  resize(); draw();
-})();
-
-// ─── DIGITAL AI CANVAS: MCP node network + data flow ───
+// ─── DIGITAL AI CANVAS ───
 (function() {
   const cv = document.getElementById('digitalCanvas');
   if (!cv) return;
@@ -1512,20 +1382,15 @@ function hex2rgba(hex, a) {
     const ac = getAccent();
     const col = ac.length === 7 ? ac : '#00C4E8';
     t += .016;
-
     if (Math.random() < .04) spawnFlow();
     flows = flows.filter(f => f.progress <= 1);
     flows.forEach(f => f.progress += f.speed);
-
-    // Edges
     EDGES.forEach(([a, b]) => {
       const p0 = nodePos(NODE_DEFS[a]), p1 = nodePos(NODE_DEFS[b]);
       ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
       ctx.strokeStyle = hex2rgba(col, .12);
       ctx.lineWidth = 1.2 * devicePixelRatio; ctx.stroke();
     });
-
-    // Data flow packets
     flows.forEach(f => {
       const p0 = nodePos(NODE_DEFS[f.from]), p1 = nodePos(NODE_DEFS[f.to]);
       const x = p0.x + (p1.x - p0.x) * f.progress;
@@ -1535,23 +1400,17 @@ function hex2rgba(hex, a) {
       ctx.beginPath(); ctx.arc(x, y, 7 * devicePixelRatio, 0, Math.PI * 2);
       ctx.fillStyle = hex2rgba(col, .15); ctx.fill();
     });
-
-    // Nodes
     NODE_DEFS.forEach((n, i) => {
       const { x, y } = nodePos(n);
       const pulse = .85 + .15 * Math.sin(t * 1.4 + i * .8);
       const r = (n.hub ? 11 : 7) * devicePixelRatio * pulse;
-      // Glow
       ctx.beginPath(); ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
       ctx.fillStyle = hex2rgba(col, n.hub ? .07 : .04); ctx.fill();
-      // Ring
       ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.strokeStyle = hex2rgba(col, n.hub ? .9 : .6);
       ctx.lineWidth = (n.hub ? 1.8 : 1.2) * devicePixelRatio; ctx.stroke();
-      // Core
       ctx.beginPath(); ctx.arc(x, y, r * .45, 0, Math.PI * 2);
       ctx.fillStyle = hex2rgba(col, n.hub ? .9 : .5); ctx.fill();
-      // Label (hub only or on hover — show for hub)
       if (n.hub || W > 500 * devicePixelRatio) {
         ctx.font = `${9 * devicePixelRatio}px monospace`;
         ctx.fillStyle = hex2rgba(col, n.hub ? .8 : .45);
@@ -1560,6 +1419,118 @@ function hex2rgba(hex, a) {
         ctx.textAlign = 'left';
       }
     });
+    animId = requestAnimationFrame(draw);
+  }
+
+  new ResizeObserver(() => { cancelAnimationFrame(animId); resize(); draw(); }).observe(cv.parentElement);
+  resize(); draw();
+})();
+
+// ─── TUNNEL CANVAS: animated TCP relay visualization ───
+(function() {
+  const cv = document.getElementById('tunnelCanvas');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H, animId, t = 0;
+
+  const NODES = [
+    { rx: .12, ry: .5, label: 'Robot', color: '#00C4E8' },
+    { rx: .5,  ry: .5, label: 'Relay', color: '#00C4E8', hub: true },
+    { rx: .88, ry: .5, label: 'Engineer', color: '#00C4E8' },
+  ];
+  let packets = [];
+
+  function resize() {
+    const rect = cv.parentElement.getBoundingClientRect();
+    W = cv.width = rect.width * devicePixelRatio;
+    H = cv.height = rect.height * devicePixelRatio;
+    cv.style.width = rect.width + 'px';
+    cv.style.height = rect.height + 'px';
+  }
+
+  function nodePos(n) { return { x: n.rx * W, y: n.ry * H }; }
+
+  function spawnPacket(from, to, label) {
+    packets.push({ from, to, progress: 0, speed: .008 + Math.random() * .005, label });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const col = '#00C4E8';
+    t += .012;
+
+    // Spawn packets: robot→relay, relay→engineer
+    if (Math.random() < .025) spawnPacket(0, 1, '/hello');
+    if (Math.random() < .025) spawnPacket(1, 2, '/hello');
+    if (Math.random() < .012) spawnPacket(2, 1, '/cmd');
+    if (Math.random() < .012) spawnPacket(1, 0, '/cmd');
+
+    packets = packets.filter(p => p.progress <= 1);
+    packets.forEach(p => p.progress += p.speed);
+
+    // Draw connection lines
+    for (let i = 0; i < NODES.length - 1; i++) {
+      const p0 = nodePos(NODES[i]), p1 = nodePos(NODES[i+1]);
+      ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = hex2rgba(col, .15);
+      ctx.lineWidth = 1.5 * devicePixelRatio;
+      ctx.setLineDash([6 * devicePixelRatio, 4 * devicePixelRatio]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Draw packets
+    packets.forEach(p => {
+      const p0 = nodePos(NODES[p.from]), p1 = nodePos(NODES[p.to]);
+      const x = p0.x + (p1.x - p0.x) * p.progress;
+      const y = p0.y + (p1.y - p0.y) * p.progress;
+      ctx.beginPath(); ctx.arc(x, y, 4 * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 8 * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fillStyle = hex2rgba(col, .18); ctx.fill();
+      // Label
+      ctx.font = `${8 * devicePixelRatio}px monospace`;
+      ctx.fillStyle = hex2rgba(col, .6);
+      ctx.fillText(p.label, x + 10 * devicePixelRatio, y - 6 * devicePixelRatio);
+    });
+
+    // Draw nodes
+    NODES.forEach((n, i) => {
+      const { x, y } = nodePos(n);
+      const pulse = .85 + .15 * Math.sin(t * 1.8 + i * 1.2);
+      const r = (n.hub ? 14 : 10) * devicePixelRatio * pulse;
+
+      // Glow
+      ctx.beginPath(); ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+      ctx.fillStyle = hex2rgba(col, n.hub ? .08 : .05); ctx.fill();
+      // Ring
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = hex2rgba(col, n.hub ? .9 : .65);
+      ctx.lineWidth = (n.hub ? 2 : 1.5) * devicePixelRatio; ctx.stroke();
+      // Core
+      ctx.beginPath(); ctx.arc(x, y, r * .4, 0, Math.PI * 2);
+      ctx.fillStyle = hex2rgba(col, n.hub ? .9 : .6); ctx.fill();
+      // Label
+      ctx.font = `${9 * devicePixelRatio}px monospace`;
+      ctx.fillStyle = hex2rgba(col, .7);
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, x, y + r + 14 * devicePixelRatio);
+      ctx.textAlign = 'left';
+    });
+
+    // Status indicators
+    const statusY = H * .15;
+    const statuses = [
+      { x: W * .12, label: 'ROBOT · LIVE', color: '#22C55E' },
+      { x: W * .88, label: 'ENGINEER · LIVE', color: '#22C55E' },
+    ];
+    statuses.forEach(s => {
+      ctx.font = `${8 * devicePixelRatio}px monospace`;
+      ctx.fillStyle = s.color;
+      ctx.textAlign = 'center';
+      ctx.fillText(s.label, s.x, statusY);
+    });
+    ctx.textAlign = 'left';
 
     animId = requestAnimationFrame(draw);
   }
@@ -1581,7 +1552,7 @@ btn.addEventListener('click', () => {
   try { localStorage.setItem('theme', next); } catch(e) {}
 });
 
-// ─── HERO ENTRANCE (staggered, Jakub principle) ───
+// ─── HERO ENTRANCE ───
 requestAnimationFrame(() => {
   setTimeout(() => document.getElementById('heroGrid')?.classList.add('hero-ready'), 80);
 });
@@ -1682,7 +1653,6 @@ document.getElementById('runBtn').addEventListener('click', () => {
   const s = scenarios[activeScenario];
   out.innerHTML = '';
   document.getElementById('latencyNum').textContent = '—';
-  const start = performance.now();
   s.steps.forEach(({ t, cls, text }) => {
     setTimeout(() => {
       if (!text) { out.innerHTML += '<div class="demo-line">&nbsp;</div>'; return; }
