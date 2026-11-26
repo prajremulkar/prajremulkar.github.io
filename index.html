@@ -1,873 +1,1172 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prajakta S. Remulkar — Principal AI PM & Agentic Orchestration Architect</title>
-  <meta name="description" content="Principal AI Product Manager & 0-to-1 Agentic Orchestration Architect — Bridging Hyperscaler Enterprise AI (Microsoft) & Sub-10ms Runtime Agent Governance (Velvet Protocol)." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #fcfbf9;
-      --bg-elevated: #ffffff;
-      --bg-subtle: #f4f2ed;
-      --grid-line: rgba(15, 23, 42, 0.045);
-      --text-primary: #111827;
-      --text-secondary: #4b5563;
-      --text-muted: #6b7280;
-      --accent-indigo: #3730a3;
-      --accent-amber: #78531b;
-      --accent-emerald: #059669;
-      --border: #e5e7eb;
-      --border-strong: #d1d5db;
-      --btn-bg: #111827;
-      --btn-text: #ffffff;
-      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.07);
-    }
-
-    [data-theme="dark"] {
-      --bg: #0b0f19;
-      --bg-elevated: #111827;
-      --bg-subtle: #161f33;
-      --grid-line: rgba(255, 255, 255, 0.045);
-      --text-primary: #f9fafb;
-      --text-secondary: #d1d5db;
-      --text-muted: #9ca3af;
-      --accent-indigo: #818cf8;
-      --accent-amber: #fbbf24;
-      --accent-emerald: #34d399;
-      --border: #1f2937;
-      --border-strong: #374151;
-      --btn-bg: #f9fafb;
-      --btn-text: #111827;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-primary);
-    }
-
-    body {
-      position: relative;
-      min-height: 100vh;
-      line-height: 1.6;
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-      background-size: 40px 40px;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(252, 251, 249, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    [data-theme="dark"] header {
-      background: rgba(11, 15, 25, 0.92);
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0.85rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: var(--text-primary);
-      flex-shrink: 0;
-    }
-
-    .brand-monogram {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      border: 1.5px solid var(--border-strong);
-      background: var(--bg-elevated);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: var(--text-primary);
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
-    .brand-name {
-      font-weight: 700;
-      font-size: 0.92rem;
-    }
-
-    .brand-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    nav.nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1.35rem;
-      flex-wrap: wrap;
-    }
-
-    nav.nav-links a {
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      padding: 0.25rem 0;
-      transition: color 0.15s ease;
-      cursor: pointer;
-    }
-
-    nav.nav-links a:hover,
-    nav.nav-links a.active {
-      color: var(--text-primary);
-    }
-
-    .nav-live {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: var(--accent-emerald);
-      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      flex-shrink: 0;
-    }
-
-    .theme-toggle {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .theme-toggle:hover {
-      border-color: var(--text-primary);
-    }
-
-    .btn-connect {
-      text-decoration: none;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      font-size: 0.84rem;
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .btn-connect:hover {
-      opacity: 0.9;
-    }
-
-    main {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 1.5rem 5rem;
-    }
-
-    section {
-      scroll-margin-top: 84px;
-      padding: 4.5rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    section:last-of-type {
-      border-bottom: none;
-    }
-
-    .eyebrow-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-elevated);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--accent-amber);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1.5rem;
-    }
-
-    .eyebrow-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #d97706;
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 5vw, 3.85rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.08;
-      margin-bottom: 1.15rem;
-    }
-
-    .hero-subtitle {
-      font-size: clamp(1.2rem, 2.2vw, 1.65rem);
-      font-weight: 700;
-      line-height: 1.35;
-      max-width: 900px;
-      margin-bottom: 1.4rem;
-    }
-
-    .hero-subtitle .indigo {
-      color: var(--accent-indigo);
-    }
-
-    .hero-subtitle .amber {
-      color: var(--accent-amber);
-    }
-
-    .hero-bio {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      max-width: 780px;
-      margin-bottom: 2rem;
-    }
-
-    .hero-bio strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 0.9rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-elevated);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .section-kicker {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent-indigo);
-      font-weight: 600;
-      margin-bottom: 0.45rem;
-    }
-
-    h2 {
-      font-size: clamp(1.65rem, 3vw, 2.2rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.65rem;
-    }
-
-    .section-desc {
-      color: var(--text-secondary);
-      max-width: 720px;
-      margin-bottom: 2.25rem;
-      font-size: 0.98rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.35rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .card:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-md);
-    }
-
-    .card-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--accent-amber);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-    }
-
-    .card h3 {
-      font-size: 1.12rem;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-    }
-
-    .card p {
-      font-size: 0.92rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.1rem;
-    }
-
-    .metric-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: auto;
-    }
-
-    .metric-chip {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.74rem;
-      padding: 0.25rem 0.6rem;
-      border-radius: 6px;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-    }
-
-    .card-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent-indigo);
-      text-decoration: none;
-    }
-
-    .card-link:hover {
-      text-decoration: underline;
-    }
-
-    .sandbox {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-strong);
-      border-radius: 14px;
-      padding: 1.65rem;
-      box-shadow: var(--shadow-md);
-    }
-
-    .sandbox-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .sim-btn {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      padding: 0.5rem 0.9rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-subtle);
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .sim-btn:hover,
-    .sim-btn.active {
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      border-color: var(--btn-bg);
-    }
-
-    .sandbox-output {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      background: #0f172a;
-      color: #e2e8f0;
-      padding: 1.25rem;
-      border-radius: 10px;
-      overflow-x: auto;
-      line-height: 1.65;
-    }
-
-    .status-allow { color: #34d399; font-weight: 600; }
-    .status-escalate { color: #fbbf24; font-weight: 600; }
-    .status-block { color: #f87171; font-weight: 600; }
-
-    .connect-box {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-strong);
-      border-radius: 14px;
-      padding: 2rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-    }
-
-    .connect-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .outline-btn {
-      text-decoration: none;
-      padding: 0.55rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-subtle);
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .outline-btn:hover {
-      border-color: var(--text-primary);
-    }
-
-    footer {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 1.5rem;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-    }
-
-    @media (max-width: 900px) {
-      .nav-container {
-        flex-wrap: wrap;
-      }
-      nav.nav-links {
-        order: 3;
-        width: 100%;
-        padding-top: 0.5rem;
-        border-top: 1px solid var(--border);
-        gap: 1rem;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="nav-container">
-      <a href="#overview" class="brand">
-        <span class="brand-monogram">PR</span>
-        <span class="brand-text">
-          <span class="brand-name">Prajakta S. Remulkar</span>
-          <span class="brand-sub">Principal AI PM • Velvet Protocol</span>
-        </span>
-      </a>
-
-      <nav class="nav-links" aria-label="Primary Navigation">
-        <a href="#overview" class="active">Overview</a>
-        <a href="#shipped-systems">Shipped Systems</a>
-        <a href="#live-interposer-demo" class="nav-live"><span class="live-dot"></span>Live Interposer Demo</a>
-        <a href="#demos">Demos</a>
-        <a href="#ambiguity-to-scale">Ambiguity-to-Scale</a>
-        <a href="#credentials">Credentials</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle light/dark mode">
-          ☾
-        </button>
-        <a href="#connect" class="btn-connect">Connect</a>
+<title>Prajakta S. Remulkar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
+
+<style>
+/* ─── TOKENS: dark-first design ─── */
+:root {
+  --bg:          #07090F;
+  --bg-s:        #0C1018;
+  --bg-e:        #111621;
+  --bg-hover:    #161D2C;
+  --border:      #1A2235;
+  --border-mid:  #223049;
+  --fg:          #DDE3EE;
+  --fg-2:        #7A8BA8;
+  --fg-3:        #394C66;
+  --accent:      #00C4E8;
+  --accent-dim:  rgba(0,196,232,0.1);
+  --accent-glow: rgba(0,196,232,0.18);
+  --good:        #22C55E;
+  --warn:        #F59E0B;
+  --danger:      #EF4444;
+  color-scheme: dark;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Mono', monospace;
+  --r-sm: 6px; --r: 10px; --r-lg: 16px;
+  --transition: 220ms cubic-bezier(0.4,0,0.2,1);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:        #F5F7FA;
+    --bg-s:      #FFFFFF;
+    --bg-e:      #EEF1F7;
+    --bg-hover:  #E8ECF4;
+    --border:    #D5DCE8;
+    --border-mid:#BCC7D8;
+    --fg:        #111827;
+    --fg-2:      #4B5A72;
+    --fg-3:      #A0ACBE;
+    --accent:    #0098BF;
+    --accent-dim:rgba(0,152,191,0.08);
+    --accent-glow:rgba(0,152,191,0.14);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:#F5F7FA;--bg-s:#FFFFFF;--bg-e:#EEF1F7;--bg-hover:#E8ECF4;
+  --border:#D5DCE8;--border-mid:#BCC7D8;--fg:#111827;--fg-2:#4B5A72;--fg-3:#A0ACBE;
+  --accent:#0098BF;--accent-dim:rgba(0,152,191,0.08);--accent-glow:rgba(0,152,191,0.14);
+  color-scheme:light;
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:1160px;margin:0 auto;width:100%}
+section{padding-block:88px}
+.section-label{
+  font-family:var(--font-display);
+  font-size:11px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:12px
+}
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.15;
+  letter-spacing:-.02em;text-wrap:balance;
+  margin-bottom:16px
+}
+.section-sub{
+  font-size:17px;line-height:1.65;color:var(--fg-2);
+  max-width:580px;margin-bottom:48px
+}
+
+/* ─── NAV ─── */
+.nav{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:100;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(7,9,15,.78);border-bottom:1px solid var(--border);
+  transition:box-shadow var(--transition)
+}
+.nav.scrolled{box-shadow:0 1px 32px rgba(0,0,0,.4)}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;gap:24px;
+  max-width:1160px;margin:0 auto;width:100%
+}
+.nav-logo{
+  font-family:var(--font-display);font-weight:700;font-size:17px;
+  letter-spacing:-.02em;display:flex;align-items:center;gap:10px
+}
+.nav-logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent);color:#07090F;
+  font-size:13px;font-weight:800;
+  display:grid;place-items:center;flex-shrink:0
+}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  font-size:13.5px;font-weight:500;color:var(--fg-2);
+  padding:6px 12px;border-radius:6px;
+  transition:color var(--transition),background var(--transition)
+}
+.nav-links a:hover{color:var(--fg);background:var(--bg-hover)}
+.nav-cta{
+  background:var(--accent);color:#07090F;
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+  padding:8px 18px;border-radius:var(--r);letter-spacing:.01em;
+  transition:opacity var(--transition),transform var(--transition);
+  white-space:nowrap
+}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+.theme-btn{
+  background:none;border:1px solid var(--border);color:var(--fg-2);
+  width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:15px;
+  display:grid;place-items:center;
+  transition:border-color var(--transition),color var(--transition)
+}
+.theme-btn:hover{border-color:var(--border-mid);color:var(--fg)}
+
+/* ─── HERO ─── */
+.hero{
+  padding-block:100px 80px;position:relative;overflow:hidden
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 900px 600px at 70% 40%, var(--accent-glow) 0%, transparent 70%);
+  pointer-events:none;opacity:.5
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+  position:relative
+}
+.hero-eyebrow{
+  display:flex;align-items:center;gap:10px;margin-bottom:24px
+}
+.hero-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 10px var(--accent)
+}
+.hero-eyebrow span{
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--fg-2)
+}
+.hero-name{
+  font-family:var(--font-display);
+  font-size:clamp(38px,5.5vw,64px);font-weight:700;
+  line-height:1.08;letter-spacing:-.03em;
+  margin-bottom:20px
+}
+.hero-name em{color:var(--accent);font-style:normal}
+.hero-title{
+  font-size:17px;line-height:1.6;color:var(--fg-2);
+  margin-bottom:32px;max-width:460px
+}
+.hero-badges{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px
+}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg-s);border:1px solid var(--border);
+  font-family:var(--font-display);font-size:12px;font-weight:500;
+  color:var(--fg-2);padding:5px 10px;border-radius:20px
+}
+.badge-accent{
+  background:var(--accent-dim);border-color:rgba(0,196,232,.25);
+  color:var(--accent)
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#07090F;
+  font-family:var(--font-display);font-size:14px;font-weight:700;
+  padding:12px 24px;border-radius:var(--r);letter-spacing:.01em;
+  transition:opacity var(--transition),transform var(--transition)
+}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--fg);
+  font-family:var(--font-display);font-size:14px;font-weight:600;
+  padding:12px 24px;border-radius:var(--r);
+  border:1px solid var(--border-mid);
+  transition:border-color var(--transition),background var(--transition)
+}
+.btn-ghost:hover{border-color:var(--accent);background:var(--accent-dim)}
+.hero-visual{
+  display:flex;flex-direction:column;gap:14px
+}
+.stat-card{
+  background:var(--bg-s);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px 24px;
+  transition:border-color var(--transition)
+}
+.stat-card:hover{border-color:var(--border-mid)}
+.stat-card-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.stat-num{
+  font-family:var(--font-display);
+  font-size:clamp(28px,3.5vw,38px);font-weight:700;
+  color:var(--accent);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums
+}
+.stat-label{font-size:13px;color:var(--fg-2);line-height:1.4;max-width:160px}
+.stat-tag{
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fg-3);margin-top:4px
+}
+.hero-keynote{
+  background:var(--bg-e);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 20px;
+  display:flex;align-items:center;gap:14px
+}
+.keynote-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--accent-dim);border:1px solid rgba(0,196,232,.2);
+  display:grid;place-items:center;font-size:17px;flex-shrink:0
+}
+.keynote-text{font-size:13px;line-height:1.5;color:var(--fg-2)}
+.keynote-text strong{color:var(--fg);font-weight:600}
+
+/* ─── SCENARIOS ─── */
+.scenarios{background:var(--bg-s);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.scenarios-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden
+}
+.scenario-card{
+  background:var(--bg-s);padding:32px;
+  transition:background var(--transition)
+}
+.scenario-card:hover{background:var(--bg-hover)}
+.scenario-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg-e);border:1px solid var(--border);
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fg-2);padding:4px 10px;border-radius:4px;
+  margin-bottom:16px
+}
+.scenario-title{
+  font-family:var(--font-display);font-size:18px;font-weight:600;
+  line-height:1.3;letter-spacing:-.01em;margin-bottom:10px
+}
+.scenario-desc{font-size:14px;color:var(--fg-2);line-height:1.6;margin-bottom:20px}
+.scenario-stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.chip{
+  font-family:var(--font-mono);font-size:11px;
+  background:var(--bg-e);border:1px solid var(--border);
+  color:var(--fg-2);padding:3px 8px;border-radius:4px
+}
+.chip-accent{
+  background:var(--accent-dim);border-color:rgba(0,196,232,.2);
+  color:var(--accent)
+}
+.scenario-outcome{
+  display:flex;align-items:center;gap:10px;
+  padding-top:16px;border-top:1px solid var(--border)
+}
+.outcome-num{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap
+}
+.outcome-label{font-size:12px;color:var(--fg-2);line-height:1.4}
+.scenario-link{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  font-family:var(--font-display);font-size:13px;font-weight:600;
+  color:var(--accent);border-bottom:1px solid transparent;
+  transition:border-color var(--transition),opacity var(--transition)
+}
+.scenario-link:hover{border-color:var(--accent);opacity:.8}
+.scenario-link svg{transition:transform var(--transition)}
+.scenario-link:hover svg{transform:translateX(3px)}
+
+/* ─── SYSTEMS ─── */
+.systems-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.system-row{
+  background:var(--bg-s);padding:28px 32px;
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;
+  transition:background var(--transition)
+}
+.system-row:hover{background:var(--bg-hover)}
+.system-row-left{}
+.system-co{
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);
+  margin-bottom:6px
+}
+.system-name{
+  font-family:var(--font-display);font-size:19px;font-weight:600;
+  letter-spacing:-.01em;margin-bottom:8px
+}
+.system-desc{font-size:14px;color:var(--fg-2);line-height:1.6;max-width:580px}
+.system-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.system-metrics{
+  display:flex;flex-direction:column;gap:10px;min-width:140px;text-align:right
+}
+.metric-pill{
+  display:inline-flex;justify-content:flex-end;align-items:center;gap:6px;
+  background:var(--accent-dim);border:1px solid rgba(0,196,232,.18);
+  border-radius:20px;padding:5px 12px;
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  color:var(--accent);white-space:nowrap
+}
+
+/* ─── INTERPOSER DEMO ─── */
+.demo-section{background:var(--bg-e);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.demo-frame{
+  background:var(--bg-s);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden
+}
+.demo-topbar{
+  background:var(--bg-e);border-bottom:1px solid var(--border);
+  padding:12px 20px;display:flex;align-items:center;gap:10px
+}
+.demo-dot-row{display:flex;gap:6px}
+.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-topbar-title{
+  font-family:var(--font-mono);font-size:12px;color:var(--fg-2);
+  margin-left:8px
+}
+.demo-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.demo-panel-title{
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);
+  margin-bottom:16px
+}
+.demo-scenario-btns{display:flex;flex-direction:column;gap:8px}
+.demo-btn{
+  background:var(--bg-e);border:1px solid var(--border);
+  color:var(--fg-2);font-family:var(--font-body);font-size:13.5px;
+  padding:12px 16px;border-radius:var(--r);cursor:pointer;text-align:left;
+  transition:border-color var(--transition),background var(--transition),color var(--transition)
+}
+.demo-btn:hover{border-color:var(--accent);color:var(--fg)}
+.demo-btn.active{
+  border-color:var(--accent);background:var(--accent-dim);color:var(--fg)
+}
+.demo-btn-num{
+  font-family:var(--font-mono);font-size:11px;font-weight:700;
+  color:var(--accent);margin-right:8px
+}
+.demo-output{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;min-height:220px;
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.65;
+  color:var(--fg-2);overflow:auto
+}
+.demo-line{margin-bottom:4px}
+.demo-pass{color:var(--good)}
+.demo-warn{color:var(--warn)}
+.demo-fail{color:var(--danger)}
+.demo-accent{color:var(--accent)}
+.demo-latency{
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--font-display);font-size:12px
+}
+.latency-num{
+  font-size:22px;font-weight:700;color:var(--accent);
+  font-variant-numeric:tabular-nums
+}
+.latency-label{color:var(--fg-3);margin-left:4px}
+.run-btn{
+  display:block;width:100%;margin-top:16px;
+  background:var(--accent);color:#07090F;
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+  padding:11px;border-radius:var(--r);border:none;cursor:pointer;
+  transition:opacity var(--transition),transform var(--transition)
+}
+.run-btn:hover{opacity:.88;transform:translateY(-1px)}
+.run-btn:active{transform:translateY(0);opacity:1}
+
+/* ─── NEWSLETTER ─── */
+.newsletter-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:24px;margin-bottom:40px;flex-wrap:wrap
+}
+.newsletter-brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.nb-mark{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--accent);color:#07090F;
+  font-family:var(--font-display);font-size:14px;font-weight:800;
+  display:grid;place-items:center
+}
+.nb-name{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  letter-spacing:-.02em
+}
+.nb-desc{font-size:14px;color:var(--fg-2);max-width:420px}
+.sub-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--bg-s);border:1px solid var(--border-mid);
+  color:var(--fg);font-family:var(--font-display);font-size:13px;font-weight:600;
+  padding:10px 20px;border-radius:var(--r);white-space:nowrap;
+  transition:border-color var(--transition),background var(--transition)
+}
+.sub-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.post-card{
+  background:var(--bg-s);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:24px;
+  display:flex;flex-direction:column;
+  transition:border-color var(--transition),transform var(--transition)
+}
+.post-card:hover{border-color:var(--border-mid);transform:translateY(-2px)}
+.post-platforms{display:flex;gap:6px;margin-bottom:16px}
+.platform-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg-e);border:1px solid var(--border);
+  font-family:var(--font-display);font-size:11px;font-weight:500;
+  color:var(--fg-2);padding:3px 8px;border-radius:4px
+}
+.post-title{
+  font-family:var(--font-display);font-size:16px;font-weight:600;
+  line-height:1.35;letter-spacing:-.01em;margin-bottom:10px;
+  text-wrap:balance
+}
+.post-excerpt{font-size:13.5px;color:var(--fg-2);line-height:1.6;flex:1;margin-bottom:20px}
+.post-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:16px;border-top:1px solid var(--border);
+  font-family:var(--font-display);font-size:12px;color:var(--fg-3)
+}
+.post-read-link{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  color:var(--accent)
+}
+.post-read-link:hover{opacity:.8}
+
+/* ─── PLAYBOOK ─── */
+.playbook-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px
+}
+.playbook-card{
+  background:var(--bg-s);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:28px;
+  position:relative;overflow:hidden
+}
+.playbook-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent);opacity:0;
+  transition:opacity var(--transition)
+}
+.playbook-card:hover::before{opacity:1}
+.playbook-num{
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+  color:var(--accent);margin-bottom:14px;letter-spacing:.05em
+}
+.playbook-heading{
+  font-family:var(--font-display);font-size:17px;font-weight:600;
+  letter-spacing:-.01em;margin-bottom:6px;line-height:1.3
+}
+.playbook-sub{
+  font-family:var(--font-display);font-size:12px;font-weight:500;
+  color:var(--accent);margin-bottom:12px
+}
+.playbook-body{font-size:14px;color:var(--fg-2);line-height:1.65}
+
+/* ─── CREDENTIALS ─── */
+.cred-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.cred-group-title{
+  font-family:var(--font-display);font-size:13px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);
+  margin-bottom:20px
+}
+.cred-item{
+  padding-block:16px;border-top:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:14px
+}
+.cred-item:first-of-type{border-top:none;padding-top:0}
+.cred-icon{
+  width:36px;height:36px;border-radius:8px;background:var(--bg-e);
+  border:1px solid var(--border);
+  display:grid;place-items:center;font-size:16px;flex-shrink:0;margin-top:2px
+}
+.cred-name{
+  font-family:var(--font-display);font-size:15px;font-weight:600;
+  letter-spacing:-.01em;line-height:1.3
+}
+.cred-detail{font-size:13px;color:var(--fg-2);margin-top:3px}
+
+/* ─── CONNECT ─── */
+.connect{background:var(--bg-s);border-top:1px solid var(--border)}
+.connect-inner{
+  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center
+}
+.connect-title{
+  font-family:var(--font-display);font-size:clamp(24px,3.5vw,38px);
+  font-weight:700;letter-spacing:-.025em;text-wrap:balance;margin-bottom:12px
+}
+.connect-sub{font-size:16px;color:var(--fg-2);max-width:500px;margin-bottom:28px}
+.connect-open{
+  background:var(--bg-e);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:24px;min-width:220px
+}
+.connect-open-title{
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);
+  margin-bottom:14px
+}
+.connect-role{
+  display:flex;align-items:center;gap:8px;padding-block:7px;
+  font-size:13.5px;color:var(--fg-2);border-top:1px solid var(--border)
+}
+.connect-role:first-of-type{border-top:none;padding-top:0}
+.connect-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.connect-links{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.connect-link{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--bg-e);border:1px solid var(--border);
+  color:var(--fg-2);font-family:var(--font-display);font-size:13px;font-weight:500;
+  padding:9px 16px;border-radius:var(--r);
+  transition:border-color var(--transition),color var(--transition),background var(--transition)
+}
+.connect-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+/* ─── FOOTER ─── */
+footer{
+  padding-block:24px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  font-family:var(--font-display);font-size:12px;color:var(--fg-3)
+}
+
+/* ─── DIVIDER ─── */
+.divider{height:1px;background:var(--border);margin:0}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .scenarios-grid{grid-template-columns:1fr}
+  .demo-body{grid-template-columns:1fr}
+  .posts-grid{grid-template-columns:1fr}
+  .playbook-grid{grid-template-columns:1fr}
+  .cred-grid{grid-template-columns:1fr}
+  .connect-inner{grid-template-columns:1fr}
+  .system-row{grid-template-columns:1fr}
+  .system-metrics{text-align:left;flex-direction:row;flex-wrap:wrap}
+  .newsletter-header{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:640px){
+  section{padding-block:60px}
+  .nav-links{display:none}
+  .hero{padding-block:72px 56px}
+}
+
+/* ─── MOTION ─── */
+@media(prefers-reduced-motion:no-preference){
+  .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+  .fade-in.visible{opacity:1;transform:none}
+}
+</style>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner wrap">
+    <a href="#hero" class="nav-logo">
+      <div class="nav-logo-mark">PR</div>
+      Prajakta Remulkar
+    </a>
+    <div class="nav-links">
+      <a href="#scenarios">Scenarios</a>
+      <a href="#systems">Work</a>
+      <a href="#demo">Demo</a>
+      <a href="#newsletter">Writing</a>
+      <a href="#connect">Connect</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">☾</button>
+      <a href="#connect" class="nav-cta">Let's Build</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-dot"></div>
+          <span>Bay Area, CA · Available for the Right Role</span>
+        </div>
+        <h1 class="hero-name">
+          Prajakta<br>
+          <em>S. Remulkar</em>
+        </h1>
+        <p class="hero-title">
+          Principal AI Forward Deployment Product Manager at Microsoft. Building enterprise-grade agentic workflows and Physical &amp; Spatial AI infrastructure at Velvet Protocol — before the market arrives.
+        </p>
+        <div class="hero-badges">
+          <span class="badge badge-accent">⚡ Microsoft · Copilot & Agents</span>
+          <span class="badge badge-accent">🛰 Founder · Velvet Protocol</span>
+          <span class="badge">Featured in CEO Keynote</span>
+          <span class="badge">Duke Fuqua MBA</span>
+          <span class="badge">MS EE · UT Arlington</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#scenarios" class="btn-primary">
+            View Customer Scenarios
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="btn-ghost">
+            LinkedIn
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="stat-card">
+          <div class="stat-tag">Agentic Workflow Impact</div>
+          <div class="stat-card-row" style="margin-top:12px">
+            <div>
+              <div class="stat-num">+60%</div>
+              <div class="stat-label">Workflow accuracy improvement via eval-driven orchestration</div>
+            </div>
+            <div>
+              <div class="stat-num">+25%</div>
+              <div class="stat-label">Task completion gains across enterprise deployments</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-tag">Runtime Governance · Velvet Protocol</div>
+          <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+            <div>
+              <div class="stat-num">&lt;10ms</div>
+              <div class="stat-label">Interposer governance latency — deterministic, zero judge-LLM overhead</div>
+            </div>
+            <div style="text-align:right">
+              <div class="stat-num" style="font-size:28px">0</div>
+              <div class="stat-label">Judge-LLM calls per decision</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-keynote">
+          <div class="keynote-icon">🎙</div>
+          <div>
+            <div class="keynote-text"><strong>Featured in Satya Nadella's CEO Keynote</strong></div>
+            <div class="keynote-text" style="margin-top:2px">Developer platform extensibility &amp; enterprise agent adoption — presented to global Microsoft audience</div>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
-    <section id="overview">
-      <div class="eyebrow-pill">
-        <span class="eyebrow-dot"></span>
-        0-TO-1 BUILDER • SHOW, DON'T TELL • BAY AREA, CA
-      </div>
+<!-- CUSTOMER SCENARIOS -->
+<section class="scenarios" id="scenarios">
+  <div class="wrap">
+    <div class="section-label">Customer Scenarios · Live Demos</div>
+    <h2 class="section-title">AI That Works in the Real World</h2>
+    <p class="section-sub">Two working demos — one in Physical AI, one in Digital AI. Both built to show how agentic infrastructure behaves under production conditions, not toy inputs.</p>
+    <div class="scenarios-grid fade-in" style="grid-template-columns:repeat(2,1fr)">
 
-      <h1>Prajakta S. Remulkar</h1>
-
-      <p class="hero-subtitle">
-        <span class="indigo">Principal AI Product Manager &amp; 0-to-1 Agentic Orchestration Architect</span>
-        <span class="amber"> — Bridging Hyperscaler Enterprise AI (Microsoft) &amp; Sub-10ms Runtime Agent Governance (Velvet Protocol).</span>
-      </p>
-
-      <p class="hero-bio">
-        Technical product leader with 15+ years turning zero-precedent ambiguity and raw telemetry primitives into multi-million-dollar enterprise platforms and autonomous agent control planes. <strong>MS in Electrical Engineering</strong>, <strong>Duke Fuqua MBA</strong>, and <strong>IEEE CQR Best Speaker</strong> award recipient.
-      </p>
-
-      <div class="pill-row">
-        <span class="badge-pill">✦ Featured in MSFT CEO Keynote</span>
-        <span class="badge-pill">✦ Principal AI PM @ Microsoft</span>
-        <span class="badge-pill">✦ Founder, Velvet Protocol</span>
-        <span class="badge-pill">✦ MS EE • Duke Fuqua MBA</span>
-      </div>
-    </section>
-
-    <section id="shipped-systems">
-      <div class="section-kicker">Production Architecture &amp; Impact</div>
-      <h2>Shipped Systems</h2>
-      <p class="section-desc">
-        End-to-end AI platforms, multi-agent orchestration pipelines, and evaluation harnesses shipped from 0-to-1 ambiguity to global scale.
-      </p>
-
-      <div class="grid-2">
-        <article class="card">
-          <div>
-            <div class="card-tag">Microsoft • Enterprise Agentic Workflows</div>
-            <h3>Headless Multi-Agent Account &amp; Sales Orchestration</h3>
-            <p>
-              Architected schema-locked Model Context Protocol (MCP) agent workflows unifying internal tenant knowledge and external connectors under strict RBAC and top-k citation grounding checks.
-            </p>
-          </div>
-          <div class="metric-strip">
-            <span class="metric-chip">+60% Workflow Accuracy</span>
-            <span class="metric-chip">+25% Task Completion</span>
-            <span class="metric-chip">MCP &amp; Grounding Evals</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <div>
-            <div class="card-tag">Microsoft Foundry • AI Quality &amp; Evaluation</div>
-            <h3>Automated Agent Reliability &amp; Evaluation Harness</h3>
-            <p>
-              Built repeatable evaluation pipelines benchmarking frontier and fine-tuned models on numerical accuracy, citation faithfulness, unsupported claims, edge-case failure traces, and p95 latency.
-            </p>
-          </div>
-          <div class="metric-strip">
-            <span class="metric-chip">Numerical &amp; Citation Evals</span>
-            <span class="metric-chip">Trace Failure Telemetry</span>
-            <span class="metric-chip">Release Gate Standards</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <div>
-            <div class="card-tag">Velvet Protocol • Runtime Governance Proxy</div>
-            <h3>Sub-10ms Deterministic Executive Control Plane</h3>
-            <p>
-              Designed an open-source runtime interposer sitting between foundation models and real-world APIs/actuators—enforcing schema locks, quantitative risk envelopes, and human circuit breakers outside the prompt window.
-            </p>
-          </div>
-          <div class="metric-strip">
-            <span class="metric-chip">&lt;10ms Reflex Latency</span>
-            <span class="metric-chip">Zero Judge-LLM Overhead</span>
-            <span class="metric-chip">Rust / FastAPI / Policy Engine</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <div>
-            <div class="card-tag">Enterprise Growth &amp; Spatial Intelligence</div>
-            <h3>High-Scale Location &amp; Telemetry Platforms (&gt;$5M ARR)</h3>
-            <p>
-              Scaled enterprise data and location-intelligence products across Verizon Media / Yahoo and Ericsson, including low-altitude UAS traffic telemetry collaboration with NASA.
-            </p>
-          </div>
-          <div class="metric-strip">
-            <span class="metric-chip">&gt;$5M ARR Scale</span>
-            <span class="metric-chip">NASA UTM Collaboration</span>
-            <span class="metric-chip">Global Cross-Functional Lead</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="live-interposer-demo">
-      <div class="section-kicker">Interactive Control Plane Sandbox</div>
-      <h2>Live Interposer Demo</h2>
-      <p class="section-desc">
-        Test how Velvet Protocol intercepts outbound agent tool calls in under 10 milliseconds—evaluating schema integrity, risk thresholds, and injection boundaries before execution.
-      </p>
-
-      <div class="sandbox">
-        <div class="sandbox-controls">
-          <button type="button" class="sim-btn active" onclick="runInterposer('allow', this)">1. Read Customer Account Summary</button>
-          <button type="button" class="sim-btn" onclick="runInterposer('escalate', this)">2. Issue $18,500 Credit Memo</button>
-          <button type="button" class="sim-btn" onclick="runInterposer('block', this)">3. Indirect Injection: Export IAM Keys</button>
+      <div class="scenario-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="scenario-tag" style="margin-bottom:0">🛰 Physical AI</div>
+          <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
         </div>
-        <pre id="interposerOutput" class="sandbox-output"></pre>
-      </div>
-    </section>
-
-    <section id="demos">
-      <div class="section-kicker">Interactive Prototypes &amp; Artifacts</div>
-      <h2>Demos</h2>
-      <p class="section-desc">
-        Working product prototypes built to validate agentic workflows, workforce readiness intelligence, and spatial pre-flight safety verification.
-      </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div>
-            <div class="card-tag">Talent &amp; Skills Intelligence</div>
-            <h3>Workforce Readiness &amp; Agentic Learning</h3>
-            <p>
-              Interactive demo mapping role-level skill adjacencies, AI fluency diagnostics, and adaptive learning pathways for enterprise transformation.
-            </p>
-          </div>
-          <a href="demos/workforce-readiness.html" class="card-link">Launch Interactive Demo →</a>
-        </article>
-
-        <article class="card">
-          <div>
-            <div class="card-tag">Dual-Loop Safety Architecture</div>
-            <h3>Predictive Spatial Pre-Flight Verifier</h3>
-            <p>
-              Sub-10ms reflex paired with a 50–250ms tactical horizon lookahead verifier simulating kinematic braking envelopes and counterfactual receipt logs.
-            </p>
-          </div>
-          <a href="#live-interposer-demo" class="card-link">Inspect Runtime Policy Engine ↑</a>
-        </article>
-
-        <article class="card">
-          <div>
-            <div class="card-tag">AI Literacy &amp; Community</div>
-            <h3>Interactive AI Learning for Young Readers</h3>
-            <p>
-              Co-authored illustrated book and hands-on curriculum introducing core AI reasoning, data grounding, and safe human-in-the-loop habits to ages 6–10.
-            </p>
-          </div>
-          <a href="#connect" class="card-link">Request Overview →</a>
-        </article>
-      </div>
-    </section>
-
-    <section id="ambiguity-to-scale">
-      <div class="section-kicker">Operating Playbook</div>
-      <h2>Ambiguity-to-Scale</h2>
-      <p class="section-desc">
-        How I take emerging AI capabilities from raw research primitives to trusted, measurable enterprise adoption.
-      </p>
-
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-tag">01 • Failure Telemetry First</div>
-          <h3>Turn v0 Breakages into Eval Suites</h3>
-          <p>
-            Treat silent aggregation errors, context drift, and ungrounded citations as structured telemetry—converting real customer failure traces into deterministic regression benchmarks.
-          </p>
+        <div class="scenario-title">Predictive Spatial Pre-Flight Safety Verifier</div>
+        <div class="scenario-desc">Autonomous systems in shared physical space need sub-second safety decisions before each action. A dual-loop architecture: a &lt;10ms reflex layer for immediate boundary enforcement, plus a 50–250ms tactical lookahead that simulates kinematic braking envelopes and logs counterfactual receipts.</div>
+        <div class="scenario-stack">
+          <span class="chip chip-accent">Sub-10ms Reflex Layer</span>
+          <span class="chip">Kinematic Simulation</span>
+          <span class="chip">Counterfactual Logging</span>
+          <span class="chip">Dual-Loop Architecture</span>
         </div>
-
-        <div class="card">
-          <div class="card-tag">02 • Decouple Reasoning &amp; Execution</div>
-          <h3>Schema-Locked Tool Boundaries</h3>
-          <p>
-            Let foundation models reason probabilistically while enforcing strict schema validation, RBAC permissions, and quantitative risk gates outside the context window.
-          </p>
+        <div class="scenario-outcome">
+          <div>
+            <div class="outcome-num">&lt;10ms</div>
+            <div class="outcome-label">Reflex latency</div>
+          </div>
+          <div style="width:1px;height:32px;background:var(--border);margin:0 8px"></div>
+          <div>
+            <div class="outcome-num">0</div>
+            <div class="outcome-label">Judge-LLM calls per decision</div>
+          </div>
         </div>
+        <a href="demos/spatial-preflight.html" class="scenario-link" style="margin-top:20px">
+          Launch Spatial Pre-Flight Demo
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
 
-        <div class="card">
-          <div class="card-tag">03 • Measurable Customer Trust</div>
-          <h3>Ship With Clear Quality Bars</h3>
-          <p>
-            Align research, engineering, and go-to-market teams around transparent release criteria—accuracy, faithfulness, latency, and human escalation controls.
-          </p>
+      <div class="scenario-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="scenario-tag" style="margin-bottom:0">⚡ Digital AI</div>
+          <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
+        </div>
+        <div class="scenario-title">Agentic Workforce Readiness &amp; Learning Intelligence</div>
+        <div class="scenario-desc">Enterprise teams adopting AI face a skills gap at every level. A workforce readiness platform that maps role-level skill adjacencies, runs AI fluency diagnostics, and generates adaptive learning paths aligned to real job function transitions — not generic training catalogs.</div>
+        <div class="scenario-stack">
+          <span class="chip chip-accent">Skill Adjacency Graphs</span>
+          <span class="chip">AI Fluency Diagnostics</span>
+          <span class="chip">Adaptive Learning Paths</span>
+          <span class="chip">Role-Level Mapping</span>
+        </div>
+        <div class="scenario-outcome">
+          <div class="outcome-label" style="font-size:13px;color:var(--fg-2);line-height:1.6">Maps your team's AI readiness gaps to concrete, role-specific upskilling paths — interactive and live.</div>
+        </div>
+        <a href="demos/workforce-readiness.html" class="scenario-link" style="margin-top:20px">
+          Launch Workforce Readiness Demo
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SHIPPED SYSTEMS -->
+<section id="systems">
+  <div class="wrap">
+    <div class="section-label">Shipped Systems</div>
+    <h2 class="section-title">End-to-End, 0-to-1</h2>
+    <p class="section-sub">AI platforms, multi-agent orchestration pipelines, and evaluation harnesses taken from raw research primitives to global scale.</p>
+    <div class="systems-list fade-in">
+
+      <div class="system-row">
+        <div class="system-row-left">
+          <div class="system-co">Microsoft · Enterprise AI</div>
+          <div class="system-name">Headless Multi-Agent Account &amp; Sales Orchestration</div>
+          <div class="system-desc">Schema-locked MCP agent workflows with RBAC and top-k citation grounding checks. End-to-end ownership: orchestration design, eval pipeline, MCP schema contracts, HITL governance gates.</div>
+          <div class="system-tags">
+            <span class="chip chip-accent">MCP &amp; Grounding Evals</span>
+            <span class="chip">Schema-Locked Contracts</span>
+            <span class="chip">HITL Gates</span>
+          </div>
+        </div>
+        <div class="system-metrics">
+          <div class="metric-pill">+60% Workflow Accuracy</div>
+          <div class="metric-pill">+25% Task Completion</div>
         </div>
       </div>
-    </section>
 
-    <section id="credentials">
-      <div class="section-kicker">Education, Recognition &amp; Community</div>
-      <h2>Credentials</h2>
-      <p class="section-desc">
-        Technical depth in electrical engineering and distributed systems paired with executive product strategy and community leadership.
-      </p>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-tag">Academic Foundation</div>
-          <h3>Education</h3>
-          <p>
-            <strong>MBA, Marketing &amp; Strategy</strong> — Duke University, The Fuqua School of Business<br />
-            <strong>MS, Electrical Engineering</strong> — University of Texas at Arlington<br />
-            <strong>BE, Electronics &amp; Telecommunications</strong> — University of Mumbai
-          </p>
+      <div class="system-row">
+        <div class="system-row-left">
+          <div class="system-co">Microsoft Foundry · AI Quality</div>
+          <div class="system-name">Automated Agent Reliability &amp; Evaluation Harness</div>
+          <div class="system-desc">Repeatable benchmarking of frontier and fine-tuned models. Numerical and citation evals, trace failure telemetry, release gate standards. Drove the eval-as-discipline shift that made agentic workflows measurably reliable.</div>
+          <div class="system-tags">
+            <span class="chip chip-accent">Numerical &amp; Citation Evals</span>
+            <span class="chip">Trace Failure Telemetry</span>
+            <span class="chip">Release Gate Standards</span>
+          </div>
         </div>
-
-        <div class="card">
-          <div class="card-tag">Honors &amp; Civic Impact</div>
-          <h3>Recognition &amp; Pro-Bono Advisory</h3>
-          <p>
-            <strong>IEEE CQR Best Speaker Award</strong> — Recognized for technical leadership in communications quality and reliability.<br />
-            <strong>Taproot Foundation &amp; Community AI Educator</strong> — Designing AI-enabled fundraising workflows for nonprofits and digital safety workshops for senior centers.
-          </p>
+        <div class="system-metrics">
+          <div class="metric-pill">Production-Grade</div>
         </div>
       </div>
-    </section>
 
-    <section id="connect">
-      <div class="connect-box">
+      <div class="system-row">
+        <div class="system-row-left">
+          <div class="system-co">Velvet Protocol · Open Source</div>
+          <div class="system-name">Sub-10ms Deterministic Executive Control Plane</div>
+          <div class="system-desc">Open-source runtime interposer between models and APIs/actuators. Checks schema integrity, risk thresholds, and injection boundaries at every outbound agent tool call — before the tool executes, not after.</div>
+          <div class="system-tags">
+            <span class="chip chip-accent">Rust / FastAPI / Policy Engine</span>
+            <span class="chip">Zero Judge-LLM Overhead</span>
+            <span class="chip">Open Source</span>
+          </div>
+        </div>
+        <div class="system-metrics">
+          <div class="metric-pill">&lt;10ms Reflex Latency</div>
+          <div class="metric-pill">0 Judge-LLM Calls</div>
+        </div>
+      </div>
+
+      <div class="system-row">
+        <div class="system-row-left">
+          <div class="system-co">Verizon Media / Yahoo · Ericsson</div>
+          <div class="system-name">High-Scale Location &amp; Telemetry Platforms</div>
+          <div class="system-desc">0-to-1 enterprise location-intelligence platform at Verizon Media — Fortune 500 customers. Big data analytics at Ericsson across 36 people in 4 countries, $5M+ ARR, NASA UTM collaboration for low-altitude UAS traffic telemetry.</div>
+          <div class="system-tags">
+            <span class="chip">&gt;$5M ARR Scale</span>
+            <span class="chip">NASA UTM Collaboration</span>
+            <span class="chip">Global Cross-Functional Lead</span>
+          </div>
+        </div>
+        <div class="system-metrics">
+          <div class="metric-pill">$5M+ ARR</div>
+          <div class="metric-pill">Fortune 500</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INTERPOSER DEMO -->
+<section class="demo-section" id="demo">
+  <div class="wrap">
+    <div class="section-label">Live Demo</div>
+    <h2 class="section-title">Interposer Control Plane Sandbox</h2>
+    <p class="section-sub">Watch Velvet Protocol intercept outbound agent tool calls in under 10ms — checking schema integrity, risk thresholds, and injection boundaries before execution.</p>
+    <div class="demo-frame fade-in">
+      <div class="demo-topbar">
+        <div class="demo-dot-row">
+          <div class="demo-dot" style="background:#FF5F57"></div>
+          <div class="demo-dot" style="background:#FFBD2E"></div>
+          <div class="demo-dot" style="background:#28CA41"></div>
+        </div>
+        <div class="demo-topbar-title">velvet-protocol / interposer-sandbox · runtime-policy-engine v0.4.1</div>
+      </div>
+      <div class="demo-body">
         <div>
-          <div class="section-kicker">Get in Touch</div>
-          <h2>Let's Build Reliable AI Systems</h2>
-          <p style="color: var(--text-secondary); max-width: 560px; margin-top: 0.35rem;">
-            Open to Principal / Director AI Product leadership conversations, agentic evaluation &amp; governance architecture, and advisory collaborations.
-          </p>
+          <div class="demo-panel-title">Select Scenario</div>
+          <div class="demo-scenario-btns">
+            <button class="demo-btn active" data-scenario="1">
+              <span class="demo-btn-num">01</span>Read Customer Account Summary
+            </button>
+            <button class="demo-btn" data-scenario="2">
+              <span class="demo-btn-num">02</span>Issue $18,500 Credit Memo
+            </button>
+            <button class="demo-btn" data-scenario="3">
+              <span class="demo-btn-num">03</span>Indirect Injection: Export IAM Keys
+            </button>
+          </div>
+          <button class="run-btn" id="runBtn">▶ Run Interposer Check</button>
+          <div class="demo-latency">
+            <div>
+              <span class="latency-num" id="latencyNum">—</span>
+              <span class="latency-label">ms</span>
+            </div>
+            <div style="font-size:11px;color:var(--fg-3)">Interposer latency</div>
+          </div>
         </div>
-
-        <div class="connect-links">
-          <a href="https://github.com/prajremulkar" target="_blank" rel="noopener noreferrer" class="btn-connect">GitHub (@prajremulkar)</a>
-          <a href="https://www.linkedin.com/in/prajaktaremulkar" target="_blank" rel="noopener noreferrer" class="outline-btn">LinkedIn</a>
+        <div>
+          <div class="demo-panel-title">Interposer Output</div>
+          <div class="demo-output" id="demoOutput">
+            <div class="demo-line" style="color:var(--fg-3)">// Select a scenario and run the check</div>
+            <div class="demo-line" style="color:var(--fg-3)">// Interposer output will appear here</div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    © 2026 Prajakta S. Remulkar • Bay Area, California
-  </footer>
+<!-- NEWSLETTER / WRITING -->
+<section id="newsletter">
+  <div class="wrap">
+    <div class="newsletter-header">
+      <div>
+        <div class="newsletter-brand">
+          <div class="nb-mark">BB</div>
+          <div>
+            <div class="nb-name">The Build Brief</div>
+          </div>
+        </div>
+        <div class="nb-desc">Architecture decisions, production failure modes, and what's coming in Physical &amp; Spatial AI — before the mainstream catches up. Published on Substack, LinkedIn, and Medium.</div>
+      </div>
+      <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="sub-btn">
+        Follow on LinkedIn
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5L11 6.5 7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="posts-grid fade-in">
 
-  <script>
-    const themeToggle = document.getElementById('themeToggle');
-    const rootEl = document.documentElement;
-    const savedTheme = localStorage.getItem('pr-theme');
-    if (savedTheme) {
-      rootEl.setAttribute('data-theme', savedTheme);
-      themeToggle.textContent = savedTheme === 'dark' ? '☀' : '☾';
-    }
+      <div class="post-card">
+        <div class="post-platforms">
+          <span class="platform-tag">LinkedIn</span>
+          <span class="platform-tag">Substack</span>
+        </div>
+        <div class="post-title">MCP in Production: What Actually Breaks</div>
+        <div class="post-excerpt">Tool-calling contracts drift. A server updates its schema. The client doesn't know. The agent keeps calling with the old shape — and fails silently, or worse, partially succeeds. The fix isn't retries. It's schema locks.</div>
+        <div class="post-meta">
+          <span>Nov 2026 · 3 min read</span>
+          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="post-read-link">
+            Read →
+          </a>
+        </div>
+      </div>
 
-    themeToggle.addEventListener('click', () => {
-      const nextTheme = rootEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      rootEl.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('pr-theme', nextTheme);
-      themeToggle.textContent = nextTheme === 'dark' ? '☀' : '☾';
-    });
+      <div class="post-card">
+        <div class="post-platforms">
+          <span class="platform-tag">LinkedIn</span>
+          <span class="platform-tag">Medium</span>
+        </div>
+        <div class="post-title">Evaluation-Driven Product Development for Agentic PMs</div>
+        <div class="post-excerpt">The 60% workflow accuracy improvement didn't come from better models. It came from treating evals as a product discipline, not a QA afterthought. Here's the eval pipeline architecture that made it real.</div>
+        <div class="post-meta">
+          <span>Nov 2026 · 5 min read</span>
+          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="post-read-link">
+            Read →
+          </a>
+        </div>
+      </div>
 
-    const navLinks = document.querySelectorAll('nav.nav-links a');
-    const sections = document.querySelectorAll('main section');
+      <div class="post-card">
+        <div class="post-platforms">
+          <span class="platform-tag">Substack</span>
+          <span class="platform-tag">LinkedIn</span>
+        </div>
+        <div class="post-title">Physical AI + Digital AI: Why the Control Plane Is the Same</div>
+        <div class="post-excerpt">An autonomous robot navigating shared space and a multi-agent sales workflow share one architecture requirement: a governance layer that acts before the tool call executes. The interposer pattern works for both.</div>
+        <div class="post-meta">
+          <span>Oct 2026 · 6 min read</span>
+          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="post-read-link">
+            Read →
+          </a>
+        </div>
+      </div>
 
-    window.addEventListener('scroll', () => {
-      let currentId = 'overview';
-      sections.forEach((sec) => {
-        const top = sec.offsetTop - 120;
-        if (window.scrollY >= top) {
-          currentId = sec.getAttribute('id');
-        }
-      });
-      navLinks.forEach((link) => {
-        link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
-      });
-    }, { passive: true });
+    </div>
+  </div>
+</section>
 
-    const scenarios = {
-      allow: {
-        verdict: 'ALLOW',
-        css: 'status-allow',
-        latency: '3.4 ms',
-        tool: 'crm.get_account_brief(account_id="ENT-4092")',
-        policy: 'RBAC_TENANT_READ_ONLY • SCHEMA_VALID',
-        reason: 'Scoped read-only tool call within caller tenant boundary; PII redaction mask active.'
-      },
-      escalate: {
-        verdict: 'ESCALATE_HUMAN_APPROVAL',
-        css: 'status-escalate',
-        latency: '5.1 ms',
-        tool: 'billing.issue_credit_memo(account_id="ENT-4092", amount_usd=18500)',
-        policy: 'FINANCIAL_THRESHOLD_GATE (max_auto_usd <= 5000)',
-        reason: 'Requested $18,500 exceeds autonomous ceiling ($5,000). Execution paused; approval ticket dispatched.'
-      },
-      block: {
-        verdict: 'BLOCK_POLICY_VIOLATION',
-        css: 'status-block',
-        latency: '2.8 ms',
-        tool: 'iam.export_service_credentials(dest="external-webhook")',
-        policy: 'ZERO_TRUST_EXFIL_GUARD • UNTRUSTED_CONTEXT_TAINT',
-        reason: 'Tool call triggered immediately after untrusted external document ingestion. Blocked prior to network egress.'
-      }
-    };
+<!-- OPERATING PLAYBOOK -->
+<section style="background:var(--bg-s);border-top:1px solid var(--border)">
+  <div class="wrap">
+    <div class="section-label">Operating Playbook</div>
+    <h2 class="section-title">How I Take AI from Ambiguity to Scale</h2>
+    <p class="section-sub">Emerging AI capabilities from raw research primitives to trusted, measurable enterprise adoption — three principles that run every engagement.</p>
+    <div class="playbook-grid fade-in">
+      <div class="playbook-card">
+        <div class="playbook-num">01</div>
+        <div class="playbook-heading">Failure Telemetry First</div>
+        <div class="playbook-sub">Turn v0 Breakages into Eval Suites</div>
+        <div class="playbook-body">Every production failure is a free eval. Instrument traces before you optimize outputs — the breakage pattern tells you where the schema contract is weak, where the tool boundary is leaking, and where the model is filling gaps it shouldn't.</div>
+      </div>
+      <div class="playbook-card">
+        <div class="playbook-num">02</div>
+        <div class="playbook-heading">Decouple Reasoning &amp; Execution</div>
+        <div class="playbook-sub">Schema-Locked Tool Boundaries</div>
+        <div class="playbook-body">Reliability in multi-agent systems is almost never a model problem. It's a contract problem. Schema-locked tool boundaries — versioned, validated, failing loudly at the edge — are what make deterministic execution real rather than aspirational.</div>
+      </div>
+      <div class="playbook-card">
+        <div class="playbook-num">03</div>
+        <div class="playbook-heading">Measurable Customer Trust</div>
+        <div class="playbook-sub">Ship With Clear Quality Bars</div>
+        <div class="playbook-body">Customers don't adopt AI they can't explain to their board. Every deployment ships with clear quality bars — task completion rates, grounding accuracy, latency SLOs — and a telemetry layer that makes those numbers visible over time.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function runInterposer(key, btnEl) {
-      document.querySelectorAll('.sim-btn').forEach((b) => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
+<!-- CREDENTIALS -->
+<section id="credentials">
+  <div class="wrap">
+    <div class="section-label">Credentials</div>
+    <h2 class="section-title">Technical Depth + Strategic Range</h2>
+    <div class="cred-grid fade-in">
+      <div>
+        <div class="cred-group-title">Education</div>
+        <div class="cred-item">
+          <div class="cred-icon">🎓</div>
+          <div>
+            <div class="cred-name">MBA, Marketing &amp; Strategy</div>
+            <div class="cred-detail">Duke University · The Fuqua School of Business</div>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon">⚡</div>
+          <div>
+            <div class="cred-name">MS, Electrical Engineering</div>
+            <div class="cred-detail">University of Texas at Arlington</div>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon">📡</div>
+          <div>
+            <div class="cred-name">BE, Electronics &amp; Telecommunications</div>
+            <div class="cred-detail">University of Mumbai</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cred-group-title">Recognition &amp; Community</div>
+        <div class="cred-item">
+          <div class="cred-icon">🏆</div>
+          <div>
+            <div class="cred-name">IEEE CQR Best Speaker Award</div>
+            <div class="cred-detail">IEEE Communications Quality &amp; Reliability Workshop</div>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon">🤝</div>
+          <div>
+            <div class="cred-name">Pro-Bono AI Advisory</div>
+            <div class="cred-detail">Taproot Foundation · AI-enabled fundraising workflows for nonprofits; digital safety workshops for senior centers</div>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon">🤖</div>
+          <div>
+            <div class="cred-name">Physical AI Communities</div>
+            <div class="cred-detail">Cloud Robotics Working Group · ROSCon · openrobotics.org</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      const s = scenarios[key];
-      const out = document.getElementById('interposerOutput');
-      out.innerHTML =
-        `[VELVET-INTERPOSER] Intercepted outbound tool call\n` +
-        `  Tool Call   : ${s.tool}\n` +
-        `  Policy Rule : ${s.policy}\n` +
-        `  Eval Latency: ${s.latency}\n` +
-        `  Decision    : <span class="${s.css}">${s.verdict}</span>\n` +
-        `  Audit Trace : ${s.reason}`;
-    }
+<!-- CONNECT -->
+<section class="connect" id="connect">
+  <div class="wrap">
+    <div class="connect-inner">
+      <div>
+        <div class="section-label">Connect</div>
+        <div class="connect-title">Let's Build Reliable AI Systems</div>
+        <div class="connect-sub">Open to Principal and Director AI Product leadership roles, agentic evaluation and governance architecture, and advisory work in Physical &amp; Spatial AI.</div>
+        <div class="connect-links">
+          <a href="https://www.linkedin.com/in/prajaktaremulkar/" target="_blank" rel="noopener" class="connect-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/prajremulkar" target="_blank" rel="noopener" class="connect-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://velvet-protocol.com" target="_blank" rel="noopener" class="connect-link">
+            🛰 Velvet Protocol
+          </a>
+        </div>
+      </div>
+      <div class="connect-open">
+        <div class="connect-open-title">Open To</div>
+        <div class="connect-role"><div class="connect-dot"></div>Principal / Director AI Product Management</div>
+        <div class="connect-role"><div class="connect-dot"></div>Forward Deployment AI PM roles</div>
+        <div class="connect-role"><div class="connect-dot"></div>Agentic Evaluation &amp; Governance Architecture</div>
+        <div class="connect-role"><div class="connect-dot"></div>Physical &amp; Spatial AI Advisory</div>
+        <div class="connect-role"><div class="connect-dot"></div>MCP / Multi-Agent Infrastructure</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    runInterposer('allow');
-  </script>
-</body>
-</html>
+<footer class="wrap">
+  <span>© 2026 Prajakta S. Remulkar · Bay Area, California</span>
+  <span>Built with intention, shipped before the market arrived.</span>
+</footer>
+
+<script>
+// ─── THEME TOGGLE ───
+const root = document.documentElement;
+const btn = document.getElementById('themeBtn');
+const stored = localStorage.getItem('theme');
+if (stored) { root.dataset.theme = stored; btn.textContent = stored === 'dark' ? '☀' : '☾'; }
+btn.addEventListener('click', () => {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  root.dataset.theme = next;
+  btn.textContent = next === 'dark' ? '☀' : '☾';
+  try { localStorage.setItem('theme', next); } catch(e) {}
+});
+
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ─── FADE IN OBSERVER ───
+const faders = document.querySelectorAll('.fade-in');
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  faders.forEach(f => io.observe(f));
+} else {
+  faders.forEach(f => f.classList.add('visible'));
+}
+
+// ─── INTERPOSER DEMO ───
+const scenarios = {
+  1: {
+    label: 'Read Customer Account Summary',
+    steps: [
+      { t: 20,  cls: 'demo-accent', text: '→ INTERCEPT  tool=crm.getAccount  args={id:"acct_8821"}' },
+      { t: 60,  cls: '',            text: '   schema_check   ... PASS  (v2.3.1 → v2.3.1)' },
+      { t: 100, cls: 'demo-pass',   text: '   risk_score     ... 0.04  BELOW_THRESHOLD' },
+      { t: 130, cls: '',            text: '   injection_scan  ... clean' },
+      { t: 160, cls: '',            text: '   rbac_check      ... authorized  (role=sales_rep)' },
+      { t: 190, cls: 'demo-pass',   text: '✓  ALLOW  — forwarding to crm.getAccount' },
+      { t: 220, cls: '',            text: '' },
+      { t: 230, cls: 'demo-accent', text: '← RESPONSE  200 OK  tokens=312  latency=7.4ms' },
+    ],
+    latency: 7.4,
+    result: 'allow'
+  },
+  2: {
+    label: 'Issue $18,500 Credit Memo',
+    steps: [
+      { t: 15,  cls: 'demo-accent', text: '→ INTERCEPT  tool=billing.issueCreditMemo  args={amount:18500}' },
+      { t: 55,  cls: '',            text: '   schema_check   ... PASS  (v1.8.0 → v1.8.0)' },
+      { t: 90,  cls: 'demo-warn',   text: '   risk_score     ... 0.71  ABOVE_THRESHOLD (limit=0.65)' },
+      { t: 120, cls: '',            text: '   escalation_rule ... HITL_REQUIRED  (amount > $10k)' },
+      { t: 155, cls: '',            text: '   rbac_check      ... authorized  (role=sales_rep)' },
+      { t: 185, cls: 'demo-warn',   text: '⚠  HOLD  — routing to human approval queue' },
+      { t: 215, cls: '',            text: '' },
+      { t: 225, cls: 'demo-accent', text: '← RESPONSE  202 Accepted  approval_id=apr_7741' },
+    ],
+    latency: 8.9,
+    result: 'hold'
+  },
+  3: {
+    label: 'Indirect Injection: Export IAM Keys',
+    steps: [
+      { t: 10,  cls: 'demo-accent', text: '→ INTERCEPT  tool=iam.exportCredentials  args={scope:"all"}' },
+      { t: 45,  cls: '',            text: '   schema_check   ... PASS  (v1.2.0 → v1.2.0)' },
+      { t: 80,  cls: 'demo-fail',   text: '   injection_scan  ... ALERT  pattern=CRED_EXFIL (confidence=0.97)' },
+      { t: 110, cls: 'demo-fail',   text: '   risk_score     ... 0.98  CRITICAL' },
+      { t: 140, cls: '',            text: '   origin_trace    ... indirect_injection via user_input[idx=3]' },
+      { t: 170, cls: 'demo-fail',   text: '✗  BLOCK  — injection attempt logged to audit' },
+      { t: 200, cls: '',            text: '' },
+      { t: 210, cls: 'demo-accent', text: '← RESPONSE  403 Forbidden  incident_id=inc_0049' },
+    ],
+    latency: 6.1,
+    result: 'block'
+  }
+};
+
+let activeScenario = 1;
+let running = false;
+
+document.querySelectorAll('.demo-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    if (running) return;
+    document.querySelectorAll('.demo-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    activeScenario = parseInt(b.dataset.scenario);
+    document.getElementById('demoOutput').innerHTML =
+      `<div class="demo-line" style="color:var(--fg-3)">// Scenario: ${scenarios[activeScenario].label}</div><div class="demo-line" style="color:var(--fg-3)">// Press Run to start the interposer check</div>`;
+    document.getElementById('latencyNum').textContent = '—';
+  });
+});
+
+document.getElementById('runBtn').addEventListener('click', () => {
+  if (running) return;
+  running = true;
+  const out = document.getElementById('demoOutput');
+  const s = scenarios[activeScenario];
+  out.innerHTML = '';
+  document.getElementById('latencyNum').textContent = '—';
+  const start = performance.now();
+  s.steps.forEach(({ t, cls, text }) => {
+    setTimeout(() => {
+      if (!text) { out.innerHTML += '<div class="demo-line">&nbsp;</div>'; return; }
+      const div = document.createElement('div');
+      div.className = 'demo-line' + (cls ? ' ' + cls : '');
+      div.textContent = text;
+      out.appendChild(div);
+      out.scrollTop = out.scrollHeight;
+    }, t);
+  });
+  const lastT = Math.max(...s.steps.map(x => x.t));
+  setTimeout(() => {
+    document.getElementById('latencyNum').textContent = s.latency.toFixed(1);
+    running = false;
+  }, lastT + 40);
+});
+</script>
