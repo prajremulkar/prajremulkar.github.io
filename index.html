@@ -1196,7 +1196,7 @@ function hex2rgba(hex, a) {
         const d = Math.sqrt(((px-cx)/rx)**2 + ((py-cy)/ry)**2);
         particles.push({
           x:px, y:py,
-          vx:(Math.random()-.5)*.09*dpr, vy:(Math.random()-.5)*.07*dpr,
+          vx:(Math.random()-.5)*.04*dpr, vy:(Math.random()-.5)*.03*dpr,
           r:(.8+Math.random()*2.1)*dpr,
           phase:Math.random()*Math.PI*2,
           brightness:.50+(1-d)*.50,
@@ -1293,7 +1293,7 @@ function hex2rgba(hex, a) {
       ctx.strokeStyle=c(.20); ctx.lineWidth=1.0*dpr; ctx.stroke();
 
       n.spawn--;
-      if (n.spawn<=0) { n.pkts.push({p:0,s:.004+Math.random()*.005}); n.spawn=80+Math.random()*220; }
+      if (n.spawn<=0) { n.pkts.push({p:0,s:.002+Math.random()*.003}); n.spawn=80+Math.random()*220; }
       n.pkts=n.pkts.filter(pk=>pk.p<=1);
       n.pkts.forEach(pk=>{
         pk.p+=pk.s;
@@ -1326,21 +1326,21 @@ function hex2rgba(hex, a) {
 
     // ══ BRAIN OUTLINE ══
     setBrainPath();
-    ctx.strokeStyle=c(.42+.08*Math.sin(t*.007));
+    ctx.strokeStyle=c(.42+.08*Math.sin(t*.003));
     ctx.lineWidth=2.2*dpr; ctx.stroke();
 
     // ══ SULCI ══
-    drawSulci(.32+.06*Math.sin(t*.007));
+    drawSulci(.32+.06*Math.sin(t*.003));
 
     // ══ PARTICLES: dense glow cloud ══
     particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.phase+=.007;
+      p.x+=p.vx; p.y+=p.vy; p.phase+=.003;
       const nx=(p.x-cx)/rx, ny=(p.y-cy)/ry;
-      if (nx*nx+ny*ny>.82) { p.vx-=nx*rx*.010; p.vy-=ny*ry*.010; }
+      if (nx*nx+ny*ny>.82) { p.vx-=nx*rx*.005; p.vy-=ny*ry*.005; }
       p.fireTimer--;
       if (p.hub&&p.fireTimer<=0) { p.firing=1.0; p.fireTimer=240+Math.random()*320; }
       if (p.firing>0) {
-        p.firing=Math.max(0,p.firing-.013);
+        p.firing=Math.max(0,p.firing-.007);
         if (p.firing>.5) particles.forEach(m=>{
           if (m===p||m.firing>0) return;
           const dx=m.x-p.x,dy=m.y-p.y;
