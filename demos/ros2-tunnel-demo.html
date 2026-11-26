@@ -30,6 +30,43 @@ body {
   min-height: 100vh;
 }
 
+/* ── STAGE BANNER ── */
+.story-banner {
+  background: rgba(0,196,232,.07);
+  border-bottom: 1px solid rgba(0,196,232,.18);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.story-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.story-desc {
+  font-size: 12px;
+  color: var(--fg-2);
+  flex: 1;
+  text-align: center;
+}
+.story-stages {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.stage-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border-mid);
+  transition: background .4s;
+}
+.stage-dot.active { background: var(--accent); }
+.stage-dot.done { background: var(--fg-3); }
+
 /* ── TOP BAR ── */
 .topbar {
   background: var(--bg-s);
@@ -50,21 +87,15 @@ body {
   align-items: center;
   gap: 10px;
 }
-.topbar-title .dot {
+.relay-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--good);
   box-shadow: 0 0 6px var(--good);
-  animation: pulse 2s infinite;
+  transition: background .6s, box-shadow .6s;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .4; }
-}
-.topbar-meta {
-  font-size: 11px;
-  color: var(--fg-3);
-  letter-spacing: .04em;
-}
+.relay-dot.off { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+.relay-dot.warn { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+.topbar-meta { font-size: 11px; color: var(--fg-3); letter-spacing: .04em; }
 .back-link {
   font-family: var(--font-ui);
   font-size: 12px;
@@ -86,6 +117,7 @@ body {
 .status-cell {
   background: var(--bg-s);
   padding: 16px 20px;
+  transition: background .4s;
 }
 .status-label {
   font-size: 10px;
@@ -100,9 +132,8 @@ body {
   font-weight: 700;
   color: var(--fg);
   letter-spacing: -.01em;
+  transition: color .4s;
 }
-.status-value.good { color: var(--good); }
-.status-value.accent { color: var(--accent); }
 .status-indicator {
   display: inline-flex;
   align-items: center;
@@ -111,11 +142,17 @@ body {
   font-size: 14px;
   font-weight: 600;
 }
-.status-indicator .led {
+.led {
   width: 9px; height: 9px; border-radius: 50%;
+  transition: background .5s, box-shadow .5s;
 }
 .led-green { background: var(--good); box-shadow: 0 0 6px var(--good); animation: pulse 2s infinite; }
-.led-off { background: var(--fg-3); }
+.led-red   { background: var(--danger); box-shadow: 0 0 4px var(--danger); animation: none; }
+.led-warn  { background: var(--warn);   box-shadow: 0 0 6px var(--warn);   animation: blink 1s infinite; }
+.led-off   { background: var(--fg-3); box-shadow: none; animation: none; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
 /* ── MAIN LAYOUT ── */
 .main {
@@ -123,14 +160,11 @@ body {
   grid-template-columns: 1fr 320px;
   gap: 1px;
   background: var(--border);
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 160px);
 }
 
 /* ── TOPICS TABLE ── */
-.topics-panel {
-  background: var(--bg);
-  padding: 20px;
-}
+.topics-panel { background: var(--bg); padding: 20px; }
 .panel-header {
   display: flex;
   align-items: center;
@@ -145,10 +179,7 @@ body {
   text-transform: uppercase;
   color: var(--fg-3);
 }
-.topics-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+.topics-table { width: 100%; border-collapse: collapse; }
 .topics-table th {
   font-size: 10px;
   letter-spacing: .08em;
@@ -162,38 +193,31 @@ body {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  transition: opacity .5s, color .5s;
 }
 .topics-table tr:last-child td { border-bottom: none; }
 .topics-table tr:hover td { background: var(--bg-e); }
-
-.topic-name { color: var(--accent); font-size: 12px; }
-.topic-count {
-  font-variant-numeric: tabular-nums;
-  color: var(--fg);
-  font-weight: 600;
-  font-size: 13px;
-}
-.topic-rate { color: var(--fg-2); font-size: 11px; }
-.topic-last {
-  color: var(--fg-2);
-  font-size: 11px;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.topic-age { color: var(--fg-3); font-size: 11px; white-space: nowrap; }
-.badge-live {
+.topic-name  { color: var(--accent); font-size: 12px; }
+.topic-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; font-size: 13px; }
+.topic-rate  { color: var(--fg-2); font-size: 11px; }
+.topic-last  { color: var(--fg-2); font-size: 11px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topic-age   { color: var(--fg-3); font-size: 11px; white-space: nowrap; }
+.topic-status-badge {
   display: inline-block;
-  background: rgba(34,197,94,.12);
-  border: 1px solid rgba(34,197,94,.25);
-  color: var(--good);
   font-size: 10px;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 4px;
   letter-spacing: .06em;
+  transition: background .4s, color .4s, border-color .4s;
 }
+.badge-live  { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.25);  color: var(--good); }
+.badge-stale { background: rgba(245,158,11,.10); border: 1px solid rgba(245,158,11,.25); color: var(--warn); }
+.badge-dead  { background: rgba(239,68,68,.10);  border: 1px solid rgba(239,68,68,.25);  color: var(--danger); }
+
+/* stale row dims */
+tr.stale td { opacity: .55; }
+tr.dead  td { opacity: .35; }
 
 /* ── SIDE PANEL ── */
 .side-panel {
@@ -203,12 +227,7 @@ body {
   flex-direction: column;
   gap: 20px;
 }
-
-.info-block {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
+.info-block { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .info-block-title {
   background: var(--bg-e);
   border-bottom: 1px solid var(--border);
@@ -228,9 +247,11 @@ body {
 }
 .info-row:last-child { border-bottom: none; }
 .info-key { color: var(--fg-3); }
-.info-val { color: var(--fg); font-weight: 500; text-align: right; }
+.info-val { color: var(--fg); font-weight: 500; text-align: right; transition: color .4s; }
 .info-val.accent { color: var(--accent); }
-.info-val.good { color: var(--good); }
+.info-val.good   { color: var(--good); }
+.info-val.warn   { color: var(--warn); }
+.info-val.danger { color: var(--danger); }
 
 /* ── LOG ── */
 .log-block {
@@ -245,20 +266,17 @@ body {
   flex: 1;
   padding: 10px 12px;
   overflow-y: auto;
-  max-height: 260px;
+  max-height: 280px;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
-.log-line {
-  font-size: 10.5px;
-  line-height: 1.5;
-  color: var(--fg-2);
-}
-.log-line .ts { color: var(--fg-3); margin-right: 6px; }
-.log-line .ok { color: var(--good); }
+.log-line { font-size: 10.5px; line-height: 1.5; color: var(--fg-2); }
+.log-line .ts   { color: var(--fg-3); margin-right: 6px; }
+.log-line .ok   { color: var(--good); }
 .log-line .info { color: var(--accent); }
 .log-line .warn { color: var(--warn); }
+.log-line .err  { color: var(--danger); }
 
 /* ── DEMO BADGE ── */
 .demo-notice {
@@ -268,7 +286,7 @@ body {
   padding: 10px 14px;
   font-size: 11px;
   color: var(--fg-2);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 .demo-notice strong { color: var(--accent); }
 
@@ -284,6 +302,56 @@ body {
   color: var(--fg-3);
 }
 
+/* ── DISCONNECTED OVERLAY ── */
+.dc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,9,15,.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s;
+}
+.dc-overlay.visible { opacity: 1; pointer-events: all; }
+.dc-card {
+  background: var(--bg-s);
+  border: 1px solid var(--danger);
+  border-radius: 16px;
+  padding: 36px 48px;
+  text-align: center;
+  max-width: 400px;
+}
+.dc-icon { font-size: 36px; margin-bottom: 16px; }
+.dc-title {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 8px;
+}
+.dc-sub { font-size: 12px; color: var(--fg-2); line-height: 1.6; }
+.dc-reconnect {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--warn);
+}
+.spin {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--warn);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 @media (max-width: 700px) {
   .main { grid-template-columns: 1fr; }
   .status-row { grid-template-columns: repeat(2,1fr); }
@@ -293,10 +361,30 @@ body {
 </head>
 <body>
 
+<!-- DISCONNECTION OVERLAY -->
+<div class="dc-overlay" id="dcOverlay">
+  <div class="dc-card">
+    <div class="dc-icon">🔌</div>
+    <div class="dc-title">Robot Disconnected</div>
+    <div class="dc-sub">The field robot lost its outbound TCP connection.<br>No VPN needed — waiting for robot to reconnect on its own.</div>
+    <div class="dc-reconnect">
+      <div class="spin"></div>
+      <span id="reconnectMsg">Auto-reconnect in progress…</span>
+    </div>
+  </div>
+</div>
+
+<!-- STORY BANNER -->
+<div class="story-banner">
+  <div class="story-label">Demo</div>
+  <div class="story-desc" id="storyDesc">Robot is live and streaming topics to the engineer</div>
+  <div class="story-stages" id="stageDots"></div>
+</div>
+
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-title">
-    <div class="dot"></div>
+    <div class="relay-dot" id="relayDot"></div>
     ROS 2 Remote Debug Tunnel · Dashboard
   </div>
   <div class="topbar-meta">relay.velvetprotocol.io · port 9000</div>
@@ -308,8 +396,9 @@ body {
   <div class="status-cell">
     <div class="status-label">Robot</div>
     <div class="status-value">
-      <span class="status-indicator">
-        <span class="led led-green"></span> CONNECTED
+      <span class="status-indicator" id="robotStatus">
+        <span class="led led-green" id="robotLed"></span>
+        <span id="robotLabel">CONNECTED</span>
       </span>
     </div>
   </div>
@@ -317,17 +406,18 @@ body {
     <div class="status-label">Engineer</div>
     <div class="status-value">
       <span class="status-indicator">
-        <span class="led led-green"></span> CONNECTED
+        <span class="led led-green" id="engLed"></span>
+        <span id="engLabel">CONNECTED</span>
       </span>
     </div>
   </div>
   <div class="status-cell">
     <div class="status-label">Total Messages</div>
-    <div class="status-value accent" id="totalMsgs">10,406</div>
+    <div class="status-value" id="totalMsgs" style="color:var(--accent)">10,406</div>
   </div>
   <div class="status-cell">
     <div class="status-label">Uptime</div>
-    <div class="status-value good" id="uptime">00:00:00</div>
+    <div class="status-value" id="uptime" style="color:var(--good)">00:00:00</div>
   </div>
 </div>
 
@@ -338,7 +428,7 @@ body {
   <div class="topics-panel">
     <div class="panel-header">
       <div class="panel-title">Active Topics</div>
-      <span class="badge-live">LIVE</span>
+      <span class="topic-status-badge badge-live" id="topicBadge">LIVE</span>
     </div>
     <table class="topics-table">
       <thead>
@@ -362,8 +452,8 @@ body {
       <div class="info-row"><span class="info-key">Relay</span><span class="info-val accent">138.197.209.48</span></div>
       <div class="info-row"><span class="info-key">TCP Port</span><span class="info-val">9000</span></div>
       <div class="info-row"><span class="info-key">Auth</span><span class="info-val good">✓ Verified</span></div>
-      <div class="info-row"><span class="info-key">Latency</span><span class="info-val" id="latency">12ms</span></div>
-      <div class="info-row"><span class="info-key">Reconnects</span><span class="info-val">0</span></div>
+      <div class="info-row"><span class="info-key">Latency</span><span class="info-val" id="latencyVal">12ms</span></div>
+      <div class="info-row"><span class="info-key">Reconnects</span><span class="info-val" id="reconnectCount">0</span></div>
       <div class="info-row"><span class="info-key">IT changes</span><span class="info-val good">None required</span></div>
     </div>
 
@@ -381,7 +471,7 @@ body {
     </div>
 
     <div class="demo-notice">
-      <strong>Demo mode</strong> — data is simulated to show what the live tunnel dashboard looks like during an active field deployment.
+      <strong>Scripted demo</strong> — walks through a real outage scenario: live session → robot drops → auto-reconnect → topics resume. No VPN or IT ticket needed at any point.
     </div>
 
   </div>
@@ -395,119 +485,253 @@ body {
 </div>
 
 <script>
-// ── TOPIC DATA ──
+// ── TOPICS ──
 const TOPICS = [
-  { name: '/hello',           base: 10406, rate: 10,  fmt: () => `"Hello from robot! seq=${Math.floor(Math.random()*9999)}"` },
-  { name: '/cmd_vel',         base: 3812,  rate: 20,  fmt: () => `{linear:{x:${(Math.random()*.8).toFixed(2)}}, angular:{z:${(Math.random()*.4-.2).toFixed(2)}}}` },
-  { name: '/odom',            base: 7204,  rate: 20,  fmt: () => `{pose:{x:${(Math.random()*10).toFixed(3)}, y:${(Math.random()*10).toFixed(3)}}}` },
-  { name: '/battery_state',   base: 924,   rate: 1,   fmt: () => `{percentage:${(70+Math.random()*25).toFixed(1)}, voltage:${(11.8+Math.random()*.8).toFixed(2)}V}` },
-  { name: '/scan',            base: 5631,  rate: 10,  fmt: () => `{ranges:[${Array.from({length:5},()=>(Math.random()*5).toFixed(2)).join(',')},...]}` },
-  { name: '/robot_status',    base: 461,   rate: .5,  fmt: () => `{state:"NAVIGATING", errors:0, mode:"autonomous"}` },
+  { name: '/hello',         rate: 10,  base: 10406, fmt: () => `"Hello from robot! seq=${r(9999)}"` },
+  { name: '/cmd_vel',       rate: 20,  base: 3812,  fmt: () => `{linear:{x:${rf(.8).toFixed(2)}}, angular:{z:${(rf(.4)-.2).toFixed(2)}}}` },
+  { name: '/odom',          rate: 20,  base: 7204,  fmt: () => `{pose:{x:${(rf(10)).toFixed(3)}, y:${(rf(10)).toFixed(3)}}}` },
+  { name: '/battery_state', rate: 1,   base: 924,   fmt: () => `{percentage:${(70+rf(25)).toFixed(1)}, voltage:${(11.8+rf(.8)).toFixed(2)}V}` },
+  { name: '/scan',          rate: 10,  base: 5631,  fmt: () => `{ranges:[${[0,1,2,3,4].map(()=>(rf(5)).toFixed(2)).join(',')},...]}` },
+  { name: '/robot_status',  rate: .5,  base: 461,   fmt: () => `{state:"NAVIGATING", errors:0}` },
+];
+const r  = n => Math.floor(Math.random()*n);
+const rf = n => Math.random()*n;
+
+let counts    = TOPICS.map(t => t.base);
+let ages      = TOPICS.map(() => r(3));
+let frozen    = false;   // topics stopped updating
+let reconnects = 0;
+let startTime = Date.now();
+
+// ── STORY STAGES ──
+// Each stage: { desc, durationMs, onEnter, tick (called every 500ms) }
+const STAGES = [
+  {
+    desc: 'Robot live — streaming topics through the tunnel to your engineer',
+    duration: 9000,
+    onEnter() {
+      setRobot('CONNECTED', 'green');
+      setEngineer('CONNECTED', 'green');
+      setRelay('green');
+      setBadge('LIVE', 'live');
+      showOverlay(false);
+      frozen = false;
+    },
+    tick() {
+      tickCounts();
+      log('info', '[RELAY]', pickRandom(['/hello','/odom','/cmd_vel','/scan']) + ' forwarded → engineer');
+    }
+  },
+  {
+    desc: 'Robot battery warning — network becoming unstable',
+    duration: 6000,
+    onEnter() {
+      setRobot('UNSTABLE', 'warn');
+      setRelay('warn');
+      setBadge('DEGRADED', 'stale');
+      log('warn', '[WARN]', 'robot_bridge: high latency detected (340ms)');
+      log('warn', '[WARN]', '/battery_state: voltage dropping 11.2V');
+    },
+    tick() {
+      if (Math.random() > .4) tickCounts();  // some msgs get through
+      if (Math.random() > .6) log('warn', '[WARN]', 'packet loss on robot channel');
+    }
+  },
+  {
+    desc: 'Robot dropped — TCP connection closed. Waiting for auto-reconnect…',
+    duration: 10000,
+    onEnter() {
+      setRobot('DISCONNECTED', 'red');
+      setEngineer('CONNECTED', 'green');  // engineer side stays up
+      setRelay('off');
+      setBadge('STALE', 'stale');
+      frozen = true;
+      showOverlay(true);
+      log('err', '[ERR]', 'robot_bridge: connection closed (EOF)');
+      log('err', '[ERR]', 'all topics frozen — last values shown');
+      log('info', '[AUTO]', 'reconnect timer started (backoff: 5s)');
+    },
+    tick() {
+      // No topic updates — just log reconnect attempts
+      log('info', '[AUTO]', 'reconnect attempt ' + (reconnects+1) + '…');
+    }
+  },
+  {
+    desc: 'Robot reconnected — topics resuming. No IT ticket filed.',
+    duration: 7000,
+    onEnter() {
+      reconnects++;
+      showOverlay(false);
+      setRobot('CONNECTED', 'green');
+      setRelay('green');
+      setBadge('LIVE', 'live');
+      frozen = false;
+      document.getElementById('reconnectCount').textContent = reconnects;
+      log('ok', '[AUTH]', 'robot_bridge reconnected successfully');
+      log('ok', '[INFO]', 'topics resuming from last sequence');
+      log('ok', '[INFO]', 'no VPN reconfigured · no IT ticket filed');
+    },
+    tick() {
+      tickCounts();
+      log('ok', '[RELAY]', pickRandom(['/hello','/odom','/scan','/cmd_vel']) + ' forwarded → engineer');
+    }
+  },
+  {
+    desc: 'Session stable — 0 customer IT changes needed throughout',
+    duration: Infinity,
+    onEnter() {
+      log('ok', '[STAT]', 'session healthy · reconnects: 1 · IT changes: 0');
+    },
+    tick() {
+      tickCounts();
+      if (Math.random() > .7) log('info', '[RELAY]', pickRandom(['/hello','/odom','/cmd_vel']) + ' forwarded → engineer');
+    }
+  }
 ];
 
-let counts = TOPICS.map(t => t.base);
-let ages   = TOPICS.map(() => Math.floor(Math.random() * 3));
-let startTime = Date.now();
-let totalBase = counts.reduce((a,b) => a+b, 0);
+// ── STAGE ENGINE ──
+let stageIdx = 0;
+let stageElapsed = 0;
 
-function fmt2(n) { return String(n).padStart(2,'0'); }
-
-function fmtUptime(ms) {
-  const s = Math.floor(ms/1000);
-  return `${fmt2(Math.floor(s/3600))}:${fmt2(Math.floor((s%3600)/60))}:${fmt2(s%60)}`;
+function buildDots() {
+  const el = document.getElementById('stageDots');
+  STAGES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'stage-dot' + (i === 0 ? ' active' : '');
+    d.id = 'dot' + i;
+    el.appendChild(d);
+  });
 }
 
-function fmtCount(n) { return n.toLocaleString(); }
+function updateDots() {
+  STAGES.forEach((_, i) => {
+    const d = document.getElementById('dot' + i);
+    if (!d) return;
+    d.className = 'stage-dot' + (i < stageIdx ? ' done' : i === stageIdx ? ' active' : '');
+  });
+}
+
+function advanceStage() {
+  stageIdx++;
+  stageElapsed = 0;
+  if (stageIdx >= STAGES.length) stageIdx = STAGES.length - 1;
+  document.getElementById('storyDesc').textContent = STAGES[stageIdx].desc;
+  STAGES[stageIdx].onEnter();
+  updateDots();
+}
+
+// ── STATE HELPERS ──
+function setRobot(label, state) {
+  document.getElementById('robotLabel').textContent = label;
+  const led = document.getElementById('robotLed');
+  led.className = 'led led-' + state;
+}
+function setEngineer(label, state) {
+  document.getElementById('engLabel').textContent = label;
+  document.getElementById('engLed').className = 'led led-' + state;
+}
+function setRelay(state) {
+  const dot = document.getElementById('relayDot');
+  dot.className = 'relay-dot' + (state === 'warn' ? ' warn' : state === 'off' ? ' off' : '');
+}
+function setBadge(text, cls) {
+  const b = document.getElementById('topicBadge');
+  b.textContent = text;
+  b.className = 'topic-status-badge badge-' + cls;
+}
+function showOverlay(show) {
+  const ov = document.getElementById('dcOverlay');
+  ov.classList.toggle('visible', show);
+}
+function pickRandom(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+// ── TOPIC HELPERS ──
+function tickCounts() {
+  TOPICS.forEach((t, i) => {
+    counts[i] += Math.round(t.rate * (.8 + Math.random() * .4));
+    ages[i] = Math.floor(Math.random() * 3);
+  });
+}
 
 function renderTopics() {
   const tbody = document.getElementById('topicBody');
+  const isOff = frozen;
   tbody.innerHTML = TOPICS.map((t, i) => `
-    <tr>
+    <tr class="${isOff ? 'stale' : ''}">
       <td class="topic-name">${t.name}</td>
-      <td class="topic-count">${fmtCount(counts[i])}</td>
-      <td class="topic-rate">${t.rate} Hz</td>
+      <td class="topic-count">${counts[i].toLocaleString()}</td>
+      <td class="topic-rate">${isOff ? '<span style="color:var(--warn)">0 Hz</span>' : t.rate + ' Hz'}</td>
       <td class="topic-last">${t.fmt()}</td>
-      <td class="topic-age">${ages[i] < 1 ? 'just now' : ages[i] + 's ago'}</td>
+      <td class="topic-age">${isOff ? '<span style="color:var(--warn)">stale</span>' : ages[i] < 1 ? 'just now' : ages[i] + 's ago'}</td>
     </tr>
   `).join('');
 }
 
 // ── LOG ──
-const LOG_TEMPLATES = [
-  ts => `<span class="ts">${ts}</span><span class="ok">[AUTH]</span> robot_bridge authenticated`,
-  ts => `<span class="ts">${ts}</span><span class="ok">[AUTH]</span> engineer_bridge authenticated`,
-  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /hello forwarded → engineer`,
-  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /odom forwarded → engineer`,
-  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /cmd_vel forwarded → robot`,
-  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /scan forwarded → engineer`,
-  ts => `<span class="ts">${ts}</span><span class="ok">[PING]</span> robot heartbeat ok`,
-  ts => `<span class="ts">${ts}</span><span class="ok">[PING]</span> engineer heartbeat ok`,
-  ts => `<span class="ts">${ts}</span><span class="info">[STAT]</span> ${Math.floor(Math.random()*500+100)} msgs/s`,
-];
-
+function fmt2(n) { return String(n).padStart(2,'0'); }
 function nowTs() {
   const d = new Date();
   return `${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
 }
-
-// Seed initial log
-const logBody = document.getElementById('logBody');
-const seedLogs = [
-  `<span class="ts">--:--:--</span><span class="ok">[START]</span> relay server listening on :9000`,
-  `<span class="ts">--:--:--</span><span class="ok">[AUTH]</span> robot_bridge connected`,
-  `<span class="ts">--:--:--</span><span class="ok">[AUTH]</span> engineer_bridge connected`,
-  `<span class="ts">--:--:--</span><span class="info">[INFO]</span> tunnel active — forwarding topics`,
-];
-seedLogs.forEach(l => {
+function log(type, tag, msg) {
+  const logBody = document.getElementById('logBody');
   const div = document.createElement('div');
   div.className = 'log-line';
-  div.innerHTML = l;
+  div.innerHTML = `<span class="ts">${nowTs()}</span><span class="${type}">${tag}</span> ${msg}`;
   logBody.appendChild(div);
-});
-
-function addLog() {
-  const tmpl = LOG_TEMPLATES[Math.floor(Math.random()*LOG_TEMPLATES.length)];
-  const div = document.createElement('div');
-  div.className = 'log-line';
-  div.innerHTML = tmpl(nowTs());
-  logBody.appendChild(div);
-  if (logBody.children.length > 60) logBody.removeChild(logBody.firstChild);
+  if (logBody.children.length > 80) logBody.removeChild(logBody.firstChild);
   logBody.scrollTop = logBody.scrollHeight;
 }
 
-// ── TICK ──
+// ── INIT ──
+buildDots();
+STAGES[0].onEnter();
+document.getElementById('storyDesc').textContent = STAGES[0].desc;
+
+// Seed log
+log('ok', '[START]', 'relay server listening on :9000');
+log('ok', '[AUTH]', 'robot_bridge authenticated');
+log('ok', '[AUTH]', 'engineer_bridge authenticated');
+log('info', '[INFO]', 'tunnel active — forwarding topics');
+
+renderTopics();
+
+// ── MAIN LOOP (500ms) ──
 let tick = 0;
-function update() {
+setInterval(() => {
   tick++;
+  stageElapsed += 500;
+
+  const stage = STAGES[stageIdx];
+  stage.tick();
+
+  // Advance stage?
+  if (stage.duration !== Infinity && stageElapsed >= stage.duration) {
+    advanceStage();
+  }
+
+  // Uptime
   const elapsed = Date.now() - startTime;
+  const s = Math.floor(elapsed/1000);
+  document.getElementById('uptime').textContent =
+    `${fmt2(Math.floor(s/3600))}:${fmt2(Math.floor((s%3600)/60))}:${fmt2(s%60)}`;
 
-  // Update counts
-  TOPICS.forEach((t, i) => {
-    counts[i] += Math.round(t.rate * (0.8 + Math.random() * 0.4));
-    ages[i] = Math.floor(Math.random() * 3);
-  });
-
-  // Total
+  // Total msgs
   const total = counts.reduce((a,b) => a+b, 0);
-  document.getElementById('totalMsgs').textContent = fmtCount(total);
-  document.getElementById('uptime').textContent = fmtUptime(elapsed);
+  document.getElementById('totalMsgs').textContent = total.toLocaleString();
 
-  // Latency jitter
-  const lat = 10 + Math.floor(Math.random()*8);
-  document.getElementById('latency').textContent = lat + 'ms';
+  // Latency
+  if (!frozen) {
+    document.getElementById('latencyVal').textContent = (10 + r(8)) + 'ms';
+  } else {
+    document.getElementById('latencyVal').textContent = '—';
+  }
 
   // Clock
   document.getElementById('clockStr').textContent = new Date().toUTCString().slice(17,25) + ' UTC';
 
   renderTopics();
-
-  // Log every ~2s
-  if (tick % 4 === 0) addLog();
-}
-
-renderTopics();
-update();
-setInterval(update, 500);
+}, 500);
 </script>
 </body>
 </html>
