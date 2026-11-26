@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROS 2 Tunnel · Live Dashboard</title>
+<style>
+:root {
+  --bg: #07090F;
+  --bg-s: #0C1018;
+  --bg-e: #111621;
+  --border: #1A2235;
+  --border-mid: #223049;
+  --fg: #DDE3EE;
+  --fg-2: #7A8BA8;
+  --fg-3: #394C66;
+  --accent: #00C4E8;
+  --good: #22C55E;
+  --warn: #F59E0B;
+  --danger: #EF4444;
+  --font-mono: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  --font-ui: 'Space Grotesk', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--bg-s);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: -.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.topbar-title .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 6px var(--good);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+.topbar-meta {
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: .04em;
+}
+.back-link {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: .7;
+  transition: opacity .2s;
+}
+.back-link:hover { opacity: 1; }
+
+/* ── STATUS ROW ── */
+.status-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.status-cell {
+  background: var(--bg-s);
+  padding: 16px 20px;
+}
+.status-label {
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.status-value {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: -.01em;
+}
+.status-value.good { color: var(--good); }
+.status-value.accent { color: var(--accent); }
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+}
+.status-indicator .led {
+  width: 9px; height: 9px; border-radius: 50%;
+}
+.led-green { background: var(--good); box-shadow: 0 0 6px var(--good); animation: pulse 2s infinite; }
+.led-off { background: var(--fg-3); }
+
+/* ── MAIN LAYOUT ── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1px;
+  background: var(--border);
+  min-height: calc(100vh - 120px);
+}
+
+/* ── TOPICS TABLE ── */
+.topics-panel {
+  background: var(--bg);
+  padding: 20px;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.panel-title {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.topics-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.topics-table th {
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  text-align: left;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.topics-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.topics-table tr:last-child td { border-bottom: none; }
+.topics-table tr:hover td { background: var(--bg-e); }
+
+.topic-name { color: var(--accent); font-size: 12px; }
+.topic-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 13px;
+}
+.topic-rate { color: var(--fg-2); font-size: 11px; }
+.topic-last {
+  color: var(--fg-2);
+  font-size: 11px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.topic-age { color: var(--fg-3); font-size: 11px; white-space: nowrap; }
+.badge-live {
+  display: inline-block;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  color: var(--good);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: .06em;
+}
+
+/* ── SIDE PANEL ── */
+.side-panel {
+  background: var(--bg-s);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-block {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.info-block-title {
+  background: var(--bg-e);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--fg-3); }
+.info-val { color: var(--fg); font-weight: 500; text-align: right; }
+.info-val.accent { color: var(--accent); }
+.info-val.good { color: var(--good); }
+
+/* ── LOG ── */
+.log-block {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.log-body {
+  flex: 1;
+  padding: 10px 12px;
+  overflow-y: auto;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.log-line {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+.log-line .ts { color: var(--fg-3); margin-right: 6px; }
+.log-line .ok { color: var(--good); }
+.log-line .info { color: var(--accent); }
+.log-line .warn { color: var(--warn); }
+
+/* ── DEMO BADGE ── */
+.demo-notice {
+  background: rgba(0,196,232,.06);
+  border: 1px solid rgba(0,196,232,.15);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: var(--fg-2);
+  line-height: 1.5;
+}
+.demo-notice strong { color: var(--accent); }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--bg-s);
+  border-top: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--fg-3);
+}
+
+@media (max-width: 700px) {
+  .main { grid-template-columns: 1fr; }
+  .status-row { grid-template-columns: repeat(2,1fr); }
+  .side-panel { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">
+    <div class="dot"></div>
+    ROS 2 Remote Debug Tunnel · Dashboard
+  </div>
+  <div class="topbar-meta">relay.velvetprotocol.io · port 9000</div>
+  <a href="../index.html" class="back-link">← Back to portfolio</a>
+</div>
+
+<!-- STATUS ROW -->
+<div class="status-row">
+  <div class="status-cell">
+    <div class="status-label">Robot</div>
+    <div class="status-value">
+      <span class="status-indicator">
+        <span class="led led-green"></span> CONNECTED
+      </span>
+    </div>
+  </div>
+  <div class="status-cell">
+    <div class="status-label">Engineer</div>
+    <div class="status-value">
+      <span class="status-indicator">
+        <span class="led led-green"></span> CONNECTED
+      </span>
+    </div>
+  </div>
+  <div class="status-cell">
+    <div class="status-label">Total Messages</div>
+    <div class="status-value accent" id="totalMsgs">10,406</div>
+  </div>
+  <div class="status-cell">
+    <div class="status-label">Uptime</div>
+    <div class="status-value good" id="uptime">00:00:00</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPICS TABLE -->
+  <div class="topics-panel">
+    <div class="panel-header">
+      <div class="panel-title">Active Topics</div>
+      <span class="badge-live">LIVE</span>
+    </div>
+    <table class="topics-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Messages</th>
+          <th>Rate</th>
+          <th>Last Value</th>
+          <th>Age</th>
+        </tr>
+      </thead>
+      <tbody id="topicBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="side-panel">
+
+    <div class="info-block">
+      <div class="info-block-title">Connection Info</div>
+      <div class="info-row"><span class="info-key">Relay</span><span class="info-val accent">138.197.209.48</span></div>
+      <div class="info-row"><span class="info-key">TCP Port</span><span class="info-val">9000</span></div>
+      <div class="info-row"><span class="info-key">Auth</span><span class="info-val good">✓ Verified</span></div>
+      <div class="info-row"><span class="info-key">Latency</span><span class="info-val" id="latency">12ms</span></div>
+      <div class="info-row"><span class="info-key">Reconnects</span><span class="info-val">0</span></div>
+      <div class="info-row"><span class="info-key">IT changes</span><span class="info-val good">None required</span></div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-block-title">Robot Info</div>
+      <div class="info-row"><span class="info-key">ROS distro</span><span class="info-val">Humble</span></div>
+      <div class="info-row"><span class="info-key">Node</span><span class="info-val accent">robot_bridge</span></div>
+      <div class="info-row"><span class="info-key">Namespace</span><span class="info-val">/robot_1</span></div>
+      <div class="info-row"><span class="info-key">Platform</span><span class="info-val">Ubuntu 22.04</span></div>
+    </div>
+
+    <div class="log-block">
+      <div class="info-block-title">Event Log</div>
+      <div class="log-body" id="logBody"></div>
+    </div>
+
+    <div class="demo-notice">
+      <strong>Demo mode</strong> — data is simulated to show what the live tunnel dashboard looks like during an active field deployment.
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>Velvet Protocol · ROS 2 Tunnel v0.1</span>
+  <span>Outbound-only TCP relay · No VPN · No IT ticket</span>
+  <span id="clockStr"></span>
+</div>
+
+<script>
+// ── TOPIC DATA ──
+const TOPICS = [
+  { name: '/hello',           base: 10406, rate: 10,  fmt: () => `"Hello from robot! seq=${Math.floor(Math.random()*9999)}"` },
+  { name: '/cmd_vel',         base: 3812,  rate: 20,  fmt: () => `{linear:{x:${(Math.random()*.8).toFixed(2)}}, angular:{z:${(Math.random()*.4-.2).toFixed(2)}}}` },
+  { name: '/odom',            base: 7204,  rate: 20,  fmt: () => `{pose:{x:${(Math.random()*10).toFixed(3)}, y:${(Math.random()*10).toFixed(3)}}}` },
+  { name: '/battery_state',   base: 924,   rate: 1,   fmt: () => `{percentage:${(70+Math.random()*25).toFixed(1)}, voltage:${(11.8+Math.random()*.8).toFixed(2)}V}` },
+  { name: '/scan',            base: 5631,  rate: 10,  fmt: () => `{ranges:[${Array.from({length:5},()=>(Math.random()*5).toFixed(2)).join(',')},...]}` },
+  { name: '/robot_status',    base: 461,   rate: .5,  fmt: () => `{state:"NAVIGATING", errors:0, mode:"autonomous"}` },
+];
+
+let counts = TOPICS.map(t => t.base);
+let ages   = TOPICS.map(() => Math.floor(Math.random() * 3));
+let startTime = Date.now();
+let totalBase = counts.reduce((a,b) => a+b, 0);
+
+function fmt2(n) { return String(n).padStart(2,'0'); }
+
+function fmtUptime(ms) {
+  const s = Math.floor(ms/1000);
+  return `${fmt2(Math.floor(s/3600))}:${fmt2(Math.floor((s%3600)/60))}:${fmt2(s%60)}`;
+}
+
+function fmtCount(n) { return n.toLocaleString(); }
+
+function renderTopics() {
+  const tbody = document.getElementById('topicBody');
+  tbody.innerHTML = TOPICS.map((t, i) => `
+    <tr>
+      <td class="topic-name">${t.name}</td>
+      <td class="topic-count">${fmtCount(counts[i])}</td>
+      <td class="topic-rate">${t.rate} Hz</td>
+      <td class="topic-last">${t.fmt()}</td>
+      <td class="topic-age">${ages[i] < 1 ? 'just now' : ages[i] + 's ago'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── LOG ──
+const LOG_TEMPLATES = [
+  ts => `<span class="ts">${ts}</span><span class="ok">[AUTH]</span> robot_bridge authenticated`,
+  ts => `<span class="ts">${ts}</span><span class="ok">[AUTH]</span> engineer_bridge authenticated`,
+  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /hello forwarded → engineer`,
+  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /odom forwarded → engineer`,
+  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /cmd_vel forwarded → robot`,
+  ts => `<span class="ts">${ts}</span><span class="info">[RELAY]</span> /scan forwarded → engineer`,
+  ts => `<span class="ts">${ts}</span><span class="ok">[PING]</span> robot heartbeat ok`,
+  ts => `<span class="ts">${ts}</span><span class="ok">[PING]</span> engineer heartbeat ok`,
+  ts => `<span class="ts">${ts}</span><span class="info">[STAT]</span> ${Math.floor(Math.random()*500+100)} msgs/s`,
+];
+
+function nowTs() {
+  const d = new Date();
+  return `${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
+}
+
+// Seed initial log
+const logBody = document.getElementById('logBody');
+const seedLogs = [
+  `<span class="ts">--:--:--</span><span class="ok">[START]</span> relay server listening on :9000`,
+  `<span class="ts">--:--:--</span><span class="ok">[AUTH]</span> robot_bridge connected`,
+  `<span class="ts">--:--:--</span><span class="ok">[AUTH]</span> engineer_bridge connected`,
+  `<span class="ts">--:--:--</span><span class="info">[INFO]</span> tunnel active — forwarding topics`,
+];
+seedLogs.forEach(l => {
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  div.innerHTML = l;
+  logBody.appendChild(div);
+});
+
+function addLog() {
+  const tmpl = LOG_TEMPLATES[Math.floor(Math.random()*LOG_TEMPLATES.length)];
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  div.innerHTML = tmpl(nowTs());
+  logBody.appendChild(div);
+  if (logBody.children.length > 60) logBody.removeChild(logBody.firstChild);
+  logBody.scrollTop = logBody.scrollHeight;
+}
+
+// ── TICK ──
+let tick = 0;
+function update() {
+  tick++;
+  const elapsed = Date.now() - startTime;
+
+  // Update counts
+  TOPICS.forEach((t, i) => {
+    counts[i] += Math.round(t.rate * (0.8 + Math.random() * 0.4));
+    ages[i] = Math.floor(Math.random() * 3);
+  });
+
+  // Total
+  const total = counts.reduce((a,b) => a+b, 0);
+  document.getElementById('totalMsgs').textContent = fmtCount(total);
+  document.getElementById('uptime').textContent = fmtUptime(elapsed);
+
+  // Latency jitter
+  const lat = 10 + Math.floor(Math.random()*8);
+  document.getElementById('latency').textContent = lat + 'ms';
+
+  // Clock
+  document.getElementById('clockStr').textContent = new Date().toUTCString().slice(17,25) + ' UTC';
+
+  renderTopics();
+
+  // Log every ~2s
+  if (tick % 4 === 0) addLog();
+}
+
+renderTopics();
+update();
+setInterval(update, 500);
+</script>
+</body>
+</html>
