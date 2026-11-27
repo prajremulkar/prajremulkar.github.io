@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -582,7 +582,7 @@ footer{
 @media(max-width:900px){
   .hero-grid{flex-direction:column}
   .hero-visual{display:none}
-  .scenarios-grid{grid-template-columns:1fr}
+  .scenarios-grid{grid-template-columns:1fr!important}
   .demo-body{grid-template-columns:1fr}
   .posts-grid{grid-template-columns:1fr}
   .playbook-grid{grid-template-columns:1fr}
@@ -636,7 +636,8 @@ footer{
   .hero-ready .hero-actions,
   .hero-ready .hero-visual{opacity:1;transform:none}
 
-  .scenario-card{transition:background var(--transition),border-color var(--transition)}
+  /* Card hover: lift + border glow */
+  .scenario-card{transition:background var(--transition),transform .3s var(--spring),box-shadow .3s var(--spring),border-color .3s var(--spring)}
   .scenario-card:hover{
     background:var(--bg-hover);
     border-color:rgba(0,196,232,.3)
@@ -772,6 +773,36 @@ footer{
         </div>
         <a href="demos/ros2-tunnel-demo.html" class="scenario-link" style="margin-top:20px">
           View Demo
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- ADOPTION READINESS CARD -->
+      <div class="scenario-card">
+        <div class="scenario-visual">
+          <canvas id="readinessCanvas" aria-hidden="true"></canvas>
+          <div class="scenario-visual-label">READINESS-AGENT · ASSESSING</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="scenario-tag" style="margin-bottom:0">🎯 Digital AI</div>
+          <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
+        </div>
+        <div class="scenario-title">AI Adoption Readiness Assessment</div>
+        <div class="scenario-desc">Most enterprise AI deployments fail before the first line of code. A Forward Deployment PM intelligence tool that checks whether a company is actually ready — scanning 6 dimensions, flagging the real blockers, and handing back a scored go/no-go with a prioritized plan showing who does what.</div>
+        <div class="scenario-stack">
+          <span class="chip chip-accent">6-Dimension Scoring</span>
+          <span class="chip">Go / No-Go Assessment</span>
+          <span class="chip">US vs YOU Action Plan</span>
+          <span class="chip">4 Customer Scenarios</span>
+        </div>
+        <div class="scenario-outcome">
+          <div>
+            <div class="outcome-num">73%</div>
+            <div class="outcome-label">of enterprise AI pilots never reach production — this finds why before you deploy</div>
+          </div>
+        </div>
+        <a href="demos/adoption-readiness.html" class="scenario-link" style="margin-top:20px">
+          Launch Readiness Assessment Demo
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -1329,6 +1360,96 @@ function hex2rgba(hex, a) {
 })();
 
 
+
+// ─── READINESS CANVAS ───
+(function() {
+  const cv = document.getElementById('readinessCanvas');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H, animId, t = 0;
+  const dpr = devicePixelRatio || 1;
+  const DIMS = [
+    {label:'Data',    score:88, color:'#00C4E8'},
+    {label:'Stack',   score:84, color:'#00C4E8'},
+    {label:'Process', score:79, color:'#00C4E8'},
+    {label:'Org',     score:71, color:'#00C4E8'},
+    {label:'Gov',     score:52, color:'#F59E0B'},
+    {label:'Exec',    score:85, color:'#00C4E8'},
+  ];
+  const CYCLE = 180, PAUSE = 60;
+
+  function resize() {
+    const r = cv.parentElement.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#07090F'; ctx.fillRect(0, 0, W, H);
+
+    const phase = t % (CYCLE + PAUSE);
+    const prog = Math.min(1, phase / CYCLE);
+
+    // Overall score (left side)
+    const overall = 76;
+    const scoreNow = Math.round(overall * prog);
+    ctx.textAlign = 'center';
+    ctx.font = `700 ${Math.round(H*.40)}px 'Space Grotesk',system-ui`;
+    ctx.fillStyle = prog > 0 ? '#00C4E8' : 'rgba(0,196,232,0.2)';
+    ctx.fillText(scoreNow, W * .17, H * .60);
+    ctx.font = `600 ${Math.round(H*.075)}px 'Space Grotesk',system-ui`;
+    ctx.fillStyle = 'rgba(0,196,232,0.45)';
+    ctx.fillText('SCORE', W * .17, H * .76);
+
+    // 6 dimension bars (right side)
+    const bx = W * .34, bw = W * .62;
+    const rowH = (H - H*.16) / DIMS.length;
+    DIMS.forEach((d, i) => {
+      const delay = i / DIMS.length;
+      const barProg = Math.max(0, Math.min(1, (prog - delay) / (1 - delay)));
+      const y = H*.08 + i * rowH + rowH * .5;
+
+      ctx.textAlign = 'left';
+      ctx.font = `500 ${Math.round(H*.08)}px 'Space Grotesk',system-ui`;
+      ctx.fillStyle = 'rgba(255,255,255,0.38)';
+      ctx.fillText(d.label, bx, y + 1);
+
+      const lw = W * .14;
+      const tx = bx + lw + W*.02;
+      const tw = bw - lw - W*.10;
+
+      // Track
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.fillRect(tx, y - 2, tw, 3);
+
+      // Fill
+      if (barProg > 0) {
+        ctx.fillStyle = d.color;
+        ctx.globalAlpha = 0.82;
+        ctx.fillRect(tx, y - 2, tw * (d.score/100) * barProg, 3);
+        ctx.globalAlpha = 1;
+      }
+
+      // Score num
+      if (barProg > .85) {
+        ctx.textAlign = 'right';
+        ctx.font = `600 ${Math.round(H*.076)}px 'Space Grotesk',system-ui`;
+        ctx.fillStyle = d.color;
+        ctx.fillText(Math.round(d.score * barProg), bx + bw, y + 1);
+      }
+    });
+
+    t++;
+    if (t > CYCLE + PAUSE + 20) t = 0;
+    animId = requestAnimationFrame(draw);
+  }
+
+  resize(); draw();
+  window.addEventListener('resize', () => { cancelAnimationFrame(animId); resize(); t = 0; draw(); });
+})();
 
 // ─── THEME TOGGLE ───
 const root = document.documentElement;

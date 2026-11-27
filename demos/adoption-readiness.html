@@ -1,0 +1,704 @@
+<title>Adoption Readiness Assessment</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap">
+
+<style>
+/* Layout: header + 4-scenario selector + two-column log/scorecard */
+:root {
+  --bg:#07090F; --bg-s:#0D1117; --bg-e:#0F1823;
+  --fg:#F0F4F8; --fg-2:#D8E2EA; --fg-3:#B4C2CC;
+  --accent:#00C4E8; --accent-dim:rgba(0,196,232,.09); --accent-mid:rgba(0,196,232,.18);
+  --border:rgba(255,255,255,.07); --border-hi:rgba(0,196,232,.28);
+  --good:#00D4A0; --warn:#F5A623; --danger:#FF5F57;
+  --good-dim:rgba(0,212,160,.10); --warn-dim:rgba(245,166,35,.10); --danger-dim:rgba(255,95,87,.10);
+  --r:8px; --r-lg:12px;
+  --font-d:'Space Grotesk',system-ui,sans-serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --font-m:'JetBrains Mono','Fira Code',monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#F4F7FA;--bg-s:#FFF;--bg-e:#EEF2F6;--fg:#0D1117;--fg-2:#4A5568;--fg-3:#9BA8B4;
+  --border:rgba(0,0,0,.09);--border-hi:rgba(0,160,200,.35);
+  --accent-dim:rgba(0,160,200,.07);--accent-mid:rgba(0,160,200,.14);color-scheme:light;
+}}
+:root[data-theme="light"]{
+  --bg:#F4F7FA;--bg-s:#FFF;--bg-e:#EEF2F6;--fg:#0D1117;--fg-2:#4A5568;--fg-3:#9BA8B4;
+  --border:rgba(0,0,0,.09);--border-hi:rgba(0,160,200,.35);
+  --accent-dim:rgba(0,160,200,.07);--accent-mid:rgba(0,160,200,.14);color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--font-b);font-size:14px;line-height:1.6;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0;
+}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding-block:18px;border-bottom:1px solid var(--border);margin-bottom:28px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.vp-mark{width:32px;height:32px;border-radius:7px;background:var(--accent-dim);border:1px solid var(--border-hi);display:grid;place-items:center;font-family:var(--font-d);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.04em;}
+.header-title{font-family:var(--font-d);font-size:15px;font-weight:600;}
+.header-sub{font-size:12px;color:var(--fg-3);margin-top:1px;}
+.header-badge{font-family:var(--font-d);font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border-hi);border-radius:20px;padding:3px 10px;}
+
+/* Scenario selector */
+.selector-label{font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.10em;color:var(--fg-3);text-transform:uppercase;margin-bottom:10px;}
+.scenario-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+@media(max-width:760px){.scenario-cards{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:460px){.scenario-cards{grid-template-columns:1fr;}}
+.sc-card{background:var(--bg-s);border:1px solid var(--border);border-radius:var(--r-lg);padding:13px 15px;cursor:pointer;transition:border-color .18s,background .18s;user-select:none;}
+.sc-card:hover{border-color:rgba(0,196,232,.22);}
+.sc-card.selected{border-color:var(--accent);background:var(--accent-dim);}
+.sc-card.decline-card:hover{border-color:rgba(255,95,87,.25);}
+.sc-card.decline-card.selected{border-color:var(--danger);background:var(--danger-dim);}
+.sc-industry{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;margin-bottom:3px;}
+.sc-card.decline-card .sc-industry{color:var(--danger);}
+.sc-name{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--fg);}
+.sc-ask{font-size:11px;color:var(--fg-3);margin-top:5px;line-height:1.4;font-style:italic;}
+.sc-size{font-size:11px;color:var(--fg-3);margin-top:5px;}
+
+/* Run row */
+.run-row{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
+.run-btn{font-family:var(--font-d);font-size:13px;font-weight:600;background:var(--accent);color:#07090F;border:none;border-radius:var(--r);padding:10px 22px;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;gap:7px;}
+.run-btn:hover{opacity:.88;}
+.run-btn:disabled{opacity:.45;cursor:default;}
+.reset-btn{font-family:var(--font-d);font-size:12px;font-weight:500;background:none;border:1px solid var(--border);color:var(--fg-2);border-radius:var(--r);padding:9px 16px;cursor:pointer;transition:border-color .15s,color .15s;}
+.reset-btn:hover{border-color:var(--accent);color:var(--fg);}
+.run-hint{font-size:12px;color:var(--fg-3);}
+
+/* Two-column main */
+.main-cols{display:grid;grid-template-columns:1fr 1.55fr;gap:16px;align-items:start;}
+@media(max-width:720px){.main-cols{grid-template-columns:1fr;}}
+
+/* Panel shell */
+.panel{background:var(--bg-s);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+.panel-header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg-e);}
+.panel-dots{display:flex;gap:5px;}
+.pdot{width:9px;height:9px;border-radius:50%;}
+.panel-title{font-family:var(--font-m);font-size:11px;color:var(--fg-3);margin-left:6px;}
+
+/* Agent log */
+.log-body{padding:14px 16px;min-height:300px;font-family:var(--font-m);font-size:12px;line-height:1.75;overflow-y:auto;max-height:520px;}
+.log-line{margin-bottom:1px;display:flex;align-items:baseline;gap:8px;animation:faderow .22s ease both;}
+@keyframes faderow{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.log-ts{color:var(--fg-3);min-width:54px;font-size:11px;flex-shrink:0;}
+.log-system .log-text{color:var(--fg-3);}
+.log-scan .log-text{color:var(--fg-2);}
+.log-result .log-text{color:var(--accent);}
+.log-finding .log-text{color:#E8D87A;}
+.log-approved .log-text{color:var(--good);font-weight:600;}
+.log-warn .log-text{color:var(--warn);}
+.log-idle{color:var(--fg-3);padding:28px 0;text-align:center;}
+
+/* Gate card */
+.gate-card{margin:14px 0 2px;border:1px solid var(--warn);border-radius:var(--r);padding:14px 16px;background:var(--warn-dim);animation:faderow .3s ease both;}
+.gate-title{font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--warn);display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.gate-body{font-size:12px;color:var(--fg-2);line-height:1.55;margin-bottom:12px;}
+.gate-proposed{background:var(--bg-e);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin:10px 0 14px;font-size:11px;}
+.gate-prop-title{color:var(--fg-3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px;margin-bottom:7px;}
+.gate-task{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;color:var(--fg-2);}
+.gate-task:last-child{margin-bottom:0;}
+.gate-task-num{color:var(--warn);font-weight:700;flex-shrink:0;}
+.gate-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.gate-approve{font-family:var(--font-d);font-size:12px;font-weight:600;background:var(--warn);color:#07090F;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;transition:opacity .15s;}
+.gate-approve:hover{opacity:.88;}
+.gate-review-btn{font-family:var(--font-d);font-size:12px;font-weight:500;background:none;border:1px solid var(--warn);color:var(--warn);border-radius:6px;padding:7px 14px;cursor:pointer;}
+
+/* Scorecard */
+.score-body{padding:20px;}
+.score-idle{color:var(--fg-3);padding:36px 0;text-align:center;font-size:13px;}
+.score-waiting{color:var(--fg-3);padding:36px 0;text-align:center;font-size:12px;font-family:var(--font-m);display:flex;flex-direction:column;align-items:center;gap:10px;}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Narrative */
+.narrative-block{padding:14px 16px;background:var(--bg-e);border:1px solid var(--border);border-radius:var(--r);margin-bottom:18px;font-size:13px;line-height:1.65;color:var(--fg-2);opacity:0;transition:opacity .4s;}
+.narrative-block.visible{opacity:1;}
+.narrative-label{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.09em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;}
+.narrative-block.pause-narrative{border-color:rgba(255,95,87,.25);background:var(--danger-dim);}
+.narrative-block.pause-narrative .narrative-label{color:var(--danger);}
+
+/* Overall row */
+.overall-row{display:flex;align-items:center;gap:20px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border);opacity:0;transition:opacity .4s;}
+.overall-row.visible{opacity:1;}
+.score-big{font-family:var(--font-d);font-size:52px;font-weight:700;color:var(--accent);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:80px;}
+.score-big.danger{color:var(--danger);}
+.score-label-sm{font-size:11px;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.status-badge{display:inline-block;font-family:var(--font-d);font-size:12px;font-weight:600;border-radius:20px;padding:4px 12px;}
+.status-ready{background:var(--good-dim);color:var(--good);border:1px solid rgba(0,212,160,.22);}
+.status-conditional{background:var(--warn-dim);color:var(--warn);border:1px solid rgba(245,166,35,.22);}
+.status-pause{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(255,95,87,.22);}
+.score-company{font-family:var(--font-d);font-size:13px;font-weight:500;color:var(--fg);margin-bottom:2px;}
+.score-usecase{font-size:12px;color:var(--fg-2);}
+
+/* Dimension bars */
+.dims-label{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.09em;color:var(--fg-3);text-transform:uppercase;margin-bottom:11px;}
+.dim-row{margin-bottom:11px;opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s;}
+.dim-row.visible{opacity:1;transform:none;}
+.dim-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.dim-name{font-size:12px;font-weight:500;color:var(--fg);}
+.dim-weight{font-size:10px;color:var(--fg-3);margin-left:4px;}
+.dim-score-num{font-family:var(--font-m);font-size:12px;color:var(--fg-2);}
+.bar-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;width:0;transition:width .6s cubic-bezier(0.16,1,0.3,1);}
+.bar-good{background:var(--good);}
+.bar-warn{background:var(--warn);}
+.bar-danger{background:var(--danger);}
+.dim-note{font-size:11px;color:var(--fg-3);margin-top:4px;line-height:1.4;}
+
+/* Blockers + actions */
+.blockers-section{margin-top:20px;opacity:0;transition:opacity .4s .2s;}
+.blockers-section.visible{opacity:1;}
+.section-title-sm{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.09em;color:var(--fg-3);text-transform:uppercase;margin-bottom:9px;}
+.blocker-item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:var(--danger-dim);border:1px solid rgba(255,95,87,.14);border-radius:var(--r);margin-bottom:6px;font-size:12px;color:var(--fg-2);line-height:1.5;}
+.blocker-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);flex-shrink:0;margin-top:5px;}
+
+.actions-section{margin-top:18px;opacity:0;transition:opacity .4s .4s;}
+.actions-section.visible{opacity:1;}
+.action-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px 9px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.action-row:last-child{border-bottom:none;}
+.action-week{font-family:var(--font-d);font-size:11px;font-weight:600;color:var(--accent);min-width:72px;flex-shrink:0;padding-top:1px;}
+.actions-section.path .action-week{color:var(--warn);}
+.action-text{color:var(--fg-2);line-height:1.5;}
+
+/* Pause banner */
+.pause-banner{background:var(--danger-dim);border:1px solid rgba(255,95,87,.30);border-radius:var(--r);padding:16px;margin-bottom:18px;opacity:0;transition:opacity .4s;}
+.pause-banner.visible{opacity:1;}
+.pause-banner-title{font-family:var(--font-d);font-size:14px;font-weight:700;color:var(--danger);display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pause-banner-body{font-size:12px;color:var(--fg-2);line-height:1.6;}
+
+/* Stats strip */
+.stats-strip{display:flex;align-items:center;gap:0;background:var(--bg-e);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:28px;overflow:hidden;}
+.stat-item{flex:1;padding:14px 20px;display:flex;flex-direction:column;gap:3px;}
+.stat-item+.stat-item{border-left:1px solid var(--border);}
+.stat-num{font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--accent);letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.stat-desc{font-size:11px;color:var(--fg-3);line-height:1.4;}
+.stat-src{font-size:10px;color:var(--fg-3);opacity:.6;margin-top:1px;}
+@media(max-width:600px){.stats-strip{flex-direction:column;}.stat-item+.stat-item{border-left:none;border-top:1px solid var(--border);}}
+
+/* Scenario card metric */
+.sc-metric{font-size:11px;font-weight:600;color:var(--good);margin-top:7px;padding-top:7px;border-top:1px solid var(--border);}
+.sc-card.decline-card .sc-metric{color:var(--danger);}
+
+/* Outcome projection */
+.outcome-block{background:var(--bg-e);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:18px;opacity:0;transition:opacity .4s;}
+.outcome-block.visible{opacity:1;}
+.outcome-label{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.09em;color:var(--fg-3);text-transform:uppercase;margin-bottom:12px;}
+.outcome-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:500px){.outcome-row{grid-template-columns:1fr 1fr;}}
+.outcome-item{}
+.outcome-num{font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;}
+.outcome-num.red{color:var(--danger);}
+.outcome-num.warn{color:var(--warn);}
+.outcome-desc{font-size:11px;color:var(--fg-3);margin-top:3px;line-height:1.4;}
+
+/* Action owner badge */
+.action-owner{font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 7px;flex-shrink:0;margin-top:2px;border:1px solid;}
+.action-owner.vp{color:var(--accent);background:var(--accent-dim);border-color:var(--border-hi);}
+.action-owner.customer{color:var(--warn);background:var(--warn-dim);border-color:rgba(245,166,35,.22);}
+.action-legend{display:flex;gap:10px;margin-bottom:10px;align-items:center;font-size:11px;color:var(--fg-3);}
+.action-legend-item{display:flex;align-items:center;gap:5px;}
+
+/* Footer */
+.footer{margin-top:32px;padding-block:20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-left{font-size:11px;color:var(--fg-3);}
+.footer-right{font-size:11px;color:var(--fg-3);}
+.footer-accent{color:var(--accent);}
+</style>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="vp-mark">VP</div>
+    <div>
+      <div class="header-title">Adoption Readiness Assessment</div>
+      <div class="header-sub">Velvet Protocol · Forward Deployment Intelligence</div>
+    </div>
+  </div>
+  <div class="header-badge">v1.3 · Digital AI</div>
+</div>
+
+<!-- STAKES BANNER -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num">73%</div>
+    <div class="stat-desc">of enterprise AI pilots never reach production</div>
+    <div class="stat-src">MIT / McKinsey, 2025</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">$4.3M</div>
+    <div class="stat-desc">average cost of a stalled AI deployment</div>
+    <div class="stat-src">Gartner, 2025</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">3.4×</div>
+    <div class="stat-desc">higher production rate for deployments scoring 70+</div>
+    <div class="stat-src">Velvet Protocol, n=47 engagements</div>
+  </div>
+</div>
+
+<!-- SCENARIO SELECTOR -->
+<div class="selector-label">Select customer scenario</div>
+<div class="scenario-cards" id="scenarioCards">
+  <div class="sc-card" data-id="saas" onclick="selectScenario('saas')">
+    <div class="sc-industry">B2B Software · 380-person startup</div>
+    <div class="sc-name">FastGrowth SaaS</div>
+    <div class="sc-ask">"Our support team is drowning in tickets. We need AI to handle the simple ones automatically — without routing every single one to a human first."</div>
+    <div class="sc-metric">If it works: save $380K–$520K/yr on support costs</div>
+  </div>
+  <div class="sc-card" data-id="medtech" onclick="selectScenario('medtech')">
+    <div class="sc-industry">Healthcare Technology · 2,400-person company</div>
+    <div class="sc-name">MedTech Corp</div>
+    <div class="sc-ask">"Our doctors spend 2 hours a day writing visit notes. We want AI to write those notes for them so they can spend more time with patients."</div>
+    <div class="sc-metric">If it works: free up 1.8 hrs/day per doctor — worth $2.1M–$2.8M/yr</div>
+  </div>
+  <div class="sc-card" data-id="bank" onclick="selectScenario('bank')">
+    <div class="sc-industry">Financial Services · 5,100-person regional bank</div>
+    <div class="sc-name">Regional Bank</div>
+    <div class="sc-ask">"Every compliance review ties up 4 analysts for 3 weeks. We need AI to run those same reviews in 3 days."</div>
+    <div class="sc-metric">If it works: handle 8,000 reviews/quarter, not the current 1,200</div>
+  </div>
+  <div class="sc-card decline-card" data-id="logistics" onclick="selectScenario('logistics')">
+    <div class="sc-industry">Logistics &amp; Transport · 1,200-person carrier</div>
+    <div class="sc-name">CentralOps Logistics</div>
+    <div class="sc-ask">"Our dispatchers route 800 trucks a day by hand, mostly in spreadsheets. We want AI to handle the routing and find better routes automatically."</div>
+    <div class="sc-metric">Not yet ready — deploying now risks $160K–$220K in rework</div>
+  </div>
+</div>
+
+<!-- RUN ROW -->
+<div class="run-row">
+  <button class="run-btn" id="runBtn" onclick="runAssessment()" disabled>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M3 2l7 4-7 4V2z"/></svg>
+    Run Assessment
+  </button>
+  <button class="reset-btn" id="resetBtn" onclick="resetAll()" hidden>New Assessment</button>
+  <span class="run-hint" id="runHint">Select a scenario to begin</span>
+</div>
+
+<!-- MAIN TWO COLUMNS -->
+<div class="main-cols">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-dots">
+        <div class="pdot" style="background:#FF5F57"></div>
+        <div class="pdot" style="background:#FFBD2E"></div>
+        <div class="pdot" style="background:#28CA41"></div>
+      </div>
+      <div class="panel-title">velvet-protocol / readiness-agent · discovery v1.3</div>
+    </div>
+    <div class="log-body" id="logBody">
+      <div class="log-idle" id="logIdle">Select a scenario and run to see the agent work</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-dots">
+        <div class="pdot" style="background:#FF5F57"></div>
+        <div class="pdot" style="background:#FFBD2E"></div>
+        <div class="pdot" style="background:#28CA41"></div>
+      </div>
+      <div class="panel-title">readiness-scorecard · output</div>
+    </div>
+    <div class="score-body" id="scoreBody">
+      <div class="score-idle" id="scoreIdle">Assessment output will appear here</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Velvet Protocol · <span class="footer-accent">prajremulkar.github.io</span></div>
+  <div class="footer-right">Signal sources: public job posts, tech stack inference, compliance registry · Synthetic demo — not connected to live APIs</div>
+</div>
+
+<script>
+const SCENARIOS = {
+  saas: {
+    name:"FastGrowth SaaS", industry:"B2B Software",
+    useCase:"AI Customer Support Triage", size:"380 employees",
+    ask:"Cut Tier 2 escalations by 50% with AI triage.",
+    discovery:"Routing logic is well-defined and the team is bought in. The real blocker: no AI usage policy means the agent legally can't touch customer PII in tickets until legal signs off. That's a 2-week fix, not a 6-month rebuild.",
+    signals:{jobPosts:234,aiRoles:41,stack:["Zendesk","Salesforce","AWS","Slack","Linear"],champions:4,compliance:["SOC 2 Type II"]},
+    dims:[
+      {name:"Data Infrastructure", weight:"1×", score:88, note:"Zendesk + Salesforce clean and API-accessible; 3 years of labeled ticket history"},
+      {name:"Technical Stack",     weight:"1×", score:84, note:"API-first stack; MCP connectors available for all key systems"},
+      {name:"Process Clarity",     weight:"1.5×",score:79, note:"Tier 1/2/3 routing logic documented; escalation thresholds defined"},
+      {name:"Org Readiness",       weight:"2×", score:71, note:"CS team bought in; VP Support is a named champion; training plan drafted"},
+      {name:"Governance & Trust",  weight:"2×", score:52, note:"SOC 2 compliant but no AI-specific usage policy — agent cannot legally touch PII"},
+      {name:"Executive Sponsorship",weight:"1.5×",score:85,note:"CRO sponsoring; linked to Q1 OKR on support cost per ticket"},
+    ],
+    overall:76, status:"ready",
+    narrative:"FastGrowth came asking for a support automation product. The actual problem is a missing AI usage policy that blocks any agent from touching customer data. Everything else is in place. This is a 2-week legal task before a 4-week shadow deployment — not a 6-month transformation.",
+    blockers:[
+      "AI usage policy not written — agent cannot legally process customer PII in tickets until legal signs off",
+      "Escalation thresholds need 2–3 weeks of shadow mode calibration before autonomous routing is safe",
+    ],
+    actions:[
+      {week:"Wk 1",   owner:"customer", action:"Draft AI usage policy with legal; get sign-off from privacy officer"},
+      {week:"Wk 2–3", owner:"vp",       action:"Deploy in shadow mode — log every routing decision without acting on it"},
+      {week:"Wk 4",   owner:"vp",       action:"Compare shadow vs. human decisions; tune thresholds on false positives"},
+      {week:"Wk 5–6", owner:"vp",       action:"Launch autonomous routing for Tier 1 only; monitor CSAT daily"},
+    ],
+    outcomes:[
+      {num:"71%",  cls:"",    desc:"of companies like yours go live within 90 days"},
+      {num:"43%",  cls:"",    desc:"fewer tickets ever reach a human agent"},
+      {num:"$440K",cls:"",    desc:"saved every year — no extra headcount needed"},
+    ],
+    gateTarget:"Zendesk",
+    gateTasks:[
+      {num:"01", text:"Create tracking ticket: 'AI usage policy — legal review' · Assignee: VP Legal · Due: 7 days"},
+      {num:"02", text:"Schedule shadow mode kickoff · Assignee: VP Support · Due: Day 10"},
+      {num:"03", text:"Add CSAT monitoring dashboard · Assignee: Head of CS Ops · Due: Day 12"},
+    ],
+    logSteps:[
+      [0,    'system',  'Goal: automate ticket routing — cut human-handled tickets by 40%+ in 90 days'],
+      [600,  'scan',    'Is this a growth problem or a staffing problem? Checking hiring signals...'],
+      [1400, 'result',  '234 job posts · 41 AI roles — they\'re scaling fast and can\'t hire their way out. Problem is real.'],
+      [2200, 'scan',    'Can we tell simple tickets from complex ones? Checking ticket history and data quality...'],
+      [3000, 'result',  '3 years of Zendesk history with resolution labels — enough to train routing logic on day 1'],
+      [3700, 'scan',    'Does the tech stack support automation? Checking API access to key systems...'],
+      [4300, 'result',  'Zendesk and Salesforce are API-accessible — routing agent can connect immediately'],
+      [4900, 'scan',    'Who has authority to approve this? Checking for a decision-maker with real budget...'],
+      [5600, 'result',  'VP of Support is sponsoring — named in 3 job posts, has budget authority and a Q1 cost target'],
+      [6200, 'scan',    'This agent will touch customer PII in every ticket. Checking legal clearance...'],
+      [6900, 'finding', '⚑ No AI policy on file — the agent legally cannot process customer data until legal writes one'],
+      [7600, 'scan',    'Is this the only blocker? Scoring all 6 readiness areas...'],
+      [8300, 'system',  'Verdict: ticket routing is achievable. One legal task stands in the way. Creating the plan now...'],
+    ],
+  },
+  medtech: {
+    name:"MedTech Corp", industry:"Healthcare Technology",
+    useCase:"Clinical Documentation Automation", size:"2,400 employees",
+    ask:"Reduce physician admin time by 40% via automated documentation.",
+    discovery:"They came asking for an AI documentation product. After discovery, the real problem is 23 distinct documentation workflows across 8 departments — the agent would behave inconsistently before you even get to tech. The bottleneck is process, not infrastructure.",
+    signals:{jobPosts:847,aiRoles:23,stack:["Epic EHR","Azure","Salesforce","Workday"],champions:2,compliance:["HIPAA","SOC 2","FDA 21 CFR Part 11"]},
+    dims:[
+      {name:"Data Infrastructure",  weight:"1×",  score:72, note:"EHR data accessible via FHIR APIs; legacy HL7 feeds need mapping"},
+      {name:"Technical Stack",      weight:"1×",  score:48, note:"Modern cloud but Epic API rate limits and auth complexity are blockers"},
+      {name:"Process Clarity",      weight:"2×",  score:41, note:"23 distinct documentation workflows across 8 departments — agent behavior would be inconsistent"},
+      {name:"Org Readiness",        weight:"2×",  score:38, note:"Clinical staff skepticism high; no AI training program in place"},
+      {name:"Governance & Trust",   weight:"1.5×",score:65, note:"HIPAA strong; FDA AI/ML SaMD guidance review not yet started"},
+      {name:"Executive Sponsorship",weight:"1.5×",score:78, note:"CFO and CMO aligned; dedicated budget allocated for FY27"},
+    ],
+    overall:57, status:"conditional",
+    narrative:"MedTech came asking for an AI documentation product. The discovery finding changed the conversation: 23 workflow variants across 8 departments means the agent would produce inconsistent output from day one. The 30-day plan is about process standardization first — not AI deployment.",
+    blockers:[
+      "23 distinct documentation workflows — agent behavior will be unpredictable across departments until these are standardized",
+      "FDA AI/ML SaMD guidance review not started — required before any clinical AI deployment regardless of scope",
+      "Clinical staff onboarding plan missing; adoption risk is high without structured change management",
+    ],
+    actions:[
+      {week:"Wk 1–2", owner:"vp",       action:"Map all 23 documentation variants; identify the 3 departments with the most standardized workflow for pilot"},
+      {week:"Wk 3–4", owner:"customer", action:"Start FDA AI/ML SaMD guidance review with regulatory counsel"},
+      {week:"Wk 5–6", owner:"vp",       action:"Run 2-day pilot with 5 physicians in lowest-variance department; build friction log"},
+      {week:"Wk 7–8", owner:"customer", action:"Renegotiate Epic API SLA to handle production agent traffic volumes"},
+    ],
+    outcomes:[
+      {num:"41%",   cls:"warn",desc:"chance of actually shipping at this readiness level — most stall partway through"},
+      {num:"1.8 hrs",cls:"",   desc:"back in every doctor's day — worth $2.1M–$2.8M/yr across your team"},
+      {num:"6–8 wks",cls:"",   desc:"to get ready, once note-taking workflows are standardized"},
+    ],
+    gateTarget:"Epic (EHR)",
+    gateTasks:[
+      {num:"01", text:"Create Epic ticket: 'API rate limit review — AI agent traffic' · Assignee: IT Director · Due: 10 days"},
+      {num:"02", text:"Schedule workflow mapping workshop · 3 pilot departments · Due: Day 7"},
+      {num:"03", text:"Open FDA SaMD guidance review · Assignee: Regulatory Counsel · Due: Day 14"},
+    ],
+    logSteps:[
+      [0,    'system',  'Goal: free up 1.8 hrs/day per doctor by automating visit notes — worth $2.1M–$2.8M/yr at scale'],
+      [600,  'scan',    'First question: is this a documentation problem, or a workflow consistency problem? Checking note formats...'],
+      [1500, 'warn',    '⚑ 23 different ways of writing visit notes found across 8 departments — this is the core problem, not the tech'],
+      [2300, 'scan',    'If note formats vary, AI output will too. Are any departments consistent enough to pilot first?'],
+      [3100, 'result',  '847 job posts · admin burden is the #1 complaint across clinical job descriptions — problem is validated'],
+      [3800, 'scan',    'Can Epic actually feed data to an AI agent fast enough during clinic hours? Checking API capacity...'],
+      [4600, 'finding', '⚑ Epic\'s query cap would be hit during peak hours — not fast enough for a live documentation agent yet'],
+      [5300, 'scan',    'This is clinical AI — FDA rules apply regardless of scope. Checking compliance status...'],
+      [6100, 'result',  'HIPAA and SOC 2 — solid. But the required FDA review for clinical AI hasn\'t been started.'],
+      [6800, 'finding', '⚑ FDA review is a legal prerequisite — no department can go live without it, full stop'],
+      [7500, 'scan',    'Is the documentation goal achievable once workflows are standardized? Scoring readiness...'],
+      [8300, 'system',  'Verdict: goal is achievable — workflow standardization comes before AI. Creating the readiness plan now...'],
+    ],
+  },
+  bank: {
+    name:"Regional Bank", industry:"Financial Services",
+    useCase:"Compliance Review Agent", size:"5,100 employees",
+    ask:"Reduce compliance review cycle from 3 weeks to 3 days.",
+    discovery:"The process is well-defined and the data is structured — the best conditions for an AI agent. The gap: legal doesn't know this engagement exists, and the mainframe needs a middleware layer before the agent can touch anything. The 30-day plan is about alignment and infrastructure, not the AI.",
+    signals:{jobPosts:1240,aiRoles:18,stack:["Salesforce","IBM Z","Oracle","SharePoint","Workday"],champions:1,compliance:["SOX","BSA/AML","FFIEC","OCC AI Guidance"]},
+    dims:[
+      {name:"Data Infrastructure",  weight:"1×",  score:81, note:"Structured compliance data well-organized; audit trail requirements met"},
+      {name:"Technical Stack",      weight:"1×",  score:44, note:"Legacy IBM Z mainframe limits real-time API access; middleware layer needed (est. 6 weeks)"},
+      {name:"Process Clarity",      weight:"2×",  score:86, note:"Regulatory compliance process highly structured; decision logic is documentable"},
+      {name:"Org Readiness",        weight:"2×",  score:34, note:"Legal and compliance team skeptical; only 1 champion (CRO); legal has not been briefed"},
+      {name:"Governance & Trust",   weight:"1.5×",score:58, note:"Strong existing controls; no AI governance framework aligned to OCC SR 11-7 guidance"},
+      {name:"Executive Sponsorship",weight:"1.5×",score:69, note:"CRO sponsoring; needs board-level sign-off before production"},
+    ],
+    overall:62, status:"conditional",
+    narrative:"The bank came asking for speed. The process is actually well-suited for an AI agent — it's structured, documented, and the data is clean. The real blockers are organizational: legal hasn't been briefed, and the mainframe needs a middleware layer. Fix those two things and this becomes a fast deployment.",
+    blockers:[
+      "Legal team not briefed — compliance review agent needs internal legal approval before any pilot work begins",
+      "IBM Z mainframe has no real-time API — requires a middleware layer estimated at 6 weeks of engineering",
+      "No OCC SR 11-7 AI governance framework in place — required by regulators before production deployment",
+    ],
+    actions:[
+      {week:"Wk 1–2", owner:"customer", action:"CRO leads alignment session with legal; define agent scope and hard limits in writing"},
+      {week:"Wk 3–4", owner:"customer", action:"Map OCC SR 11-7 AI guidance requirements to internal governance policy draft"},
+      {week:"Wk 5–6", owner:"customer", action:"Scope and spec IBM Z middleware API layer with IT — get engineering timeline confirmed"},
+      {week:"Wk 7–8", owner:"vp",       action:"Design human-in-the-loop approval gate for all agent-flagged compliance items"},
+    ],
+    outcomes:[
+      {num:"68%",    cls:"",   desc:"faster reviews — from 3 weeks down to 4–5 days each"},
+      {num:"8,000+", cls:"",   desc:"reviews per quarter your team can handle (vs. 1,200 today)"},
+      {num:"8–10 wks",cls:"",  desc:"until you're ready to deploy"},
+    ],
+    gateTarget:"SharePoint (compliance portal)",
+    gateTasks:[
+      {num:"01", text:"Create task: 'Legal briefing on AI compliance agent' · Assignee: CRO · Due: 5 days"},
+      {num:"02", text:"Open OCC governance policy workstream · Assignee: Chief Compliance Officer · Due: 14 days"},
+      {num:"03", text:"Ticket: IBM Z middleware API scope · Assignee: IT Architecture Lead · Due: 10 days"},
+    ],
+    logSteps:[
+      [0,    'system',  'Goal: cut compliance review cycle from 3 weeks to 4–5 days — handle 8,000 reviews/quarter, not 1,200'],
+      [600,  'scan',    'First: is compliance review structured enough for AI, or is it judgment-heavy? Checking decision logic...'],
+      [1400, 'result',  'Review process is rule-based and well-documented — this is best-case conditions for an AI agent'],
+      [2100, 'scan',    'The process is right. But can the agent reach the data it needs? Checking core banking system access...'],
+      [2900, 'finding', '⚑ Compliance data lives on an IBM mainframe — no modern connection. Agent can\'t reach it without an infrastructure project.'],
+      [3700, 'scan',    'How long would that infrastructure project take? Checking engineering signals...'],
+      [4400, 'result',  'Estimated 6-week middleware build — significant but bounded. Scope is clear.'],
+      [5000, 'scan',    'Who inside the bank has actually approved this project? Checking stakeholder awareness...'],
+      [5800, 'warn',    '⚑ Legal and compliance teams haven\'t been briefed — CRO is sponsoring this alone, without the people who must sign off'],
+      [6500, 'scan',    'Federal banking regulators require an AI policy before any bank deploys. Checking for one...'],
+      [7200, 'finding', '⚑ No AI governance policy on file — required by federal regulators before this goes live in any form'],
+      [8000, 'system',  'Verdict: fastest compliance review improvement in banking is achievable here — two blockers to clear first. Creating plan...'],
+    ],
+  },
+  logistics: {
+    name:"CentralOps Logistics", industry:"Logistics & Transport",
+    useCase:"AI Dispatch Automation", size:"1,200 employees",
+    ask:"20% improvement in route efficiency via AI-powered dispatch.",
+    discovery:"After discovery, the stated ask is not the problem. Dispatch data lives in 3 incompatible systems with no source of truth. The agent would be training on inconsistent, contradictory inputs from day one. And the VP of Operations who requested this engagement is leaving in 60 days with no named successor.",
+    signals:{jobPosts:312,aiRoles:8,stack:["Oracle TMS","SAP","Excel (dispatch)","Salesforce"],champions:1,compliance:["DOT regulations","FMCSA"]},
+    dims:[
+      {name:"Data Infrastructure",  weight:"1×",  score:28, note:"Dispatch data in 3 incompatible systems — no single source of truth, no API access to Oracle TMS"},
+      {name:"Technical Stack",      weight:"1×",  score:31, note:"Oracle TMS is on-premise with no cloud migration roadmap; SAP integration requires custom middleware"},
+      {name:"Process Clarity",      weight:"2×",  score:52, note:"Route logic documented but exception handling is undocumented tribal knowledge held by 3 dispatchers"},
+      {name:"Org Readiness",        weight:"2×",  score:24, note:"Sole champion (VP Ops) has announced departure; no successor identified or briefed"},
+      {name:"Governance & Trust",   weight:"1.5×",score:44, note:"No AI governance policy; DOT compliance for autonomous dispatch systems not researched"},
+      {name:"Executive Sponsorship",weight:"1.5×",score:29, note:"VP Ops is mid-level sponsorship with no C-suite backing; budget not formally allocated"},
+    ],
+    overall:34, status:"pause",
+    narrative:"CentralOps came asking for route efficiency gains. The discovery finding is a hard stop: 3 incompatible data systems with no source of truth, and the sole champion is leaving in 60 days. Deploying an AI agent on top of this would produce unreliable outputs and no internal owner to manage what goes wrong.",
+    blockers:[
+      "No single source of truth for dispatch data — 3 incompatible systems would produce contradictory agent training inputs",
+      "Sole internal champion (VP Ops) has announced departure; no successor identified or briefed on this initiative",
+      "Oracle TMS is on-premise with no API — a 4–6 month infrastructure prerequisite before the agent can connect to any live data",
+    ],
+    actions:[
+      {week:"Month 1–2", owner:"customer", action:"Data consolidation project — establish single source of truth for dispatch before any AI scoping"},
+      {week:"Month 2–3", owner:"customer", action:"Identify and onboard new champion; get C-suite sign-off and formal budget allocation"},
+      {week:"Month 3–4", owner:"customer", action:"Oracle TMS API layer scoped, built, and tested — confirm real-time data access"},
+      {week:"Month 5–6", owner:"vp",       action:"Re-run readiness assessment. If score exceeds 60, proceed to pilot design."},
+    ],
+    outcomes:[
+      {num:"91%",    cls:"red", desc:"of companies in this situation cancel or restart within 90 days"},
+      {num:"$190K",  cls:"red", desc:"likely rework cost if you deploy before fixing the data foundation"},
+      {num:"5 months",cls:"warn",desc:"minimum time to fix the foundation before deployment is safe"},
+    ],
+    gateTarget:"Oracle TMS",
+    gateTasks:[
+      {num:"01", text:"Create task: 'Dispatch data consolidation scoping' · Assignee: IT Director · Due: 10 days"},
+      {num:"02", text:"Flag: VP Ops succession — brief C-suite on engagement status · Assignee: COO · Due: 5 days"},
+      {num:"03", text:"Oracle TMS API feasibility review · Assignee: Enterprise Architect · Due: 14 days"},
+    ],
+    logSteps:[
+      [0,    'system',  'Goal: replace manual truck routing with AI — 20% efficiency gain across 800 routes/day'],
+      [600,  'scan',    'Route AI needs clean, unified dispatch data above everything else. Checking where routing data lives...'],
+      [1300, 'finding', '⚑ Dispatch data is split across 3 systems that don\'t sync — AI trained here would contradict itself on day 1'],
+      [2100, 'scan',    'Can we connect to any of those systems directly? Checking Oracle TMS...'],
+      [2800, 'finding', '⚑ Oracle TMS is on-site, not cloud — no API available. Can\'t connect without a 4–6 month infrastructure project'],
+      [3600, 'scan',    'Is there a workaround data source? Checking what dispatchers actually use day to day...'],
+      [4300, 'finding', '⚑ 800 routes/day are managed in Excel — no connection layer, no audit trail, no way to feed this to an AI'],
+      [5000, 'scan',    'Data problems this deep need a strong internal owner. Checking who sponsors this...'],
+      [5700, 'warn',    '⚑ One sponsor: VP of Operations — a job post from 3 weeks ago signals they\'re being replaced, no successor briefed'],
+      [6500, 'scan',    'Is the routing logic itself understood well enough to eventually automate? Checking process documentation...'],
+      [7200, 'warn',    '⚑ Exception handling — delays, breakdowns, reroutes — is undocumented tribal knowledge held by 3 dispatchers'],
+      [8000, 'system',  'Verdict: routing goal is real, but the foundation isn\'t there. Deploying now would fail within 90 days. See why below.'],
+    ],
+  },
+};
+
+let selected=null, running=false, timers=[];
+
+function ts(){const n=new Date();return n.toTimeString().slice(0,8);}
+
+function selectScenario(id){
+  if(running)return;
+  selected=id;
+  document.querySelectorAll('.sc-card').forEach(c=>c.classList.toggle('selected',c.dataset.id===id));
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runHint').textContent='Ready to assess';
+}
+
+function resetAll(){
+  timers.forEach(clearTimeout);timers=[];running=false;selected=null;
+  document.querySelectorAll('.sc-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('runBtn').disabled=true;
+  document.getElementById('runBtn').hidden=false;
+  document.getElementById('resetBtn').hidden=true;
+  document.getElementById('runHint').textContent='Select a scenario to begin';
+  document.getElementById('logIdle').hidden=false;
+  document.getElementById('logBody').querySelectorAll('.log-line,.gate-card').forEach(el=>el.remove());
+  document.getElementById('scoreBody').innerHTML='<div class="score-idle" id="scoreIdle">Assessment output will appear here</div>';
+}
+
+function addLog(type,text,body){
+  document.getElementById('logIdle').hidden=true;
+  const line=document.createElement('div');
+  line.className=`log-line log-${type}`;
+  line.innerHTML=`<span class="log-ts">${ts()}</span><span class="log-text">${text}</span>`;
+  body.appendChild(line);
+  body.scrollTop=body.scrollHeight;
+}
+
+function runAssessment(){
+  if(!selected||running)return;
+  running=true;
+  const sc=SCENARIOS[selected];
+  document.getElementById('runBtn').disabled=true;
+  const logBody=document.getElementById('logBody');
+  document.getElementById('scoreBody').innerHTML='<div class="score-waiting"><div class="spinner"></div><span>Collecting signals...</span></div>';
+
+  sc.logSteps.forEach(([delay,type,text])=>{
+    timers.push(setTimeout(()=>addLog(type,text,logBody),delay));
+  });
+
+  const gateDelay=sc.logSteps[sc.logSteps.length-1][0]+800;
+  timers.push(setTimeout(()=>{
+    document.getElementById('scoreBody').innerHTML='<div class="score-waiting"><div class="spinner" style="border-top-color:var(--warn)"></div><span style="color:var(--warn)">Awaiting interposer approval...</span></div>';
+    const gate=document.createElement('div');
+    gate.className='gate-card';gate.id='gateCard';
+    gate.innerHTML=`
+      <div class="gate-title">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L1 12h12L7 1z" stroke="#F5A623" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 5.5v3M7 10v.5" stroke="#F5A623" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Review before the agent sends
+      </div>
+      <div class="gate-body">The agent is about to create <strong>${sc.gateTasks.length} tasks</strong> directly in <strong>${sc.gateTarget}</strong>. The customer's team will see these immediately. Look them over first.</div>
+      <div class="gate-proposed">
+        <div class="gate-prop-title">Proposed writes to ${sc.gateTarget}</div>
+        ${sc.gateTasks.map(t=>`<div class="gate-task"><span class="gate-task-num">${t.num}</span><span>${t.text}</span></div>`).join('')}
+      </div>
+      <div class="gate-actions">
+        <button class="gate-approve" onclick="approveGate()">Approve &amp; Execute Writes</button>
+        <button class="gate-review-btn" onclick="denyGate()">Edit Before Sending</button>
+      </div>`;
+    logBody.appendChild(gate);
+    logBody.scrollTop=logBody.scrollHeight;
+  },gateDelay));
+}
+
+function denyGate(){
+  const gate=document.getElementById('gateCard');
+  if(gate){gate.querySelector('.gate-body').textContent='Writes paused. Edit the proposed tasks above before approving.';}
+}
+
+function approveGate(){
+  const gate=document.getElementById('gateCard');
+  if(gate)gate.remove();
+  const logBody=document.getElementById('logBody');
+  const sc=SCENARIOS[selected];
+  addLog('approved',`✓ Gate approved — ${sc.gateTasks.length} tasks written to ${sc.gateTarget}`,logBody);
+  timers.push(setTimeout(()=>addLog('system','Assessment complete.',logBody),500));
+  timers.push(setTimeout(()=>{document.getElementById('resetBtn').hidden=false;},700));
+  renderScorecard();
+}
+
+function barClass(s){return s>=70?'bar-good':s>=45?'bar-warn':'bar-danger';}
+
+function renderScorecard(){
+  const sc=SCENARIOS[selected];
+  const sb=document.getElementById('scoreBody');
+  const statusMap={
+    ready:{label:'Deployment Ready',cls:'status-ready'},
+    conditional:{label:'Conditional Readiness',cls:'status-conditional'},
+    pause:{label:'Recommended: Pause Deployment',cls:'status-pause'},
+  };
+  const st=statusMap[sc.status];
+  const isPause=sc.status==='pause';
+
+  sb.innerHTML=`
+    ${isPause?`<div class="pause-banner" id="pauseBanner">
+      <div class="pause-banner-title"><svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 1L1 12h12L7 1z" stroke="#FF5F57" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 5.5v3M7 10v.5" stroke="#FF5F57" stroke-width="1.5" stroke-linecap="round"/></svg> Do Not Proceed With AI Deployment</div>
+      <div class="pause-banner-body">Prerequisites cannot be met in 30 days. Proceeding now creates agent training risk and leaves the initiative without an internal owner when the sponsor departs.</div>
+    </div>`:''}
+    <div class="outcome-block" id="outcomeBlock">
+      <div class="outcome-label">${isPause?'What happens if you proceed anyway':'What to expect once you go live'}</div>
+      <div class="outcome-row">
+        ${sc.outcomes.map(o=>`<div class="outcome-item"><div class="outcome-num${o.cls?' '+o.cls:''}">${o.num}</div><div class="outcome-desc">${o.desc}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="narrative-block${isPause?' pause-narrative':''}" id="narrativeBlock">
+      <div class="narrative-label">${isPause?'Discovery finding':'What we actually found'}</div>
+      ${sc.narrative}
+    </div>
+    <div class="overall-row" id="overallRow">
+      <div class="score-big${isPause?' danger':''}" id="scoreBig">0</div>
+      <div>
+        <div class="score-label-sm">Readiness Score</div>
+        <div class="score-company">${sc.name}</div>
+        <div class="score-usecase">${sc.useCase}</div>
+        <div style="margin-top:8px"><span class="status-badge ${st.cls}">${st.label}</span></div>
+      </div>
+    </div>
+    <div class="dims-label">Dimension breakdown <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--fg-3)">(Org Readiness + Process Clarity weighted 2×; Governance + Sponsorship 1.5×)</span></div>
+    <div id="dimsContainer"></div>
+    <div class="${isPause?'blockers-section':'blockers-section'}" id="blockersSection">
+      <div class="section-title-sm">${isPause?'Blockers that cannot be remediated in 30 days':'Top blockers'}</div>
+      ${sc.blockers.map(b=>`<div class="blocker-item"><div class="blocker-dot"></div><div>${b}</div></div>`).join('')}
+    </div>
+    <div class="actions-section${isPause?' path':''}" id="actionsSection">
+      <div class="section-title-sm">${isPause?'Path to readiness (90-day minimum)':'30-day plan · who does what'}</div>
+      <div class="action-legend">
+        <span class="action-legend-item"><span class="action-owner vp" style="margin:0">US</span> Velvet Protocol</span>
+        <span class="action-legend-item"><span class="action-owner customer" style="margin:0">YOU</span> ${sc.name}</span>
+      </div>
+      ${sc.actions.map(a=>`<div class="action-row"><div class="action-week">${a.week}</div><div class="action-owner ${a.owner}">${a.owner==='vp'?'US':'YOU'}</div><div class="action-text">${a.action}</div></div>`).join('')}
+    </div>`;
+
+  if(isPause){timers.push(setTimeout(()=>document.getElementById('pauseBanner').classList.add('visible'),100));}
+
+  timers.push(setTimeout(()=>document.getElementById('outcomeBlock').classList.add('visible'),isPause?100:50));
+  timers.push(setTimeout(()=>document.getElementById('narrativeBlock').classList.add('visible'),isPause?300:200));
+  timers.push(setTimeout(()=>{
+    document.getElementById('overallRow').classList.add('visible');
+    let n=0,target=sc.overall;
+    const step=()=>{n=Math.min(n+2,target);document.getElementById('scoreBig').textContent=n;if(n<target)timers.push(setTimeout(step,18));};
+    step();
+  },isPause?500:300));
+
+  const dimsEl=document.getElementById('dimsContainer');
+  sc.dims.forEach((d,i)=>{
+    const row=document.createElement('div');
+    row.className='dim-row';
+    row.innerHTML=`
+      <div class="dim-top">
+        <span class="dim-name">${d.name}<span class="dim-weight">${d.weight}</span></span>
+        <span class="dim-score-num">${d.score}</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill ${barClass(d.score)}" id="bar${i}"></div></div>
+      <div class="dim-note">${d.note}</div>`;
+    dimsEl.appendChild(row);
+    timers.push(setTimeout(()=>{
+      row.classList.add('visible');
+      timers.push(setTimeout(()=>{document.getElementById(`bar${i}`).style.width=d.score+'%';},60));
+    },(isPause?700:500)+i*160));
+  });
+
+  const baseDim=(isPause?700:500)+sc.dims.length*160;
+  timers.push(setTimeout(()=>document.getElementById('blockersSection').classList.add('visible'),baseDim+200));
+  timers.push(setTimeout(()=>document.getElementById('actionsSection').classList.add('visible'),baseDim+500));
+}
+</script>
