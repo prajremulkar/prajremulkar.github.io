@@ -271,29 +271,45 @@ section{padding-block:88px}
 .keynote-text strong{color:var(--fg);font-weight:600}
 
 /* ─── SCENARIOS ─── */
-.scenarios{background:var(--bg-s);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.scenarios{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .scenarios-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:24px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden
 }
 .scenario-card{
-  background:var(--bg-s);padding:32px;
-  border:1px solid var(--border);border-radius:var(--r-lg);
-  transition:background var(--transition),border-color var(--transition)
+  background:var(--bg-s);padding:36px 32px;
+  position:relative;overflow:hidden;
+  transition:background var(--transition),transform .3s var(--spring),box-shadow .3s var(--spring)
 }
-.scenario-card:hover{background:var(--bg-hover)}
+.scenario-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,196,232,.04) 0%,transparent 55%);
+  pointer-events:none
+}
+.scenario-card:hover{
+  background:var(--bg-hover);
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(0,0,0,.35),0 0 0 1px rgba(0,196,232,.12)
+}
 .scenario-tag{
   display:inline-flex;align-items:center;gap:6px;
-  background:var(--bg-e);border:1px solid var(--border);
-  font-family:var(--font-display);font-size:11px;font-weight:600;
-  letter-spacing:.08em;text-transform:uppercase;
-  color:var(--fg-2);padding:4px 10px;border-radius:4px;
-  margin-bottom:16px
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.10em;text-transform:uppercase;
+  padding:4px 10px;border-radius:4px;margin-bottom:0
+}
+.tag-physical{color:#22C55E;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18)}
+.tag-digital{color:var(--accent);background:var(--accent-dim);border:1px solid rgba(0,196,232,.18)}
+.tag-fdpm{color:#A78BFA;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)}
+.scenario-stakes{
+  font-size:12.5px;font-style:italic;color:var(--warn);
+  line-height:1.55;margin-top:14px;margin-bottom:12px;opacity:.90
 }
 .scenario-title{
-  font-family:var(--font-display);font-size:18px;font-weight:600;
-  line-height:1.3;letter-spacing:-.01em;margin-bottom:10px
+  font-family:var(--font-display);font-size:21px;font-weight:700;
+  line-height:1.2;letter-spacing:-.02em;margin-bottom:12px
 }
-.scenario-desc{font-size:14px;color:var(--fg-2);line-height:1.6;margin-bottom:20px}
+.scenario-desc{font-size:14px;color:var(--fg-2);line-height:1.65;margin-bottom:20px}
 .scenario-stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
 .chip{
   font-family:var(--font-mono);font-size:11px;
@@ -305,18 +321,20 @@ section{padding-block:88px}
   color:var(--accent)
 }
 .scenario-outcome{
-  display:flex;align-items:center;gap:10px;
-  padding-top:16px;border-top:1px solid var(--border)
+  display:flex;align-items:flex-start;gap:16px;
+  padding-top:18px;border-top:1px solid var(--border)
 }
 .outcome-num{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap
+  font-family:var(--font-display);font-size:32px;font-weight:700;
+  color:var(--accent);font-variant-numeric:tabular-nums;
+  white-space:nowrap;letter-spacing:-.03em;line-height:1
 }
-.outcome-label{font-size:12px;color:var(--fg-2);line-height:1.4}
+.outcome-label{font-size:12px;color:var(--fg-2);line-height:1.5;padding-top:4px}
 .scenario-link{
-  display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  display:inline-flex;align-items:center;gap:7px;margin-top:20px;
   font-family:var(--font-display);font-size:13px;font-weight:600;
-  color:var(--accent);border-bottom:1px solid transparent;
+  color:var(--accent);border-bottom:1px solid rgba(0,196,232,.25);
+  padding-bottom:2px;
   transition:border-color var(--transition),opacity var(--transition)
 }
 .scenario-link:hover{border-color:var(--accent);opacity:.8}
@@ -719,18 +737,19 @@ footer{
 <!-- CUSTOMER SCENARIOS -->
 <section class="scenarios" id="scenarios">
   <div class="wrap">
-    <div class="section-label">Customer Scenarios · Live Demos</div>
-    <h2 class="section-title">AI That Works in the Real World</h2>
-    <p class="section-sub">Demos in Digital and Physical AI</p>
+    <div class="section-label">Enterprise Deployments · Live Scenarios</div>
+    <h2 class="section-title">Where Enterprise AI Gets Hard</h2>
+    <p class="section-sub">Three deployment scenarios from the edge of production AI — each one representing a class of problem that breaks most initiatives before they ship.</p>
     <div class="scenarios-grid fade-in">
 
       <div class="scenario-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="scenario-tag" style="margin-bottom:0">⚡ Digital AI</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="scenario-tag tag-digital">⚡ Digital AI</div>
           <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
         </div>
+        <div class="scenario-stakes">Organizations that roll out AI tools without readiness mapping see 60–70% non-adoption within six months. The gap is never the technology.</div>
         <div class="scenario-title">Agentic Workforce Readiness &amp; Learning Intelligence</div>
-        <div class="scenario-desc">Enterprise teams adopting AI face a skills gap at every level. A workforce readiness platform that maps role-level skill adjacencies, runs AI fluency diagnostics, and generates adaptive learning paths aligned to real job function transitions — not generic training catalogs.</div>
+        <div class="scenario-desc">Most teams discover the skills gap after the tool is deployed — when adoption metrics come in flat and the finger-pointing starts. A workforce readiness platform that maps role-level skill adjacencies, runs AI fluency diagnostics, and generates adaptive learning paths tied to actual job function transitions — not generic training catalogs.</div>
         <div class="scenario-stack">
           <span class="chip chip-accent">Skill Adjacency Graphs</span>
           <span class="chip">AI Fluency Diagnostics</span>
@@ -738,9 +757,12 @@ footer{
           <span class="chip">Role-Level Mapping</span>
         </div>
         <div class="scenario-outcome">
-          <div class="outcome-label" style="font-size:13px;color:var(--fg-2);line-height:1.6">Maps your team's AI readiness gaps to concrete, role-specific upskilling paths — interactive and live.</div>
+          <div>
+            <div class="outcome-num">68%</div>
+            <div class="outcome-label">of AI tool deployments stall on skills gaps, not technical failure</div>
+          </div>
         </div>
-        <a href="demos/workforce-readiness.html" class="scenario-link" style="margin-top:20px">
+        <a href="demos/workforce-readiness.html" class="scenario-link">
           Launch Workforce Readiness Demo
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -748,12 +770,13 @@ footer{
 
       <!-- ROS 2 TUNNEL CARD -->
       <div class="scenario-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="scenario-tag" style="margin-bottom:0">🤖 Physical AI</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="scenario-tag tag-physical">🤖 Physical AI</div>
           <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live</span>
         </div>
+        <div class="scenario-stakes">When a deployed robot breaks at a customer site, the standard response costs $12,000–$15,000 in travel and 2–3 days of lost throughput. This architecture eliminates that entirely.</div>
         <div class="scenario-title">ROS 2 Remote Debug Tunnel</div>
-        <div class="scenario-desc">Field-deployed robots break in environments where you can't touch the customer's network. An outbound-only TCP relay that lets any engineer see live ROS 2 topic data from anywhere — no VPN, no inbound ports, no IT ticket required.</div>
+        <div class="scenario-desc">Field-deployed robots break in environments you can't touch. A customer IT team won't open firewall rules for you. An outbound-only TCP relay that gives any engineer live ROS 2 topic visibility from anywhere — no VPN, no inbound ports, no IT ticket, no flight.</div>
         <div class="scenario-stack">
           <span class="chip chip-accent">Outbound-Only TCP Relay</span>
           <span class="chip">Live Topic Dashboard</span>
@@ -765,14 +788,14 @@ footer{
             <div class="outcome-num">0</div>
             <div class="outcome-label">Customer IT changes needed</div>
           </div>
-          <div style="width:1px;height:32px;background:var(--border);margin:0 8px"></div>
+          <div style="width:1px;height:40px;background:var(--border);margin:0 12px"></div>
           <div>
             <div class="outcome-num">&lt;2min</div>
-            <div class="outcome-label">Time to live topic view</div>
+            <div class="outcome-label">Time to live topic view from anywhere</div>
           </div>
         </div>
-        <a href="demos/ros2-tunnel-demo.html" class="scenario-link" style="margin-top:20px">
-          View Demo
+        <a href="demos/ros2-tunnel-demo.html" class="scenario-link">
+          View Debug Tunnel Demo
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -783,12 +806,13 @@ footer{
           <canvas id="readinessCanvas" aria-hidden="true"></canvas>
           <div class="scenario-visual-label">READINESS-AGENT · ASSESSING</div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="scenario-tag" style="margin-bottom:0">🎯 Digital AI</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="scenario-tag tag-fdpm">🎯 FDPM Intelligence</div>
           <span style="font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--good);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:20px">Live Demo</span>
         </div>
+        <div class="scenario-stakes">$4.3M is the average cost of a failed enterprise AI deployment. The root cause is always discoverable before the first sprint — if you know where to look.</div>
         <div class="scenario-title">AI Adoption Readiness Assessment</div>
-        <div class="scenario-desc">Most enterprise AI deployments fail before the first line of code. A Forward Deployment PM intelligence tool that checks whether a company is actually ready — scanning 6 dimensions, flagging the real blockers, and handing back a scored go/no-go with a prioritized plan showing who does what.</div>
+        <div class="scenario-desc">73% of enterprise AI pilots never reach production. The failure isn't a surprise — it was visible in the data, the ownership gaps, and the integration debt before the project started. A Forward Deployment PM intelligence tool that checks whether a company is actually ready: scoring 6 dimensions, surfacing the real blockers, and handing back a go/no-go with a prioritized plan that shows who does what and why the timeline is what it is.</div>
         <div class="scenario-stack">
           <span class="chip chip-accent">6-Dimension Scoring</span>
           <span class="chip">Go / No-Go Assessment</span>
@@ -798,10 +822,10 @@ footer{
         <div class="scenario-outcome">
           <div>
             <div class="outcome-num">73%</div>
-            <div class="outcome-label">of enterprise AI pilots never reach production — this finds why before you deploy</div>
+            <div class="outcome-label">of enterprise AI pilots never reach production — this surfaces the reason before you deploy</div>
           </div>
         </div>
-        <a href="demos/adoption-readiness.html" class="scenario-link" style="margin-top:20px">
+        <a href="demos/adoption-readiness.html" class="scenario-link">
           Launch Readiness Assessment Demo
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
